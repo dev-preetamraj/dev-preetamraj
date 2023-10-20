@@ -9,6 +9,7 @@ const nextConfig = {
         pathname: '/dxgl4eyhq/image/upload/v1687987306/portfolio/me/**',
       },
     ],
+    domains: ['cdn.sanity.io'],
   },
 };
 
