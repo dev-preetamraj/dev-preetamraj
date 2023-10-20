@@ -2,9 +2,11 @@ import { Input } from './ui/input';
 
 const NavbarSearch = () => {
   return (
-    <div>
-      <Input type='text' placeholder='Search...' />
-    </div>
+    <Input
+      type='text'
+      placeholder='Search...'
+      className='hidden lg:block max-w-[250px]'
+    />
   );
 };
 

@@ -5,19 +5,26 @@ import {
   EnvelopeClosedIcon,
   GitHubLogoIcon,
   LinkedInLogoIcon,
+  Pencil2Icon,
 } from '@radix-ui/react-icons';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSelector } from 'react-redux';
 import SidebarLink from './SidebarLink';
 import { ThemeToggler } from './ThemeToggler';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from './ui/tooltip';
 
 const Sidebar = () => {
   const clicked = useSelector((state: RootState) => state.navbar.clicked);
   return (
     <div
       className={cn(
-        'hidden md:flex flex-col justify-between h-screen min-w-[300px] w-[300px] sm:w-[350px] bg-muted p-10 sticky top-0',
+        'hidden md:flex flex-col justify-between h-screen min-w-[300px] w-[300px] sm:min-w-[350px] sm:w-[350px] bg-muted p-10 sticky top-0',
         {
           flex: clicked,
         }
@@ -69,6 +76,18 @@ const Sidebar = () => {
         <Link href='mailto:dev.preetamraj@gmail.com'>
           <EnvelopeClosedIcon className='h-6 w-6' />
         </Link>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link href='/studio'>
+                <Pencil2Icon className='h-6 w-6' />
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Content Studio</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
     </div>
   );
