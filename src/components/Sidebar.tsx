@@ -31,7 +31,7 @@ const Sidebar = () => {
               width={150}
               alt='Preetam'
               src='https://res.cloudinary.com/dxgl4eyhq/image/upload/v1687987306/portfolio/me/preetam_ha8a2h.jpg'
-              className='h-36 w-36 rounded-full border border-ring'
+              className='h-28 w-28 md:h-36 md:w-36 rounded-full border border-ring'
             />
           </Link>
           <h1 className='text-3xl md:text-4xl font-bold text-foreground'>
