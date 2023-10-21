@@ -24,14 +24,17 @@ const BlogList: FC<Props> = ({ posts }) => {
           </Link>
           <div className='flex items-center space-x-2'>
             <div>
-              <p className='text-sm'>{post.description}</p>
+              <p className='text-sm'>
+                {post.description ||
+                  'Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium quaerat cum porro dolorum alias vero sapiente! Corrupti laborum unde magni? Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium quaerat cum porro dolorum alias vero sapiente! Corrupti laborum unde magni?'}
+              </p>
             </div>
             <Image
-              className='object-cover object-left lg:object-center'
+              className='aspect-video w-48 object-cover'
               src={urlForImage(post.mainImage).url()}
               alt={post.author.name}
-              height={200}
-              width={200}
+              height={250}
+              width={250}
             />
           </div>
           <div className='flex items-center space-x-4'>
