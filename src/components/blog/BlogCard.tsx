@@ -12,7 +12,7 @@ type Props = {
 
 const BlogCard: FC<Props> = ({ post }) => {
   return (
-    <div className='flex items-center w-full space-x-4 border-b py-4'>
+    <div className='flex items-center w-full space-x-4 border-b pb-4'>
       <div className='space-y-2 w-full'>
         <div className='flex items-center space-x-2'>
           <Avatar className='w-5 h-5'>

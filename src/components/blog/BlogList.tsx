@@ -7,7 +7,7 @@ type Props = {
 
 const BlogList: FC<Props> = ({ posts }) => {
   return (
-    <div className=''>
+    <div className='space-y-4'>
       {posts.map((post) => (
         <BlogCard key={post._id} post={post} />
       ))}
