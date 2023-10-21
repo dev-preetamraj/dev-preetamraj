@@ -20,7 +20,7 @@ export default function RootLayout({
       <Sidebar />
       <ScrollArea className='flex flex-col w-full h-screen overflow-y-auto'>
         <Navbar />
-        <div className='w-screen md:w-full px-2 sm:px-4 md:px-10 py-4 flex flex-col xl:flex-row space-x-0 space-y-2 xl:space-x-2'>
+        <div className='w-screen md:w-full px-2 sm:px-4 md:px-10 py-4 flex flex-col xl:flex-row space-x-0 space-y-4 xl:space-x-4'>
           <div className='flex-1'>{children}</div>
           <Rightbar />
         </div>
