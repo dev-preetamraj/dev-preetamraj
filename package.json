@@ -23,6 +23,7 @@
     "@sanity/types": "^3.0.0",
     "@sanity/ui": "^1.0.0",
     "@sanity/vision": "3",
+    "@tailwindcss/line-clamp": "^0.4.4",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "next": "^13.0.0",

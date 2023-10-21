@@ -1,4 +1,4 @@
-import { CalendarDaysIcon } from '@heroicons/react/24/outline';
+import { CalendarDaysIcon, TagIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FC } from 'react';
@@ -22,11 +22,11 @@ const BlogList: FC<Props> = ({ posts }) => {
           >
             {post.title}
           </Link>
-          <div className='flex items-center space-x-2'>
+          <div className='flex items-center space-x-4'>
             <div>
-              <p className='text-sm'>
+              <p className='text-sm line-clamp-3 text-justify'>
                 {post.description ||
-                  'Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium quaerat cum porro dolorum alias vero sapiente! Corrupti laborum unde magni? Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium quaerat cum porro dolorum alias vero sapiente! Corrupti laborum unde magni?'}
+                  'Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium quaerat cum porro dolorum alias vero sapiente! Corrupti laborum unde magni? Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium quaerat cum porro dolorum alias vero sapiente! Corrupti laborum unde magni? Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium quaerat cum porro dolorum alias vero sapiente! Corrupti laborum unde magni?'}
               </p>
             </div>
             <Image
@@ -49,7 +49,19 @@ const BlogList: FC<Props> = ({ posts }) => {
                 })}
               </p>
             </div>
-            <p>Tags</p>
+            <div className='flex items-center space-x-2'>
+              <TagIcon className='h-4 w-4' />
+              {post.categories.map((cat) => (
+                <Link
+                  href={`/categories/${cat.title
+                    .toLowerCase()
+                    .replace(' ', '-')}`}
+                  key={cat._id}
+                >
+                  {cat.title}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       ))}
