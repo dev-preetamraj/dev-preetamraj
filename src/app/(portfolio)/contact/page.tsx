@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Contact - Preetam Raj',
@@ -6,7 +7,16 @@ export const metadata: Metadata = {
 };
 
 const ContactPage = () => {
-  return <div>ContactPage</div>;
+  return (
+    <div>
+      <p className='text-xl'>
+        Feel free to contact me at:{' '}
+        <Link href='mailto:dev.preetamraj@gmail.com' className='text-primary'>
+          dev.preetamraj@gmail.com
+        </Link>
+      </p>
+    </div>
+  );
 };
 
 export default ContactPage;
