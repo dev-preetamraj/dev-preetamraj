@@ -24,13 +24,17 @@ const SidebarLink: React.FC<ISidebarLink> = ({ href }) => {
     return href.replace('/', '').charAt(0).toUpperCase() + href.substring(2);
   };
 
+  const activePath = (href: string) => {
+    return href.replace('/', '') === pathname.split('/')[1];
+  };
+
   const iconMapper = () => {
     switch (href) {
       case '/':
         return (
           <HomeIcon
             className={cn('h-5 w-5 group-hover:text-primary', {
-              'text-primary': pathname === href,
+              'text-primary': activePath(href),
             })}
           />
         );
@@ -39,7 +43,7 @@ const SidebarLink: React.FC<ISidebarLink> = ({ href }) => {
         return (
           <InfoCircledIcon
             className={cn('h-5 w-5 group-hover:text-primary', {
-              'text-primary': pathname === href,
+              'text-primary': activePath(href),
             })}
           />
         );
@@ -48,7 +52,7 @@ const SidebarLink: React.FC<ISidebarLink> = ({ href }) => {
         return (
           <Share1Icon
             className={cn('h-5 w-5 group-hover:text-primary', {
-              'text-primary': pathname === href,
+              'text-primary': activePath(href),
             })}
           />
         );
@@ -57,7 +61,7 @@ const SidebarLink: React.FC<ISidebarLink> = ({ href }) => {
         return (
           <IdCardIcon
             className={cn('h-5 w-5 group-hover:text-primary', {
-              'text-primary': pathname === href,
+              'text-primary': activePath(href),
             })}
           />
         );
@@ -66,7 +70,7 @@ const SidebarLink: React.FC<ISidebarLink> = ({ href }) => {
         return (
           <TextAlignLeftIcon
             className={cn('h-5 w-5 group-hover:text-primary', {
-              'text-primary': pathname === href,
+              'text-primary': activePath(href),
             })}
           />
         );
@@ -75,7 +79,7 @@ const SidebarLink: React.FC<ISidebarLink> = ({ href }) => {
         return (
           <BookmarkIcon
             className={cn('h-5 w-5 group-hover:text-primary', {
-              'text-primary': pathname === href,
+              'text-primary': activePath(href),
             })}
           />
         );
@@ -91,7 +95,7 @@ const SidebarLink: React.FC<ISidebarLink> = ({ href }) => {
       className={cn(
         'group flex items-center space-x-4 hover:border-r-2 hover:border-primary transition-all ease-linear duration-500',
         {
-          'border-r-2 border-primary': pathname === href,
+          'border-r-2 border-primary': activePath(href),
         }
       )}
     >
@@ -100,7 +104,7 @@ const SidebarLink: React.FC<ISidebarLink> = ({ href }) => {
         className={cn(
           'text-lg group-hover:text-primary group-hover:font-semibold',
           {
-            'text-primary font-semibold': pathname === href,
+            'text-primary font-semibold': activePath(href),
           }
         )}
       >
