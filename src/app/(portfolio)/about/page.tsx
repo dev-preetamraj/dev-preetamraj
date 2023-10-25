@@ -76,13 +76,13 @@ const AboutPage = () => {
         <span className='text-primary font-semibold'>
           Indian Institute of Technology (IIT) Mandi
         </span>
-        , I've always been captivated by the dynamic world of web and app
+        , I&apos;ve always been captivated by the dynamic world of web and app
         development. As a full-stack web developer, I thrive on transforming
         innovative ideas into functional digital solutions. Beyond the realm of
-        coding, I find solace in the world of music. Whether it's through
+        coding, I find solace in the world of music. Whether it&apos;s through
         singing, strumming my guitar, or immersing myself in the magic of
         melodies, music is where I truly find my balance. Hailing from the
-        vibrant city of Patna, Bihar, I'm on a relentless quest to blend my
+        vibrant city of Patna, Bihar, I&apos;m on a relentless quest to blend my
         technical expertise with my creative passions to craft digital
         experiences that resonate with people around the world.
       </p>
