@@ -1,5 +1,4 @@
 'use client';
-import { createSlug } from '@/lib/utils';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { FunctionComponent } from 'react';
@@ -7,14 +6,15 @@ import { FunctionComponent } from 'react';
 type Props = {
   imgUrl: string;
   title: string;
+  slug: string;
 };
 
-const PortfolioCard: FunctionComponent<Props> = ({ imgUrl, title }) => {
+const PortfolioCard: FunctionComponent<Props> = ({ imgUrl, title, slug }) => {
   const router = useRouter();
   return (
     <div
       className='relative group hover:cursor-pointer h-60'
-      onClick={() => router.push(`/portfolio/${createSlug(title)}`)}
+      onClick={() => router.push(`/portfolio/${slug}`)}
     >
       <Image
         className='h-60 w-full object-cover'

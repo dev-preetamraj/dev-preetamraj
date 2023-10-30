@@ -16,6 +16,15 @@ interface Post extends Base {
   description: string;
 }
 
+interface Project extends Base {
+  body: Block[];
+  mainImage: Image;
+  slug: Slug;
+  githubLink: string;
+  title: string;
+  description: string;
+}
+
 interface Author extends Base {
   bio: Block[];
   image: Image;
