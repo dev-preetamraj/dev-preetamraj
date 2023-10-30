@@ -1,6 +1,7 @@
 import { TagIcon } from '@heroicons/react/24/outline';
 import { CalendarIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
+import Link from 'next/link';
 import { FC } from 'react';
 import { urlForImage } from '../../../sanity/lib/image';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -24,9 +25,14 @@ const BlogCard: FC<Props> = ({ post }) => {
           </Avatar>
           <p className='text-sm'>{post.author.name}</p>
         </div>
-        <h1 className='text-lg font-bold text-primary line-clamp-2'>
+        <Link
+          href={{
+            pathname: `/blog/${post.slug.current}`,
+          }}
+          className='text-lg font-bold text-primary line-clamp-2'
+        >
           {post.title}
-        </h1>
+        </Link>
         <p className='text-sm font-light line-clamp-2'>
           {post.description ||
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium ab odio optio at deleniti pariatur porro magnam facere culpa ipsam veniam autem accusantium, corrupti voluptates iusto voluptatem assumenda illum? Esse?'}

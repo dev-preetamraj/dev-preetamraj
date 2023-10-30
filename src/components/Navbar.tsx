@@ -11,7 +11,7 @@ const Navbar = () => {
   const clicked = useSelector((state: RootState) => state.navbar.clicked);
   const dispatch: AppDispatch = useDispatch();
   return (
-    <div className='border-b border-muted px-4 sm:px-8 md:px-10 py-2 md:py-4 sticky top-0 backdrop-blur-md flex items-center justify-between'>
+    <div className='border-b border-muted px-4 sm:px-8 md:px-10 py-2 md:py-4 sticky z-50 top-0 backdrop-blur-md flex items-center justify-between'>
       {!clicked ? (
         <TextAlignJustifyIcon
           className='block md:hidden h-6 w-6 cursor-pointer'
