@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: 'A fullstack web developer',
 };
 
-export default function RootLayout({
+export default function BlogLayout({
   children,
 }: {
   children: React.ReactNode;
