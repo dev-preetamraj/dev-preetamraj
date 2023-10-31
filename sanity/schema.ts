@@ -9,3 +9,5 @@ import project from './schemas/project';
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [post, author, category, blockContent, project],
 };
+
+// change 1
