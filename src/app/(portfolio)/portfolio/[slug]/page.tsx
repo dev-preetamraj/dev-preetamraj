@@ -15,6 +15,22 @@ type Props = {
   };
 };
 
+// export const revalidate = 60; // revalidate this page every 60 seconds
+
+export async function generateStaticParams() {
+  const query = groq`
+    *[_type=='project'] {
+      slug
+    }
+  `;
+  const slugs: Category[] = await client.fetch(query);
+  const slugRoutes = slugs.map((slug) => slug.slug.current);
+
+  return slugRoutes.map((slug) => ({
+    slug,
+  }));
+}
+
 const ProjectDetailsPage: FC<Props> = async ({ params: { slug } }) => {
   const query = groq`
     *[_type=='project' && slug.current==$slug][0] {
