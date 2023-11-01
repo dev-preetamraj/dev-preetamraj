@@ -23,7 +23,7 @@ export const RichTextComponent = {
       <ul className='ml-10 py-5 list-disc space-y-5'>{children}</ul>
     ),
     number: ({ children }: any) => (
-      <ol className='mt-10 list-decimal'>{children}</ol>
+      <ol className='ml-10 py-5 list-decimal space-y-5'>{children}</ol>
     ),
   },
 
