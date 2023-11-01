@@ -3,9 +3,9 @@
 
 <p align="left"> <a href="https://twitter.com/preetam__raj" target="blank"><img src="https://img.shields.io/twitter/follow/preetam__raj?logo=twitter&style=for-the-badge" alt="preetam__raj" /></a> </p>
 
-- 👨‍💻 All of my projects are available at [https://iitianpreetam.vercel.app/](https://iitianpreetam.vercel.app/)
+- 👨‍💻 All of my projects are available at [https://preetamraj.vercel.app/](https://preetamraj.vercel.app/)
 
-- 📝 I regularly write articles on [https://iitianpreetam.vercel.app/](https://iitianpreetam.vercel.app/)
+- 📝 I regularly write articles on [https://preetamraj.vercel.app/](https://preetamraj.vercel.app/)
 
 - 💬 Ask me about **ReactJS, NextJS, Django, FastAPI**
 
@@ -13,7 +13,7 @@
 
 <h3 align="left">Connect with me:</h3>
 <p align="left">
-<a href="https://twitter.com/iitianpreetam" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/twitter.svg" alt="iitianpreetam" height="30" width="40" /></a>
+<a href="https://twitter.com/preetam__raj" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/twitter.svg" alt="preetamraj" height="30" width="40" /></a>
 <a href="https://linkedin.com/in/iitianpreetam" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg" alt="iitianpreetam" height="30" width="40" /></a>
 <a href="https://fb.com/iitianpreetam" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/facebook.svg" alt="iitianpreetam" height="30" width="40" /></a>
 <a href="https://instagram.com/dev.preetamraj" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/instagram.svg" alt="dev.preetamraj" height="30" width="40" /></a>
