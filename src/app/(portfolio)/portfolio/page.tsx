@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: 'A fullstack web developer',
 };
 
+export const revalidate = 60; // revalidate this page every 60 seconds
+
 const query = groq`
   *[_type=='project'] {
     _id,
