@@ -67,10 +67,10 @@ const Sidebar = () => {
 
       <div className='flex items-center justify-between'>
         <ThemeToggler />
-        <Link href='https://github.com/iitianpreetam' target='_blank'>
+        <Link href='https://github.com/dev-preetamraj' target='_blank'>
           <GitHubLogoIcon className='h-6 w-6' />
         </Link>
-        <Link href='https://www.linkedin.com/in/iitianpreetam' target='_blank'>
+        <Link href='https://www.linkedin.com/in/raj-preetam/' target='_blank'>
           <LinkedInLogoIcon className='h-6 w-6' />
         </Link>
         <Link href='mailto:dev.preetamraj@gmail.com'>
