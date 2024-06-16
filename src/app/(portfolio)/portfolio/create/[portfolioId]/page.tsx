@@ -1,3 +1,4 @@
+import { fetchCategories } from '@/actions/categories';
 import { getPortfolioById } from '@/actions/portfolio';
 import PortfolioBuilder from '@/components/portfolio/portfolio-builder';
 type Props = {
@@ -7,9 +8,13 @@ type Props = {
 };
 const PortfolioCreatePage = async ({ params: { portfolioId } }: Props) => {
   const portfolioResponse = await getPortfolioById(portfolioId);
+  const categoriesResponse = await fetchCategories();
   return (
     <div>
-      <PortfolioBuilder portfolio={portfolioResponse.data} />
+      <PortfolioBuilder
+        portfolio={portfolioResponse.data}
+        categories={categoriesResponse.data}
+      />
     </div>
   );
 };

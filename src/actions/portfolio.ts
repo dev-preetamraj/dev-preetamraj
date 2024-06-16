@@ -40,6 +40,21 @@ export const getPortfolioById = async (
   }
 };
 
+export const deletePortfolioById = async (
+  portfolioId: string
+): Promise<IResponse<null>> => {
+  try {
+    await dbConnect();
+
+    await Portfolio.deleteOne({ _id: portfolioId });
+
+    return response_obj.response(null, 'Portfolio deleted successfully');
+  } catch (error: any) {
+    console.log(error);
+    return response_obj.serverErrorResponse();
+  }
+};
+
 export const getPortfolioBySlug = async (
   slug: string
 ): Promise<IResponse<Partial<IPortfolio> | null>> => {
@@ -91,6 +106,43 @@ export const createPortfolio = async (
       response,
       'Portfolio created successfully. Redirecting...'
     );
+  } catch (error: any) {
+    console.log(error);
+    return response_obj.serverErrorResponse();
+  }
+};
+
+export const updatePortfolioMetadata = async (
+  portfolioId: string,
+  metadata: any
+) => {
+  try {
+    await dbConnect();
+    const user = await currentUser();
+    if (!user) return response_obj.errorResponse('Unauthorized');
+
+    const role = user.privateMetadata.role;
+    if (role !== 'admin') return response_obj.errorResponse('Unauthorized');
+
+    const category = await Category.findOne({ name: metadata.category });
+    if (!category)
+      return response_obj.errorResponse('Invalid category selection');
+
+    await Portfolio.findOneAndUpdate(
+      { _id: portfolioId },
+      {
+        title: metadata.title,
+        description: metadata.description,
+        featuredImage: metadata.featuredImage,
+        category: category._id,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    return response_obj.response(null, 'Metadata updated successfully');
   } catch (error: any) {
     console.log(error);
     return response_obj.serverErrorResponse();

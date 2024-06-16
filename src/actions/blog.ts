@@ -24,6 +24,21 @@ export const getBlogById = async (
   }
 };
 
+export const deleteBlogById = async (
+  blogId: string
+): Promise<IResponse<null>> => {
+  try {
+    await dbConnect();
+
+    await Blog.deleteOne({ _id: blogId });
+
+    return response_obj.response(null, 'Blog deleted successfully');
+  } catch (error: any) {
+    console.log(error);
+    return response_obj.serverErrorResponse();
+  }
+};
+
 export const getBlogBySlug = async (
   slug: string
 ): Promise<IResponse<Partial<IBlog> | null>> => {

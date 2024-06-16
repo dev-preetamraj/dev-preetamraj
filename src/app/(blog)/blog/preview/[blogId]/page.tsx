@@ -1,10 +1,8 @@
 import { getBlogById } from '@/actions/blog';
 import RenderMarkdown from '@/components/render-markdown';
-import { Button } from '@/components/ui/button';
-import { format } from 'date-fns';
-import { GithubIcon } from 'lucide-react';
 import markdownit from 'markdown-it';
 import Image from 'next/image';
+import Link from 'next/link';
 
 type Props = {
   params: {
@@ -16,30 +14,46 @@ const PreviewBlogPage = async ({ params: { blogId } }: Props) => {
   const { data: blog } = await getBlogById(blogId);
   const md = markdownit();
   return (
-    <div className='space-y-10'>
-      <div className='relative w-full h-60'>
-        <Image
-          alt={blog?.title ?? 'Featured'}
-          src={blog?.featuredImage!}
-          height={400}
-          width={600}
-          className='w-full h-full object-cover object-center absolute top-0 left-0 -z-50'
-        />
-        <div className='absolute -z-40 top-0 left-0 w-full h-full bg-muted/90' />
-        <div className='p-4 w-full space-y-10'>
-          <div>
-            <h1 className='text-4xl font-bold'>{blog?.title}</h1>
-            <span>{format(blog?.createdAt ?? '', 'PPP')}</span>
+    <div>
+      <section className='space-y-2 border border-primary/10 mb-10'>
+        <div className='relative flex flex-col xl:flex-row justify-between'>
+          <div className='absolute top-0 w-full h-full opacity-10 blur-sm'>
+            <Image
+              className='object-cover object-center mx-auto'
+              src={blog?.featuredImage ?? ''}
+              alt={blog?.title ?? 'Featured Image'}
+              fill
+            />
           </div>
-          <div>
-            <p>{blog?.description}</p>
-            <Button className='float-right flex items-center space-x-2'>
-              <GithubIcon className='h-6 w-6' />
-              <span>Github</span>
-            </Button>
-          </div>
+
+          <section className='p-5 bg-primary/10 w-full z-10'>
+            <div>
+              <h1 className='text-4xl font-extrabold'>{blog?.title}</h1>
+              <p>
+                {new Date(blog?.createdAt ?? '').toLocaleDateString('en-US', {
+                  timeZone: 'Asia/Kolkata',
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric',
+                })}
+              </p>
+            </div>
+
+            <div>
+              <h2 className='italic line-clamp-2 pt-10'>{blog?.description}</h2>
+              <div className='flex items-center justify-end mt-auto space-x-2'>
+                <Link
+                  href={`/categories/${blog?.category?.name}`}
+                  className='bg-muted text-white px-3 py-1 rounded-full text-sm font-semibold mt-4'
+                >
+                  {blog?.category?.name}
+                </Link>
+              </div>
+            </div>
+          </section>
         </div>
-      </div>
+      </section>
+
       <RenderMarkdown content={blog?.content ?? ''} />
     </div>
   );

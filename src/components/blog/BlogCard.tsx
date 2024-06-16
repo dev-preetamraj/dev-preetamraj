@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { FC } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Separator } from '../ui/separator';
+import DeleteBlogAlertDialog from './delete-blog-alert-dialog';
 
 type Props = {
   blog: Partial<IBlog>;
@@ -31,9 +32,12 @@ const BlogCard: FC<Props> = async ({ blog }) => {
             <p className='text-sm'>Preetam Raj</p>
           </div>
           {role === 'admin' && (
-            <Link href={`/blog/create/${blog._id}`}>
-              <EditIcon className='h-4 w-4' />
-            </Link>
+            <div className='flex items-center space-x-4'>
+              <Link href={`/blog/create/${blog._id}`}>
+                <EditIcon className='h-4 w-4' />
+              </Link>
+              <DeleteBlogAlertDialog blogId={blog._id!} />
+            </div>
           )}
         </div>
         <Link

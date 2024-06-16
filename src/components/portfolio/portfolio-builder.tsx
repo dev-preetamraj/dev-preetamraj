@@ -1,17 +1,20 @@
 'use client';
 import { updatePortfolioContent } from '@/actions/portfolio';
+import { ICategory } from '@/models/category';
 import { IPortfolio } from '@/models/portfolio';
 import { Editor } from '@monaco-editor/react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
+import PortfolioMetadataSheet from './portfolio-metadata-sheet';
 
 type Props = {
   portfolio: Partial<IPortfolio> | null;
+  categories: Partial<ICategory>[] | null;
 };
 
-const PortfolioBuilder = ({ portfolio }: Props) => {
+const PortfolioBuilder = ({ portfolio, categories }: Props) => {
   const [content, setContent] = useState(portfolio?.content);
   const [loading, setLoading] = useState(false);
 
@@ -49,7 +52,10 @@ const PortfolioBuilder = ({ portfolio }: Props) => {
           >
             {loading ? 'Saving...' : 'Save'}
           </Button>
-          {/* <MetadataSheet blog={blog} categories={categories} /> */}
+          <PortfolioMetadataSheet
+            categories={categories}
+            portfolio={portfolio}
+          />
         </div>
       </div>
       <Editor
