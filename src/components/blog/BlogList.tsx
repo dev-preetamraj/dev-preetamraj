@@ -1,16 +1,15 @@
+import { IBlog } from '@/models/blog';
 import { FC } from 'react';
 import BlogCard from './BlogCard';
 
 type Props = {
-  posts: Post[];
+  blogs: Partial<IBlog>[] | null;
 };
 
-const BlogList: FC<Props> = ({ posts }) => {
+const BlogList: FC<Props> = ({ blogs }) => {
   return (
     <div className='space-y-4'>
-      {posts.map((post) => (
-        <BlogCard key={post._id} post={post} />
-      ))}
+      {blogs && blogs.map((blog) => <BlogCard key={blog._id} blog={blog} />)}
     </div>
   );
 };

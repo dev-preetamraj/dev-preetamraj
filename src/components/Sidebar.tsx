@@ -1,12 +1,13 @@
 'use client';
 import { RootState } from '@/features/store';
 import { cn } from '@/lib/utils';
+import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import {
   EnvelopeClosedIcon,
   GitHubLogoIcon,
   LinkedInLogoIcon,
-  Pencil2Icon,
 } from '@radix-ui/react-icons';
+import { LogInIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSelector } from 'react-redux';
@@ -30,7 +31,7 @@ const Sidebar = () => {
         }
       )}
     >
-      <div className='flex flex-col space-y-16'>
+      <div className='flex flex-col space-y-10'>
         <div className='flex flex-col space-y-4'>
           <Link href='/'>
             <Image
@@ -55,10 +56,11 @@ const Sidebar = () => {
             </span>
           </p>
         </div>
-        <div className='flex flex-col space-y-6'>
+        <div className='flex flex-col space-y-5'>
           <SidebarLink href='/' />
           <SidebarLink href='/about' />
           <SidebarLink href='/portfolio' />
+          <SidebarLink href='/blog' />
           <SidebarLink href='/contact' />
           <SidebarLink href='/categories' />
           <SidebarLink href='/tags' />
@@ -76,18 +78,23 @@ const Sidebar = () => {
         <Link href='mailto:dev.preetamraj@gmail.com'>
           <EnvelopeClosedIcon className='h-6 w-6' />
         </Link>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link href='/studio'>
-                <Pencil2Icon className='h-6 w-6' />
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Content Studio</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <SignedOut>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link href='/auth/login'>
+                  <LogInIcon className='h-6 w-6' />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Login</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </SignedOut>
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
       </div>
     </div>
   );

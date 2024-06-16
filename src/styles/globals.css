@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body {
+  height: 100vh;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -50,14 +63,8 @@
 }
 
 @layer base {
-  * {
-    @apply border-border m-0 p-0;
-  }
-  html {
-    @apply m-0 p-0 overflow-hidden;
-  }
   body {
-    @apply m-0 p-0 overflow-hidden bg-background text-gray-700 dark:text-gray-300;
+    @apply bg-background text-gray-700 dark:text-gray-300;
   }
   ::selection {
     @apply bg-primary/30 text-white;

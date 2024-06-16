@@ -9,6 +9,7 @@ import {
   Share1Icon,
   TextAlignLeftIcon,
 } from '@radix-ui/react-icons';
+import { BookIcon } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -51,6 +52,15 @@ const SidebarLink: React.FC<ISidebarLink> = ({ href }) => {
       case '/portfolio':
         return (
           <Share1Icon
+            className={cn('h-5 w-5 group-hover:text-primary', {
+              'text-primary': activePath(href),
+            })}
+          />
+        );
+
+      case '/blog':
+        return (
+          <BookIcon
             className={cn('h-5 w-5 group-hover:text-primary', {
               'text-primary': activePath(href),
             })}

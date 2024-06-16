@@ -1,26 +1,20 @@
+import { fetchBlogs } from '@/actions/blog';
 import BlogList from '@/components/blog/BlogList';
-import { groq } from 'next-sanity';
-import { client } from '../../../../sanity/lib/client';
-
-const query = groq`
-  *[_type=='post'] {
-    _id,
-    slug,
-    title,
-    description,
-    mainImage,
-    _createdAt,
-    author->,
-    categories[]->
-  } | order(_createdAt desc)
-`;
+import CreateBlogDialog from '@/components/blog/create-blog-dialog';
+import { currentUser } from '@clerk/nextjs/server';
 
 const BlogPage = async () => {
-  const posts = await client.fetch(query);
+  const user = await currentUser();
+  const role = user?.privateMetadata.role;
+  const blogs = await fetchBlogs();
 
   return (
-    <div>
-      <BlogList posts={posts} />
+    <div className='w-full flex flex-col space-y-4'>
+      <div className='border-b border-border pb-2 my-4 flex items-center justify-between'>
+        <h1 className='text-2xl'>Recent Blogs</h1>
+        {role === 'admin' && <CreateBlogDialog />}
+      </div>
+      <BlogList blogs={blogs.data} />
     </div>
   );
 };

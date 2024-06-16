@@ -42,3 +42,31 @@ export const createURL = (array: string[], index: number) => {
 
   return url;
 };
+
+export class ServerResponse {
+  constructor() {}
+
+  response(data: any, message: string) {
+    return {
+      success: true,
+      data: data,
+      message: message,
+    };
+  }
+
+  errorResponse(message: string) {
+    return {
+      success: false,
+      data: null,
+      message: message,
+    };
+  }
+
+  serverErrorResponse() {
+    return {
+      success: false,
+      data: null,
+      message: 'Something went wrong',
+    };
+  }
+}
