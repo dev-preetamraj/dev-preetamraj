@@ -48,7 +48,9 @@ const PortfolioBuilder = ({ portfolio, categories }: Props) => {
           <Button
             variant='outline'
             onClick={handleUpdateContent}
-            disabled={content === '' || loading}
+            disabled={
+              content === '' || content === portfolio?.content || loading
+            }
           >
             {loading ? 'Saving...' : 'Save'}
           </Button>

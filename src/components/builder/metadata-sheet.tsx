@@ -86,7 +86,7 @@ const MetadataSheet = ({ blog, categories }: Props) => {
       <SheetTrigger asChild>
         <Button variant='outline'>Update Metadata</Button>
       </SheetTrigger>
-      <SheetContent className='border-border'>
+      <SheetContent className='border-border pb-10 overflow-y-auto'>
         <SheetHeader>
           <SheetTitle>Blog Metadata</SheetTitle>
           <SheetDescription>Update the metadata of your blog.</SheetDescription>

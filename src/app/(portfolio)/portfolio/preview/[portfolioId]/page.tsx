@@ -1,7 +1,13 @@
 import { getPortfolioById } from '@/actions/portfolio';
 import RenderMarkdown from '@/components/render-markdown';
-import { buttonVariants } from '@/components/ui/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { GitHubLogoIcon } from '@radix-ui/react-icons';
+import { GithubIcon, LinkIcon } from 'lucide-react';
 import markdownit from 'markdown-it';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -16,7 +22,7 @@ const PreviewPortfolioPage = async ({ params: { portfolioId } }: Props) => {
   const { data: project } = await getPortfolioById(portfolioId);
   const md = markdownit();
   return (
-    <div>
+    <div className='w-full'>
       <section className='space-y-2 border border-primary/10 mb-10'>
         <div className='relative flex flex-col xl:flex-row justify-between'>
           <div className='absolute top-0 w-full h-full opacity-10 blur-sm'>
@@ -52,18 +58,53 @@ const PreviewPortfolioPage = async ({ params: { portfolioId } }: Props) => {
               <h2 className='italic line-clamp-2 pt-10'>
                 {project?.description}
               </h2>
-              <div className='flex items-center justify-end mt-auto space-x-2'>
-                <Link
-                  href={project?.githubUrl ?? '#'}
-                  target='_blank'
-                  className={buttonVariants({
-                    variant: 'default',
-                    className: 'flex items-center space-x-2',
-                  })}
-                >
-                  <GitHubLogoIcon className='h-4 w-4' />
-                  <span>Github</span>
-                </Link>
+              <div className='flex items-center justify-end mt-auto space-x-4'>
+                {project?.githubUrl && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link href={project?.githubUrl ?? '#'} target='_blank'>
+                          <GitHubLogoIcon className='h-4 w-4' />
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Github</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
+
+                {project?.frontendGithubUrl && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link
+                          href={project?.frontendGithubUrl ?? '#'}
+                          target='_blank'
+                        >
+                          <GithubIcon className='h-4 w-4' />
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Github Frontend</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
+                {project?.liveUrl && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link href={project?.liveUrl ?? '#'} target='_blank'>
+                          <LinkIcon className='h-4 w-4' />
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Live</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
               </div>
             </div>
           </section>

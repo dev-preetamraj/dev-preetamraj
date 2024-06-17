@@ -48,6 +48,9 @@ const PortfolioMetadataSheet = ({ portfolio, categories }: Props) => {
       portfolio?.featuredImage ??
       'https://images.unsplash.com/photo-1549558549-415fe4c37b60',
     category: portfolio?.category?.name ?? 'uncategorized',
+    githubUrl: portfolio?.githubUrl ?? '',
+    frontendGithubUrl: portfolio?.frontendGithubUrl ?? '',
+    liveUrl: portfolio?.liveUrl ?? '',
   });
 
   const handleMetadataUpdate = async () => {
@@ -86,7 +89,7 @@ const PortfolioMetadataSheet = ({ portfolio, categories }: Props) => {
       <SheetTrigger asChild>
         <Button variant='outline'>Update Metadata</Button>
       </SheetTrigger>
-      <SheetContent className='border-border'>
+      <SheetContent className='border-border pb-10 overflow-y-auto'>
         <SheetHeader>
           <SheetTitle>Blog Metadata</SheetTitle>
           <SheetDescription>Update the metadata of your blog.</SheetDescription>
@@ -121,6 +124,42 @@ const PortfolioMetadataSheet = ({ portfolio, categories }: Props) => {
               value={metadata.description}
               onChange={(e) =>
                 setMetadata({ ...metadata, description: e.target.value })
+              }
+            />
+          </div>
+
+          <div className='w-full space-y-2'>
+            <Label htmlFor='githubUrl'>Github Url</Label>
+            <Input
+              type='text'
+              placeholder='Github'
+              value={metadata.githubUrl}
+              onChange={(e) =>
+                setMetadata({ ...metadata, githubUrl: e.target.value })
+              }
+            />
+          </div>
+
+          <div className='w-full space-y-2'>
+            <Label htmlFor='frontendGithubUrl'>Frontend Github Url</Label>
+            <Input
+              type='text'
+              placeholder='Frontend Github'
+              value={metadata.frontendGithubUrl}
+              onChange={(e) =>
+                setMetadata({ ...metadata, frontendGithubUrl: e.target.value })
+              }
+            />
+          </div>
+
+          <div className='w-full space-y-2'>
+            <Label htmlFor='liveUrl'>Live Url</Label>
+            <Input
+              type='text'
+              placeholder='Live'
+              value={metadata.liveUrl}
+              onChange={(e) =>
+                setMetadata({ ...metadata, liveUrl: e.target.value })
               }
             />
           </div>

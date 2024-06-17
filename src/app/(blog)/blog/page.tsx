@@ -2,6 +2,12 @@ import { fetchBlogs } from '@/actions/blog';
 import BlogList from '@/components/blog/BlogList';
 import CreateBlogDialog from '@/components/blog/create-blog-dialog';
 import { currentUser } from '@clerk/nextjs/server';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Blog - Preetam Raj',
+  description: 'A fullstack web developer',
+};
 
 const BlogPage = async () => {
   const user = await currentUser();

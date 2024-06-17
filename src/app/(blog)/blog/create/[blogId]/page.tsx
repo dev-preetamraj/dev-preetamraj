@@ -1,6 +1,7 @@
 import { getBlogById } from '@/actions/blog';
 import { fetchCategories } from '@/actions/categories';
 import BlogBuilder from '@/components/builder/blog-builder';
+import { redirect } from 'next/navigation';
 
 type Props = {
   params: {
@@ -10,6 +11,7 @@ type Props = {
 
 const CreateBlogPage = async ({ params: { blogId } }: Props) => {
   const blogResponse = await getBlogById(blogId);
+  if (!blogResponse.success) return redirect('/blog');
   const categoryResponse = await fetchCategories();
 
   return (

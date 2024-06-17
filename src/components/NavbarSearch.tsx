@@ -56,9 +56,9 @@ const NavbarSearch = () => {
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput placeholder='Type a command or search...' />
-        <CommandList>
+        <CommandList className='border-border'>
           <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading='Theme'>
+          <CommandGroup heading='Theme' className='border-border'>
             <CommandItem
               onSelect={() => {
                 setTheme('dark');

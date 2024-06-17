@@ -15,7 +15,7 @@ export const fetchProjects = async (): Promise<
   try {
     await dbConnect();
 
-    const projects = await Portfolio.find();
+    const projects = await Portfolio.find().sort({ createdAt: -1 });
     return response_obj.response(projects, 'Projects fetched successfully');
   } catch (error: any) {
     console.log(error);
@@ -135,6 +135,9 @@ export const updatePortfolioMetadata = async (
         description: metadata.description,
         featuredImage: metadata.featuredImage,
         category: category._id,
+        githubUrl: metadata.githubUrl,
+        frontendGithubUrl: metadata.frontendGithubUrl,
+        liveUrl: metadata.liveUrl,
       },
       {
         new: true,
@@ -185,7 +188,7 @@ export const fetchFeaturedProjects = async (): Promise<
   try {
     await dbConnect();
 
-    const projects = await Portfolio.find().limit(5);
+    const projects = await Portfolio.find().limit(5).sort({ createdAt: -1 });
     return response_obj.response(projects, 'Projects fetched successfully');
   } catch (error: any) {
     console.log(error);

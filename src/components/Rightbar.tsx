@@ -10,7 +10,7 @@ const Rightbar = async () => {
   const { data: projects } = await fetchFeaturedProjects();
   const { data: categories } = await fetchTrendingCategories();
   return (
-    <div className='w-full md:w-[380px] lg:w-[600px] xl:w-72 2xl:w-96 h-full sticky top-20'>
+    <aside className='w-full md:w-[380px] lg:w-[600px] xl:w-72 2xl:w-96 h-full sticky top-20'>
       <div className='flex flex-col space-y-10'>
         <div className='border-l border-border pl-4 py-4 flex flex-col space-y-4'>
           <h1 className='text-lg text-foreground'>Featured Projects</h1>
@@ -65,7 +65,7 @@ const Rightbar = async () => {
           </div>
         </div>
       </div>
-    </div>
+    </aside>
   );
 };
 
