@@ -161,7 +161,10 @@ export const fetchBlogs = async (): Promise<
   try {
     await dbConnect();
 
-    const blogs = await Blog.find().populate('category').lean();
+    const blogs = await Blog.find()
+      .populate('category')
+      .sort({ createdAt: -1 })
+      .lean();
     return response_obj.response(blogs, 'Blogs fetched successfully');
   } catch (error: any) {
     console.log(error);
@@ -175,7 +178,11 @@ export const fetchTrendingBlogs = async (): Promise<
   try {
     await dbConnect();
 
-    const blogs = await Blog.find().limit(5).populate('category').lean();
+    const blogs = await Blog.find()
+      .limit(5)
+      .sort({ createdAt: -1 })
+      .populate('category')
+      .lean();
     return response_obj.response(blogs, 'Blogs fetched successfully');
   } catch (error: any) {
     console.log(error);
