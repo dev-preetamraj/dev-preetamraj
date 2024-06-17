@@ -37,7 +37,7 @@ body {
     --input: 240 5.9% 90%;
     --ring: 142.1 76.2% 36.3%;
     --radius: 0.5rem;
-    --code-bg: #282a36;
+    --code-bg: var(--tw-prose-pre-bg);
   }
 
   .dark {
@@ -86,7 +86,7 @@ body {
 }
 
 .copy-button {
-  @apply absolute top-2 right-2 p-2;
+  @apply absolute top-2 right-1 p-1;
 }
 
 .spinner_ajPY {
