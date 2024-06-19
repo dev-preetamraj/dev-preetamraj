@@ -51,7 +51,7 @@ const RenderMarkdown = ({ content }: Props) => {
 
   return (
     <article
-      className='prose !max-w-none dark:prose-invert prose-a:text-primary prose-headings:text-foreground prose-img:w-full  md:prose-pre:max-w-md lg:prose-pre:max-w-[630px] xl:prose-pre:max-w-xl 2xl:prose-pre:max-w-[880px]'
+      className='prose !max-w-none dark:prose-invert prose-a:text-primary prose-headings:text-foreground prose-img:w-full md:prose-pre:max-w-md lg:prose-pre:max-w-[630px] xl:prose-pre:max-w-xl 2xl:prose-pre:max-w-[880px]'
       dangerouslySetInnerHTML={{
         __html: md.render(content),
       }}

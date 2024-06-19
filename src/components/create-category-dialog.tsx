@@ -1,3 +1,5 @@
+'use client';
+
 import { createCategory } from '@/actions/categories';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -38,7 +40,9 @@ const CreateCategoryDialog = (props: Props) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant='outline'>Create a category</Button>
+        <Button variant='link' className='px-0'>
+          Create a category
+        </Button>
       </DialogTrigger>
       <DialogContent className='sm:max-w-[425px] border-border'>
         <DialogHeader>

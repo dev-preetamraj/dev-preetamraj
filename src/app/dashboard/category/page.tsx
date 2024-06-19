@@ -1,27 +1,24 @@
+import CreateCategoryDialog from '@/components/create-category-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Dashboard - Preetam Raj',
-  description: 'A fullstack web developer',
-};
-
-const DashboardPage = () => {
+const Page = () => {
   return (
     <div>
       <div className='h-16 px-12 bg-muted flex items-center justify-between'>
-        <h1 className='text-lg font-semibold'>Dashboard</h1>
+        <CreateCategoryDialog />
         <div className='flex items-center space-x-4'>
           <Input
             className='bg-background border border-primary'
             placeholder='Search something...'
           />
-          <Button className='w-40'>Search</Button>
+          <Button className='w-56'>Search Category</Button>
         </div>
       </div>
+
+      <div className='flex space-x-4 px-12 py-4'></div>
     </div>
   );
 };
 
-export default DashboardPage;
+export default Page;

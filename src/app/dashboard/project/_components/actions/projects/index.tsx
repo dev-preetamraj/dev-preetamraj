@@ -10,13 +10,14 @@ const Projects = async () => {
   if (!projects) return null;
   return (
     <div className=''>
-      <div className='py-4 px-12 flex items-center justify-between'>
+      <div className='h-16 bg-muted px-12 flex items-center justify-between'>
         <CreatePortfolioDialog />
         <div className='flex items-center space-x-4'>
-          <Input />
-          <Button variant='outline' className='w-48'>
-            Search Projects
-          </Button>
+          <Input
+            className='bg-background border-primary'
+            placeholder='Search something...'
+          />
+          <Button className='w-56'>Search Projects</Button>
         </div>
       </div>
       <div className='p-12'>

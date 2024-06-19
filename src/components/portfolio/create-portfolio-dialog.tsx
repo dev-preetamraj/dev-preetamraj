@@ -50,7 +50,7 @@ const CreatePortfolioDialog = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant='outline'>Add Project</Button>
+        <Button variant='link'>Add Project</Button>
       </DialogTrigger>
       <DialogContent className='border-border rounded-md'>
         <DialogHeader>

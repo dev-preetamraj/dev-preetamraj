@@ -50,7 +50,7 @@ const CreateBlogDialog = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant='outline'>Add Blog</Button>
+        <Button variant='link'>Add Blog</Button>
       </DialogTrigger>
       <DialogContent className='border-border rounded-md'>
         <DialogHeader>

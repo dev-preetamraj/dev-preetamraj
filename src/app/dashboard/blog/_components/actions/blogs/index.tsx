@@ -10,13 +10,14 @@ const Blogs = async () => {
   if (!blog) return null;
   return (
     <div className=''>
-      <div className='py-4 px-12 flex items-center justify-between'>
+      <div className='h-16 bg-muted px-12 flex items-center justify-between'>
         <CreateBlogDialog />
         <div className='flex items-center space-x-4'>
-          <Input />
-          <Button variant='outline' className='w-48'>
-            Search Blogs
-          </Button>
+          <Input
+            className='bg-background border border-primary'
+            placeholder='Search something...'
+          />
+          <Button className='w-48'>Search Blogs</Button>
         </div>
       </div>
       <div className='p-12'>

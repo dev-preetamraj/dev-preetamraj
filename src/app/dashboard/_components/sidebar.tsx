@@ -8,6 +8,7 @@ import { DashboardIcon } from '@radix-ui/react-icons';
 import {
   BookIcon,
   BookTextIcon,
+  HomeIcon,
   Inbox,
   PinIcon,
   ShareIcon,
@@ -62,8 +63,8 @@ const menuItems = [
   },
   {
     id: 8,
-    name: 'Tag',
-    href: '/dashboard/tag',
+    name: 'Tags',
+    href: '/dashboard/tags',
     icon: <TagsIcon className='h-5 w-5 cursor-pointer' />,
   },
 ];
@@ -93,7 +94,10 @@ const Sidebar = () => {
             </Link>
           ))}
         </div>
-        <div className='px-4'>
+        <div className='px-4 flex items-center justify-between'>
+          <Link href='/'>
+            <HomeIcon className='h-6 w-6' />
+          </Link>
           <ThemeToggler />
         </div>
       </div>
