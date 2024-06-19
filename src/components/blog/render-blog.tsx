@@ -1,18 +1,13 @@
-import { getBlogById } from '@/actions/blog';
-import RenderMarkdown from '@/components/render-markdown';
-import markdownit from 'markdown-it';
+import { IBlog } from '@/models/blog';
 import Image from 'next/image';
 import Link from 'next/link';
+import RenderMarkdown from '../render-markdown';
 
 type Props = {
-  params: {
-    blogId: string;
-  };
+  blog: Partial<IBlog>;
 };
 
-const PreviewBlogPage = async ({ params: { blogId } }: Props) => {
-  const { data: blog } = await getBlogById(blogId);
-  const md = markdownit();
+const RenderBlog = ({ blog }: Props) => {
   return (
     <div>
       <section className='space-y-2 border border-primary/10 mb-10'>
@@ -59,4 +54,4 @@ const PreviewBlogPage = async ({ params: { blogId } }: Props) => {
   );
 };
 
-export default PreviewBlogPage;
+export default RenderBlog;

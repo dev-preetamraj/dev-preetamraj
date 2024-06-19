@@ -161,7 +161,7 @@ export const fetchBlogs = async (): Promise<
   try {
     await dbConnect();
 
-    const blogs = await Blog.find()
+    const blogs = await Blog.find({ isPublished: true })
       .populate('category')
       .sort({ createdAt: -1 })
       .lean();
@@ -178,12 +178,50 @@ export const fetchTrendingBlogs = async (): Promise<
   try {
     await dbConnect();
 
-    const blogs = await Blog.find()
+    const blogs = await Blog.find({ isPublished: true })
       .limit(5)
       .sort({ createdAt: -1 })
       .populate('category')
       .lean();
     return response_obj.response(blogs, 'Blogs fetched successfully');
+  } catch (error: any) {
+    console.log(error);
+    return response_obj.serverErrorResponse();
+  }
+};
+
+export const fetchAllBlogsForDashboard = async (): Promise<
+  IResponse<Partial<IBlog>[] | null>
+> => {
+  try {
+    await dbConnect();
+
+    const blogs = await Blog.find()
+      .populate('category')
+      .sort({ createdAt: -1 })
+      .lean();
+    return response_obj.response(blogs, 'Blogs fetched successfully');
+  } catch (error: any) {
+    console.log(error);
+    return response_obj.serverErrorResponse();
+  }
+};
+
+export const publishBlog = async (
+  blogId: string,
+  status: boolean
+): Promise<IResponse<null>> => {
+  try {
+    await dbConnect();
+
+    const blog = await Blog.findById(blogId);
+    blog.isPublished = status;
+    await blog.save();
+
+    return response_obj.response(
+      null,
+      `Blogs ${status ? 'published' : 'unpublished'} successfully`
+    );
   } catch (error: any) {
     console.log(error);
     return response_obj.serverErrorResponse();

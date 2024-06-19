@@ -1,26 +1,21 @@
-import { getPortfolioById } from '@/actions/portfolio';
-import RenderMarkdown from '@/components/render-markdown';
+import { IPortfolio } from '@/models/portfolio';
+import { GitHubLogoIcon } from '@radix-ui/react-icons';
+import { GithubIcon, LinkIcon } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import RenderMarkdown from '../render-markdown';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { GitHubLogoIcon } from '@radix-ui/react-icons';
-import { GithubIcon, LinkIcon } from 'lucide-react';
-import markdownit from 'markdown-it';
-import Image from 'next/image';
-import Link from 'next/link';
+} from '../ui/tooltip';
 
 type Props = {
-  params: {
-    portfolioId: string;
-  };
+  project: Partial<IPortfolio> | null;
 };
 
-const PreviewPortfolioPage = async ({ params: { portfolioId } }: Props) => {
-  const { data: project } = await getPortfolioById(portfolioId);
-  const md = markdownit();
+const RenderPortfolio = ({ project }: Props) => {
   return (
     <div className='w-full'>
       <section className='space-y-2 border border-primary/10 mb-10'>
@@ -115,4 +110,4 @@ const PreviewPortfolioPage = async ({ params: { portfolioId } }: Props) => {
   );
 };
 
-export default PreviewPortfolioPage;
+export default RenderPortfolio;

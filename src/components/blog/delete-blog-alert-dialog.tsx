@@ -39,7 +39,7 @@ const DeleteBlogAlertDialog = ({ blogId }: Props) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Trash className='h-4 w-4 cursor-pointer' />
+        <Trash className='h-4 w-4 cursor-pointer text-destructive' />
       </AlertDialogTrigger>
       <AlertDialogContent className='border-border'>
         <AlertDialogHeader>

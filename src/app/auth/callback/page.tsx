@@ -12,6 +12,12 @@ const CallbackPage = async () => {
           ? 'admin'
           : 'subscriber',
     },
+    publicMetadata: {
+      role:
+        user.emailAddresses[0].emailAddress === process.env.ADMIN_EMAIL
+          ? 'admin'
+          : 'subscriber',
+    },
   });
   return redirect('/');
 };

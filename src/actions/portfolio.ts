@@ -15,7 +15,9 @@ export const fetchProjects = async (): Promise<
   try {
     await dbConnect();
 
-    const projects = await Portfolio.find().sort({ createdAt: -1 });
+    const projects = await Portfolio.find({ isPublished: true }).sort({
+      createdAt: -1,
+    });
     return response_obj.response(projects, 'Projects fetched successfully');
   } catch (error: any) {
     console.log(error);
@@ -188,8 +190,45 @@ export const fetchFeaturedProjects = async (): Promise<
   try {
     await dbConnect();
 
-    const projects = await Portfolio.find().limit(5).sort({ createdAt: -1 });
+    const projects = await Portfolio.find({ isPublished: true })
+      .limit(5)
+      .sort({ createdAt: -1 });
     return response_obj.response(projects, 'Projects fetched successfully');
+  } catch (error: any) {
+    console.log(error);
+    return response_obj.serverErrorResponse();
+  }
+};
+
+export const fetchAllProjectsForDashboard = async (): Promise<
+  IResponse<Partial<IPortfolio>[] | null>
+> => {
+  try {
+    await dbConnect();
+
+    const projects = await Portfolio.find().sort({ createdAt: -1 });
+    return response_obj.response(projects, 'Projects fetched successfully');
+  } catch (error: any) {
+    console.log(error);
+    return response_obj.serverErrorResponse();
+  }
+};
+
+export const publishProject = async (
+  projectId: string,
+  status: boolean
+): Promise<IResponse<null>> => {
+  try {
+    await dbConnect();
+
+    const project = await Portfolio.findById(projectId);
+    project.isPublished = status;
+    await project.save();
+
+    return response_obj.response(
+      null,
+      `Project ${status ? 'published' : 'unpublished'} successfully`
+    );
   } catch (error: any) {
     console.log(error);
     return response_obj.serverErrorResponse();

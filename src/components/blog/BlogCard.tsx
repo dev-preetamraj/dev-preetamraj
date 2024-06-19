@@ -2,13 +2,11 @@ import { IBlog } from '@/models/blog';
 import { currentUser } from '@clerk/nextjs/server';
 import { TagIcon } from '@heroicons/react/24/outline';
 import { CalendarIcon } from '@radix-ui/react-icons';
-import { EditIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FC } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Separator } from '../ui/separator';
-import DeleteBlogAlertDialog from './delete-blog-alert-dialog';
 
 type Props = {
   blog: Partial<IBlog>;
@@ -31,14 +29,6 @@ const BlogCard: FC<Props> = async ({ blog }) => {
             </Avatar>
             <p className='text-sm'>Preetam Raj</p>
           </div>
-          {role === 'admin' && (
-            <div className='flex items-center space-x-4'>
-              <Link href={`/blog/create/${blog._id}`}>
-                <EditIcon className='h-4 w-4' />
-              </Link>
-              <DeleteBlogAlertDialog blogId={blog._id!} />
-            </div>
-          )}
         </div>
         <Link
           href={{

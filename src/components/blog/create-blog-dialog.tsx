@@ -41,7 +41,7 @@ const CreateBlogDialog = () => {
     setLoading(false);
     if (response.success) {
       toast.success(response.message);
-      router.push(`/blog/create/${response.data?._id}`);
+      router.push(`/dashboard/blog?action=edit&_id=${response.data?._id}`);
     } else {
       toast.error(response.message);
       return;

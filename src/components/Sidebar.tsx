@@ -1,8 +1,9 @@
 'use client';
 import { RootState } from '@/features/store';
 import { cn } from '@/lib/utils';
-import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import { SignedIn, SignedOut, UserButton, useUser } from '@clerk/nextjs';
 import {
+  DashboardIcon,
   EnvelopeClosedIcon,
   GitHubLogoIcon,
   LinkedInLogoIcon,
@@ -22,6 +23,8 @@ import {
 
 const Sidebar = () => {
   const clicked = useSelector((state: RootState) => state.navbar.clicked);
+  const { user } = useUser();
+  const role = user?.publicMetadata.role;
   return (
     <div
       className={cn(
@@ -93,6 +96,11 @@ const Sidebar = () => {
           </TooltipProvider>
         </SignedOut>
         <SignedIn>
+          {role === 'admin' && (
+            <Link href='/dashboard'>
+              <DashboardIcon className='h-6 w-6 cursor-pointer' />
+            </Link>
+          )}
           <UserButton />
         </SignedIn>
       </div>

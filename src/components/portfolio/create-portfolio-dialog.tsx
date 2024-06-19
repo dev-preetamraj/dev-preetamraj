@@ -41,7 +41,7 @@ const CreatePortfolioDialog = () => {
     setLoading(false);
     if (response.success) {
       toast.success(response.message);
-      router.push(`/portfolio/create/${response.data?._id}`);
+      router.push(`/dashboard/project?action=edit&_id=${response.data?._id}`);
     } else {
       toast.error(response.message);
       return;
