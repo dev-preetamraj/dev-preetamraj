@@ -67,7 +67,7 @@ export const fetchAllCategoriesForSearch = async (
 
     const categories = await Category.find({
       name: { $regex: keyword, $options: 'i' },
-    });
+    }).lean();
     return response_obj.response(categories, 'Categories fetched successfully');
   } catch (error: any) {
     console.log(error);

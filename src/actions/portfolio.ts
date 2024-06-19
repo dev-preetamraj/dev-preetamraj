@@ -228,7 +228,7 @@ export const fetchAllProjectsForSearch = async (
     const projects = await Portfolio.find({
       title: { $regex: keyword, $options: 'i' },
       isPublished: true,
-    });
+    }).lean();
     return response_obj.response(projects, 'Projects fetched successfully');
   } catch (error: any) {
     console.log(error);

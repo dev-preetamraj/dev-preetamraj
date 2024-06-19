@@ -36,12 +36,10 @@ const NavbarSearch = () => {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [query, setQuery] = useState('');
-  const [blogs, setBlogs] = useState<Partial<IBlog>[] | null>(null);
-  const [projects, setProjects] = useState<Partial<IPortfolio>[] | null>(null);
-  const [categories, setCategories] = useState<Partial<ICategory>[] | null>(
-    null
-  );
-  const [tags, setTags] = useState<Partial<ITag>[] | null>(null);
+  const [blogs, setBlogs] = useState<Partial<IBlog>[]>([]);
+  const [projects, setProjects] = useState<Partial<IPortfolio>[]>([]);
+  const [categories, setCategories] = useState<Partial<ICategory>[]>([]);
+  const [tags, setTags] = useState<Partial<ITag>[]>([]);
   const isDesktop = useMediaQuery('(min-width: 768px)');
 
   useEffect(() => setMounted(true), []);
@@ -59,35 +57,39 @@ const NavbarSearch = () => {
 
   useEffect(() => {
     const fetchBlogs = async () => {
+      if (!query) return;
       const { success, data } = await fetchAllBlogsForSearch(query);
-      if (success) setBlogs(data);
+      if (success && data) setBlogs(data);
     };
 
     const fetchProjects = async () => {
+      if (!query) return;
       const { success, data } = await fetchAllProjectsForSearch(query);
-      if (success) setProjects(data);
+      if (success && data) setProjects(data);
     };
 
     const fetchCategories = async () => {
+      if (!query) return;
       const { success, data } = await fetchAllCategoriesForSearch(query);
-      if (success) setCategories(data);
+      if (success && data) setCategories(data);
     };
 
     const fetchTags = async () => {
+      if (!query) return;
       const { success, data } = await fetchAllTagsForSearch(query);
-      if (success) setTags(data);
+      if (success && data) setTags(data);
     };
 
-    if (query) {
-      fetchBlogs();
-      fetchProjects();
-      fetchCategories();
-      fetchTags();
-    } else {
-      setBlogs(null);
-      setProjects(null);
-      setCategories(null);
-      setTags(null);
+    fetchBlogs();
+    fetchProjects();
+    fetchCategories();
+    fetchTags();
+
+    if (!query) {
+      setBlogs([]);
+      setProjects([]);
+      setCategories([]);
+      setTags([]);
     }
   }, [query]);
 
@@ -111,6 +113,7 @@ const NavbarSearch = () => {
           </kbd>
         </div>
       </Button>
+
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput
           placeholder='Type a command or search...'
@@ -120,7 +123,7 @@ const NavbarSearch = () => {
         <CommandList className='border-border'>
           <CommandEmpty>No results found.</CommandEmpty>
 
-          {blogs && blogs.length > 0 && (
+          {query !== '' && blogs.length > 0 && (
             <CommandGroup heading='Blog' className='border-border'>
               {blogs.map((blog) => (
                 <CommandItem
@@ -129,15 +132,18 @@ const NavbarSearch = () => {
                     router.push(`/blog/${blog.slug}`);
                     setOpen(false);
                   }}
+                  value={blog.title}
                 >
                   <BookIcon className='mr-2 h-4 w-4' />
-                  {blog.title}
+                  <span>{blog.title}</span>
                 </CommandItem>
               ))}
             </CommandGroup>
           )}
 
-          {projects && projects.length > 0 && (
+          <CommandSeparator />
+
+          {query !== '' && projects.length > 0 && (
             <CommandGroup heading='Portfolio' className='border-border'>
               {projects.map((project) => (
                 <CommandItem
@@ -146,15 +152,18 @@ const NavbarSearch = () => {
                     router.push(`/portfolio/${project.slug}`);
                     setOpen(false);
                   }}
+                  value={project.title}
                 >
                   <Share1Icon className='mr-2 h-4 w-4' />
-                  {project.title}
+                  <span>{project.title}</span>
                 </CommandItem>
               ))}
             </CommandGroup>
           )}
 
-          {categories && categories.length > 0 && (
+          <CommandSeparator />
+
+          {query !== '' && categories.length > 0 && (
             <CommandGroup heading='Category' className='border-border'>
               {categories.map((category) => (
                 <CommandItem
@@ -163,15 +172,18 @@ const NavbarSearch = () => {
                     router.push(`/categories/${category.name}`);
                     setOpen(false);
                   }}
+                  value={category.name}
                 >
                   <TextAlignLeftIcon className='mr-2 h-4 w-4' />
-                  {category.name}
+                  <span>{category.name}</span>
                 </CommandItem>
               ))}
             </CommandGroup>
           )}
 
-          {tags && tags.length > 0 && (
+          <CommandSeparator />
+
+          {query !== '' && tags.length > 0 && (
             <CommandGroup heading='Tag' className='border-border'>
               {tags.map((tag) => (
                 <CommandItem
@@ -180,13 +192,16 @@ const NavbarSearch = () => {
                     router.push(`/tags/${tag.name}`);
                     setOpen(false);
                   }}
+                  value={tag.name}
                 >
                   <BookmarkIcon className='mr-2 h-4 w-4' />
-                  {tag.name}
+                  <span>{tag.name}</span>
                 </CommandItem>
               ))}
             </CommandGroup>
           )}
+
+          <CommandSeparator />
 
           <CommandGroup heading='Theme' className='border-border'>
             <CommandItem
@@ -208,6 +223,7 @@ const NavbarSearch = () => {
               <SunIcon className='mr-2 h-4 w-4' />
               <span>Light</span>
             </CommandItem>
+
             <CommandItem
               onSelect={() => {
                 setTheme('system');
@@ -218,8 +234,6 @@ const NavbarSearch = () => {
               <span>System</span>
             </CommandItem>
           </CommandGroup>
-
-          <CommandSeparator />
         </CommandList>
       </CommandDialog>
     </>

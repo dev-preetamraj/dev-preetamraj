@@ -220,7 +220,8 @@ export const fetchAllBlogsForSearch = async (
     const blogs = await Blog.find({
       title: { $regex: keyword, $options: 'i' },
       isPublished: true,
-    });
+    }).lean();
+
     return response_obj.response(blogs, 'Blogs fetched successfully');
   } catch (error: any) {
     console.log(error);

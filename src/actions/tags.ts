@@ -50,7 +50,7 @@ export const fetchAllTagsForSearch = async (
 
     const tags = await Tag.find({
       name: { $regex: keyword, $options: 'i' },
-    });
+    }).lean();
     return response_obj.response(tags, 'Tags fetched successfully');
   } catch (error: any) {
     console.log(error);
