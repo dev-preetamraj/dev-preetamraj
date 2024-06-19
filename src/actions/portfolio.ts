@@ -219,6 +219,23 @@ export const fetchAllProjectsForDashboard = async (
   }
 };
 
+export const fetchAllProjectsForSearch = async (
+  keyword: string
+): Promise<IResponse<Partial<IPortfolio>[] | null>> => {
+  try {
+    await dbConnect();
+
+    const projects = await Portfolio.find({
+      title: { $regex: keyword, $options: 'i' },
+      isPublished: true,
+    });
+    return response_obj.response(projects, 'Projects fetched successfully');
+  } catch (error: any) {
+    console.log(error);
+    return response_obj.serverErrorResponse();
+  }
+};
+
 export const publishProject = async (
   projectId: string,
   status: boolean

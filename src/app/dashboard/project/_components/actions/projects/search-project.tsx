@@ -17,7 +17,7 @@ const SearchProject = (props: Props) => {
         router.replace(`/dashboard/project?keyword=${value}`);
       }, 100);
     }
-  }, [value]);
+  }, [value, router]);
 
   return (
     <Input

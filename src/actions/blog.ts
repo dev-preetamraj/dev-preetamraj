@@ -211,6 +211,23 @@ export const fetchAllBlogsForDashboard = async (
   }
 };
 
+export const fetchAllBlogsForSearch = async (
+  keyword: string
+): Promise<IResponse<Partial<IBlog>[] | null>> => {
+  try {
+    await dbConnect();
+
+    const blogs = await Blog.find({
+      title: { $regex: keyword, $options: 'i' },
+      isPublished: true,
+    });
+    return response_obj.response(blogs, 'Blogs fetched successfully');
+  } catch (error: any) {
+    console.log(error);
+    return response_obj.serverErrorResponse();
+  }
+};
+
 export const publishBlog = async (
   blogId: string,
   status: boolean

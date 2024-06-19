@@ -58,3 +58,19 @@ export const createCategory = async (
     return response_obj.serverErrorResponse();
   }
 };
+
+export const fetchAllCategoriesForSearch = async (
+  keyword: string
+): Promise<IResponse<Partial<ICategory>[] | null>> => {
+  try {
+    await dbConnect();
+
+    const categories = await Category.find({
+      name: { $regex: keyword, $options: 'i' },
+    });
+    return response_obj.response(categories, 'Categories fetched successfully');
+  } catch (error: any) {
+    console.log(error);
+    return response_obj.serverErrorResponse();
+  }
+};

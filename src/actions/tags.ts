@@ -41,3 +41,19 @@ export const createTag = async (name: string): Promise<IResponse<null>> => {
     return response_obj.serverErrorResponse();
   }
 };
+
+export const fetchAllTagsForSearch = async (
+  keyword: string
+): Promise<IResponse<Partial<ITag>[] | null>> => {
+  try {
+    await dbConnect();
+
+    const tags = await Tag.find({
+      name: { $regex: keyword, $options: 'i' },
+    });
+    return response_obj.response(tags, 'Tags fetched successfully');
+  } catch (error: any) {
+    console.log(error);
+    return response_obj.serverErrorResponse();
+  }
+};

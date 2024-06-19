@@ -17,7 +17,7 @@ const SearchBlog = (props: Props) => {
         router.replace(`/dashboard/blog?keyword=${value}`);
       }, 100);
     }
-  }, [value]);
+  }, [value, router]);
 
   return (
     <Input
