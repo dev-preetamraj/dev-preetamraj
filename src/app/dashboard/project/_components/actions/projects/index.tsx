@@ -1,24 +1,21 @@
 import { fetchAllProjectsForDashboard } from '@/actions/portfolio';
 import { DataTable } from '@/components/data-table';
 import CreatePortfolioDialog from '@/components/portfolio/create-portfolio-dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { columns } from './columns';
+import SearchProject from './search-project';
 
-const Projects = async () => {
-  const { data: projects } = await fetchAllProjectsForDashboard();
+type Props = {
+  keyword?: string;
+};
+
+const Projects = async ({ keyword }: Props) => {
+  const { data: projects } = await fetchAllProjectsForDashboard(keyword);
   if (!projects) return null;
   return (
     <div className=''>
       <div className='h-16 bg-muted px-12 flex items-center justify-between'>
         <CreatePortfolioDialog />
-        <div className='flex items-center space-x-4'>
-          <Input
-            className='bg-background border-primary'
-            placeholder='Search something...'
-          />
-          <Button className='w-56'>Search Projects</Button>
-        </div>
+        <SearchProject />
       </div>
       <div className='p-12'>
         <DataTable columns={columns} data={projects} />

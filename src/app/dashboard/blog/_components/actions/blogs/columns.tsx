@@ -2,16 +2,51 @@
 
 import DeleteBlogAlertDialog from '@/components/blog/delete-blog-alert-dialog';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { IBlog } from '@/models/blog';
 import { ICategory } from '@/models/category';
+import { ITag } from '@/models/tag';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
+import { ArrowUpDown } from 'lucide-react';
 import Link from 'next/link';
 
 export const columns: ColumnDef<Partial<IBlog>>[] = [
   {
+    id: 'select',
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && 'indeterminate')
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label='Select all'
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label='Select row'
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
     accessorKey: 'title',
-    header: 'Title',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Title
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       const _id = row.original._id;
       const title: string = row.getValue('title');
@@ -82,10 +117,29 @@ export const columns: ColumnDef<Partial<IBlog>>[] = [
   {
     accessorKey: 'tags',
     header: 'Tags',
+    cell: ({ row }) => {
+      const tags: ITag[] = row.getValue('tags');
+
+      return (
+        <div>
+          <span>{tags.length === 0 ? '[]' : 'Something'}</span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: 'createdAt',
-    header: 'Date',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Date
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       const blog = row.original;
       const date: Date = row.getValue('createdAt');

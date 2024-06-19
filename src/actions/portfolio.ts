@@ -200,13 +200,18 @@ export const fetchFeaturedProjects = async (): Promise<
   }
 };
 
-export const fetchAllProjectsForDashboard = async (): Promise<
-  IResponse<Partial<IPortfolio>[] | null>
-> => {
+export const fetchAllProjectsForDashboard = async (
+  keyword?: string
+): Promise<IResponse<Partial<IPortfolio>[] | null>> => {
   try {
     await dbConnect();
-
-    const projects = await Portfolio.find().sort({ createdAt: -1 });
+    const searchQuery = keyword
+      ? { title: { $regex: keyword, $options: 'i' } }
+      : {};
+    const projects = await Portfolio.find(searchQuery)
+      .populate('category')
+      .sort({ createdAt: -1 })
+      .lean();
     return response_obj.response(projects, 'Projects fetched successfully');
   } catch (error: any) {
     console.log(error);

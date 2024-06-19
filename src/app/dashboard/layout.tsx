@@ -19,7 +19,7 @@ const DashboardLayout = async ({ children }: Props) => {
   const role = user.privateMetadata.role;
   if (role !== 'admin') return redirect('/');
   return (
-    <div className='flex'>
+    <div className='flex min-w-[1080px]'>
       <Sidebar />
       <ScrollArea className='w-full h-screen overflow-y-auto'>
         {children}

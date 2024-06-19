@@ -190,13 +190,17 @@ export const fetchTrendingBlogs = async (): Promise<
   }
 };
 
-export const fetchAllBlogsForDashboard = async (): Promise<
-  IResponse<Partial<IBlog>[] | null>
-> => {
+export const fetchAllBlogsForDashboard = async (
+  keyword?: string
+): Promise<IResponse<Partial<IBlog>[] | null>> => {
   try {
     await dbConnect();
 
-    const blogs = await Blog.find()
+    const searchQuery = keyword
+      ? { title: { $regex: keyword, $options: 'i' } }
+      : {};
+
+    const blogs = await Blog.find(searchQuery)
       .populate('category')
       .sort({ createdAt: -1 })
       .lean();

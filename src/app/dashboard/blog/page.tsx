@@ -11,6 +11,7 @@ const Page = ({ searchParams }: Props) => {
 
   const action = searchParams['action'];
   const _id = searchParams['_id'] as string;
+  const keyword = searchParams['keyword'] as string;
 
   switch (action) {
     case 'edit':
@@ -20,7 +21,7 @@ const Page = ({ searchParams }: Props) => {
       if (!_id) return null;
       return <PreviewBlog _id={_id} />;
     default:
-      return <Blogs />;
+      return <Blogs keyword={keyword} />;
   }
 };
 
