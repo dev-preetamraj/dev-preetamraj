@@ -1,7 +1,7 @@
 import { IBlog } from '@/models/blog';
 import Image from 'next/image';
 import Link from 'next/link';
-import RenderMarkdown from '../render-markdown';
+import RenderMarkdown from '../global/render-markdown';
 
 type Props = {
   blog: Partial<IBlog>;

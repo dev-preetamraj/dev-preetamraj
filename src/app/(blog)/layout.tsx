@@ -1,6 +1,6 @@
-import Navbar from '@/components/Navbar';
-import Rightbar from '@/components/Rightbar';
-import Sidebar from '@/components/Sidebar';
+import Navbar from '@/components/global/Navbar';
+import Rightbar from '@/components/global/Rightbar';
+import Sidebar from '@/components/global/Sidebar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import '@/styles/globals.css';
 import type { Metadata } from 'next';

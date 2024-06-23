@@ -1,8 +1,8 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import slugify from 'slugify';
-import { ICategory } from './category';
-import { IComment } from './comment';
-import { ITag } from './tag';
+import Category, { ICategory } from './category';
+import Comment, { IComment } from './comment';
+import Tag, { ITag } from './tag';
 
 export interface IBlog extends Document {
   _id: string;
@@ -41,13 +41,13 @@ const blogSchema = new Schema<IBlog>(
     },
     category: {
       type: Schema.Types.ObjectId,
-      ref: 'Category',
+      ref: Category.modelName,
       required: true,
     },
     tags: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Tag',
+        ref: Tag.modelName,
       },
     ],
     featuredImage: {
@@ -57,7 +57,7 @@ const blogSchema = new Schema<IBlog>(
     comments: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Comment',
+        ref: Comment.modelName,
       },
     ],
     isPublished: {

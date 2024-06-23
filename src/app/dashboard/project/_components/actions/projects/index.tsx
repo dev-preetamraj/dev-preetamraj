@@ -1,5 +1,5 @@
 import { fetchAllProjectsForDashboard } from '@/actions/portfolio';
-import { DataTable } from '@/components/data-table';
+import { DataTable } from '@/components/global/data-table';
 import { columns } from './columns';
 import ProjectsNav from './projects-nav';
 

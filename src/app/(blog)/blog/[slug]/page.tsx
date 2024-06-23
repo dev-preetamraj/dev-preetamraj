@@ -1,6 +1,6 @@
 import { getBlogBySlug } from '@/actions/blog';
 import RenderBlog from '@/components/blog/render-blog';
-import RenderComments from '@/components/render-comments';
+import RenderComments from '@/components/comments/render-comments';
 import { currentUser } from '@clerk/nextjs/server';
 import { FC } from 'react';
 

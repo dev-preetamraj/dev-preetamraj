@@ -1,6 +1,6 @@
 'use client';
 
-import { ThemeToggler } from '@/components/ThemeToggler';
+import { ThemeToggler } from '@/components/global/ThemeToggler';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { PhotoIcon } from '@heroicons/react/24/outline';

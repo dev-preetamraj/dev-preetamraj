@@ -1,5 +1,5 @@
 import { fetchAllBlogsForDashboard } from '@/actions/blog';
-import { DataTable } from '@/components/data-table';
+import { DataTable } from '@/components/global/data-table';
 import BlogNav from './blog-nav';
 import { columns } from './columns';
 

@@ -3,7 +3,7 @@ import { GitHubLogoIcon } from '@radix-ui/react-icons';
 import { GithubIcon, LinkIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import RenderMarkdown from '../render-markdown';
+import RenderMarkdown from '../global/render-markdown';
 import {
   Tooltip,
   TooltipContent,

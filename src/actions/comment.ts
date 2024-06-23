@@ -6,7 +6,7 @@ import { ServerResponse } from '@/lib/utils';
 import Blog from '@/models/blog';
 import Comment, { IComment } from '@/models/comment';
 import CustomUser from '@/models/user';
-import { User } from '@clerk/nextjs/server';
+import { User, currentUser } from '@clerk/nextjs/server';
 
 export type CommentType = {
   comment: Partial<IComment>;
@@ -40,6 +40,25 @@ export const createCommentForBlog = async (
     await blog.save();
 
     return response_obj.response(comment, 'Comment created successfully');
+  } catch (error: any) {
+    console.log(error);
+    return response_obj.serverErrorResponse();
+  }
+};
+
+export const deleteComment = async (
+  commentId: string,
+  userId: string
+): Promise<IResponse<null>> => {
+  try {
+    await dbConnect();
+    const user = await currentUser();
+
+    if (!user || user.id !== userId)
+      return response_obj.errorResponse('Unauthorized');
+
+    await Comment.findOneAndDelete({ _id: commentId });
+    return response_obj.response(null, 'Comment deleted successfully');
   } catch (error: any) {
     console.log(error);
     return response_obj.serverErrorResponse();

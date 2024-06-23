@@ -1,9 +1,9 @@
 import { fetchTrendingBlogs } from '@/actions/blog';
 import { fetchTrendingCategories } from '@/actions/categories';
 import { fetchFeaturedProjects } from '@/actions/portfolio';
+import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import { buttonVariants } from './ui/button';
 
 const Rightbar = async () => {
   const { data: recentBlogs } = await fetchTrendingBlogs();

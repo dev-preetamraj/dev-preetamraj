@@ -1,6 +1,6 @@
 import { getBlogById } from '@/actions/blog';
-import Rightbar from '@/components/Rightbar';
 import RenderBlog from '@/components/blog/render-blog';
+import Rightbar from '@/components/global/Rightbar';
 import ExitPreviewButton from './exit-preview-button';
 
 type Props = {

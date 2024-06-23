@@ -49,9 +49,9 @@ export const getBlogBySlug = async (
       .populate('category')
       .populate({
         path: 'comments',
+        model: 'Comment',
         populate: {
           path: 'author',
-          model: 'CustomUser',
         },
       })
       .lean();

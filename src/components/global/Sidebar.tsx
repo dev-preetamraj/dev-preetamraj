@@ -1,4 +1,10 @@
 'use client';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { RootState } from '@/features/store';
 import { cn } from '@/lib/utils';
 import { SignedIn, SignedOut, UserButton, useUser } from '@clerk/nextjs';
@@ -14,12 +20,6 @@ import Link from 'next/link';
 import { useSelector } from 'react-redux';
 import SidebarLink from './SidebarLink';
 import { ThemeToggler } from './ThemeToggler';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from './ui/tooltip';
 
 const Sidebar = () => {
   const clicked = useSelector((state: RootState) => state.navbar.clicked);

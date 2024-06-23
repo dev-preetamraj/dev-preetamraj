@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import Blog from './blog';
-import { IUser } from './user';
+import CustomUser, { IUser } from './user';
 
 export interface IComment extends Document {
   _id: string;
@@ -16,7 +16,7 @@ const commentSchema = new Schema<IComment>(
   {
     author: {
       type: Schema.Types.ObjectId,
-      ref: 'CustomUser',
+      ref: CustomUser.modelName,
       required: true,
     },
     content: {
@@ -34,6 +34,7 @@ const commentSchema = new Schema<IComment>(
 commentSchema.pre('findOneAndDelete', async function (next) {
   try {
     const commentId = this.getQuery()._id;
+    console.log(`findOneAndDelete hook triggered for commentId: ${commentId}`);
     await Blog.updateMany(
       { comments: commentId },
       { $pull: { comments: commentId } }
@@ -50,6 +51,7 @@ commentSchema.pre(
   async function (next) {
     try {
       const commentId = this._id;
+      console.log(`deleteOne hook triggered for commentId: ${commentId}`);
       await Blog.updateMany(
         { comments: commentId },
         { $pull: { comments: commentId } }

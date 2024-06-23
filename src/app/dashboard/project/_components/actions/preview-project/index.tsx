@@ -1,5 +1,5 @@
 import { getPortfolioById } from '@/actions/portfolio';
-import Rightbar from '@/components/Rightbar';
+import Rightbar from '@/components/global/Rightbar';
 import RenderPortfolio from '@/components/portfolio/render-portfolio';
 import ExitPreviewButton from './exit-preview-button';
 
