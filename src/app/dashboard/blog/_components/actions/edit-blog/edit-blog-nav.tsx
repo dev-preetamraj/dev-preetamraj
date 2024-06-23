@@ -1,4 +1,5 @@
 import { updateContent } from '@/actions/blog';
+import MobileSidebar from '@/app/dashboard/_components/mobile-sidebar';
 import { Button } from '@/components/ui/button';
 import { IBlog } from '@/models/blog';
 import Link from 'next/link';
@@ -34,37 +35,38 @@ const EditBlogNav = ({ blog, content }: Props) => {
     return;
   };
   return (
-    <div className='h-16 flex items-center bg-muted px-12'>
-      <div className='w-full flex items-center justify-between'>
+    <header className='flex h-14 lg:h-[60px] items-center gap-4 border-b border-border bg-muted/40 px-4 lg:px-6'>
+      <MobileSidebar />
+      <div className='w-full flex-1'>
         <h1 className='text-2xl font-bold'>{blog.title}</h1>
-        <div className=''>
-          <Button
-            variant='link'
-            disabled={blog.content === content || loading || content === ''}
-            onClick={handleUpdateContent}
-          >
-            {loading ? 'Saving...' : 'Save Draft'}
-          </Button>
-          {blog.content === content ? (
-            <Link
-              href={{
-                pathname: '/dashboard/blog',
-                query: {
-                  action: 'preview',
-                  _id: blog._id,
-                },
-              }}
-            >
-              <Button variant='link'>Preview</Button>
-            </Link>
-          ) : (
-            <Button variant='link' disabled>
-              Preview
-            </Button>
-          )}
-        </div>
       </div>
-    </div>
+      <div className=''>
+        <Button
+          variant='link'
+          disabled={blog.content === content || loading || content === ''}
+          onClick={handleUpdateContent}
+        >
+          {loading ? 'Saving...' : 'Save Draft'}
+        </Button>
+        {blog.content === content ? (
+          <Link
+            href={{
+              pathname: '/dashboard/blog',
+              query: {
+                action: 'preview',
+                _id: blog._id,
+              },
+            }}
+          >
+            <Button variant='link'>Preview</Button>
+          </Link>
+        ) : (
+          <Button variant='link' disabled>
+            Preview
+          </Button>
+        )}
+      </div>
+    </header>
   );
 };
 

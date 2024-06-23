@@ -111,9 +111,9 @@ const BlogMetadata = ({ blog, categories, content }: Props) => {
 
   return (
     <Sheet open modal={false}>
-      <SheetContent className='w-[400px] p-0'>
+      <SheetContent className='w-[400px] p-0 border-border'>
         <div className='space-4-4'>
-          <div className='h-16 px-4 bg-muted flex items-center justify-between'>
+          <div className='h-14 lg:h-[60px] px-4 lg:px-6 bg-muted/40 border-b border-border flex items-center justify-between'>
             <Button
               variant='link'
               className='px-0'
@@ -126,7 +126,7 @@ const BlogMetadata = ({ blog, categories, content }: Props) => {
               {blog.isPublished ? 'Unpublish' : 'Publish'}
             </Button>
           </div>
-          <div className='w-full px-4'>
+          <div className='w-full px-4 lg:px-6'>
             <Accordion type='single' collapsible>
               <AccordionItem value='metadata' className='border-border'>
                 <AccordionTrigger className='text-lg'>

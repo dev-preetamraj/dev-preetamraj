@@ -34,7 +34,7 @@ const EditProjectNav = ({ project, content }: Props) => {
     return;
   };
   return (
-    <div className='h-16 flex items-center bg-muted px-12'>
+    <div className='h-14 lg:h-[60px] flex items-center bg-muted/40 backdrop-blur-md px-4 lg:px-6'>
       <div className='w-full flex items-center justify-between'>
         <h1 className='text-2xl font-bold'>{project.title}</h1>
         <div className=''>

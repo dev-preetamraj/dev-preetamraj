@@ -1,8 +1,7 @@
 import { fetchAllBlogsForDashboard } from '@/actions/blog';
-import CreateBlogDialog from '@/components/blog/create-blog-dialog';
 import { DataTable } from '@/components/data-table';
+import BlogNav from './blog-nav';
 import { columns } from './columns';
-import SearchBlog from './search-blog';
 
 type Props = {
   keyword?: string;
@@ -13,11 +12,8 @@ const Blogs = async ({ keyword }: Props) => {
   if (!blog) return null;
   return (
     <div className=''>
-      <div className='h-16 bg-muted px-12 flex items-center justify-between'>
-        <CreateBlogDialog />
-        <SearchBlog />
-      </div>
-      <div className='p-12'>
+      <BlogNav />
+      <div className='p-4 lg:p-6'>
         <DataTable columns={columns} data={blog} />
       </div>
     </div>

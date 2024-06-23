@@ -13,7 +13,7 @@ const PreviewProject = async ({ _id }: Props) => {
 
   return (
     <div className=''>
-      <div className='h-16 bg-muted flex items-center sticky top-0 z-50 px-12'>
+      <div className='h-14 lg:h-[60px] bg-muted/40 backdrop-blur-md flex items-center sticky top-0 z-50 px-4 lg:px-6'>
         <ExitPreviewButton />
       </div>
       <div className='flex space-x-4'>

@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import slugify from 'slugify';
 import { ICategory } from './category';
+import { IComment } from './comment';
 import { ITag } from './tag';
 
 export interface IBlog extends Document {
@@ -13,6 +14,7 @@ export interface IBlog extends Document {
   category: ICategory;
   tags: ITag[];
   featuredImage: string;
+  comments: IComment[];
   isPublished: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -38,13 +40,13 @@ const blogSchema = new Schema<IBlog>(
       required: true,
     },
     category: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'Category',
       required: true,
     },
     tags: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Tag',
       },
     ],
@@ -52,6 +54,12 @@ const blogSchema = new Schema<IBlog>(
       type: String,
       default: 'https://images.unsplash.com/photo-1549558549-415fe4c37b60',
     },
+    comments: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Comment',
+      },
+    ],
     isPublished: {
       type: Boolean,
       default: false,

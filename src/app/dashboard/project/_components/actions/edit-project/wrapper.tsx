@@ -17,7 +17,7 @@ const Wrapper = ({ project, categories }: Props) => {
 
   return (
     <div className='min-h-screen'>
-      <div className='mr-[384px]'>
+      <div className='mr-[372px]'>
         <EditProjectNav project={project} content={content} />
         <BlogEditor content={content} setContent={setContent} />
       </div>

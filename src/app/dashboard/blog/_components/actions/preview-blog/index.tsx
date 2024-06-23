@@ -13,7 +13,7 @@ const PreviewBlog = async ({ _id }: Props) => {
 
   return (
     <div className=''>
-      <div className='h-16 bg-muted flex items-center sticky top-0 z-50 px-12'>
+      <div className='h-14 lg:h-[60px] bg-muted/40 border-b border-border flex items-center sticky top-0 z-50 px-12 backdrop-blur-md'>
         <ExitPreviewButton />
       </div>
       <div className='flex space-x-4'>

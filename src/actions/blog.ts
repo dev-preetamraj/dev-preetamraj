@@ -45,7 +45,16 @@ export const getBlogBySlug = async (
   try {
     await dbConnect();
 
-    const blog = await Blog.findOne({ slug }).populate('category').lean();
+    const blog = await Blog.findOne({ slug })
+      .populate('category')
+      .populate({
+        path: 'comments',
+        populate: {
+          path: 'author',
+          model: 'CustomUser',
+        },
+      })
+      .lean();
 
     return response_obj.response(blog, 'Blog fetched successfully');
   } catch (error: any) {

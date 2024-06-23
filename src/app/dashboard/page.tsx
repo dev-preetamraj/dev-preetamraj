@@ -1,6 +1,5 @@
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Metadata } from 'next';
+import DashboardNav from './_components/dashboard-nav';
 
 export const metadata: Metadata = {
   title: 'Dashboard - Preetam Raj',
@@ -10,16 +9,8 @@ export const metadata: Metadata = {
 const DashboardPage = () => {
   return (
     <div>
-      <div className='h-16 px-12 bg-muted flex items-center justify-between'>
-        <h1 className='text-lg font-semibold'>Dashboard</h1>
-        <div className='flex items-center space-x-4'>
-          <Input
-            className='bg-background border border-primary'
-            placeholder='Search something...'
-          />
-          <Button className='w-40'>Search</Button>
-        </div>
-      </div>
+      <DashboardNav />
+      <div className='p-4 lg:p-6'>Dashboard</div>
     </div>
   );
 };

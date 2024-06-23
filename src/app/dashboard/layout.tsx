@@ -1,4 +1,3 @@
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { currentUser } from '@clerk/nextjs/server';
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
@@ -19,11 +18,11 @@ const DashboardLayout = async ({ children }: Props) => {
   const role = user.privateMetadata.role;
   if (role !== 'admin') return redirect('/');
   return (
-    <div className='flex min-w-[1080px]'>
+    <div className='grid h-screen overflow-hidden w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]'>
       <Sidebar />
-      <ScrollArea className='w-full h-screen overflow-y-auto'>
+      <main className='flex flex-1 flex-col gap-4 lg:gap-6 overflow-auto'>
         {children}
-      </ScrollArea>
+      </main>
     </div>
   );
 };
