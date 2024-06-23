@@ -1,5 +1,6 @@
 'use server';
 
+import dbConnect from '@/lib/dbConnect';
 import { IResponse } from '@/lib/types';
 import { ServerResponse } from '@/lib/utils';
 import CustomUser, { IUser } from '@/models/user';
@@ -13,6 +14,7 @@ export const createUser = async (
   imageUrl: string | null = null
 ): Promise<IResponse<IUser | null>> => {
   try {
+    await dbConnect();
     const user = new CustomUser({
       userId,
       email,
@@ -31,6 +33,8 @@ export const getUserByUserId = async (
   userId: string
 ): Promise<IResponse<IUser | null>> => {
   try {
+    await dbConnect();
+
     const user = await CustomUser.findOne({ userId }).lean();
     return response_obj.response(user, 'User fetched successfully');
   } catch (error: any) {
