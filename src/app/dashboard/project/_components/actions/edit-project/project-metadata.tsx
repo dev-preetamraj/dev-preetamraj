@@ -54,6 +54,9 @@ const ProjectMetadata = ({ project, categories, content }: Props) => {
       project?.featuredImage ??
       'https://images.unsplash.com/photo-1549558549-415fe4c37b60',
     category: project?.category?.name ?? 'uncategorized',
+    githubUrl: project?.githubUrl ?? '',
+    frontendGithubUrl: project.frontendGithubUrl ?? '',
+    liveUrl: project.liveUrl ?? '',
   });
 
   useEffect(() => {
@@ -165,6 +168,47 @@ const ProjectMetadata = ({ project, categories, content }: Props) => {
                           ...metadata,
                           description: e.target.value,
                         })
+                      }
+                    />
+                  </div>
+
+                  <div className='w-full space-y-2'>
+                    <Label htmlFor='githubUrl'>Github URL</Label>
+                    <Input
+                      type='text'
+                      placeholder='Github URL'
+                      value={metadata.githubUrl}
+                      onChange={(e) =>
+                        setMetadata({ ...metadata, githubUrl: e.target.value })
+                      }
+                    />
+                  </div>
+
+                  <div className='w-full space-y-2'>
+                    <Label htmlFor='frontendGithubUrl'>
+                      Frontend Github URL
+                    </Label>
+                    <Input
+                      type='text'
+                      placeholder='Frontend Github URL'
+                      value={metadata.frontendGithubUrl}
+                      onChange={(e) =>
+                        setMetadata({
+                          ...metadata,
+                          frontendGithubUrl: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+
+                  <div className='w-full space-y-2'>
+                    <Label htmlFor='liveUrl'>liveUrl URL</Label>
+                    <Input
+                      type='text'
+                      placeholder='Live URL'
+                      value={metadata.liveUrl}
+                      onChange={(e) =>
+                        setMetadata({ ...metadata, liveUrl: e.target.value })
                       }
                     />
                   </div>
