@@ -11,11 +11,11 @@ import {
   BookTextIcon,
   Home,
   Inbox,
-  Package2,
   PinIcon,
   ShareIcon,
   TagsIcon,
 } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -78,8 +78,14 @@ const Sidebar = () => {
       <div className='flex h-full max-h-screen flex-col gap-2'>
         <div className='flex h-14 items-center border-b border-border px-4 lg:h-[60px] lg:px-6'>
           <Link href='/' className='flex items-center gap-2 font-semibold'>
-            <Package2 className='h-6 w-6' />
-            <span className=''>Acme Inc</span>
+            <Image
+              alt='Preetam Raj'
+              src='https://res.cloudinary.com/dxgl4eyhq/image/upload/v1687987306/portfolio/me/preetam_ha8a2h.jpg'
+              height={24}
+              width={24}
+              className='rounded-full'
+            />
+            <span className=''>Preetam Raj</span>
           </Link>
           <Button variant='outline' size='icon' className='ml-auto h-8 w-8'>
             <Bell className='h-4 w-4' />

@@ -51,52 +51,19 @@ export const columns: ColumnDef<Partial<IPortfolio>>[] = [
       const _id = row.original._id;
       const title: string = row.getValue('title');
       return (
-        <div className='group h-16'>
-          <Link
-            href={{
-              pathname: `/dashboard/project`,
-              query: {
-                action: 'edit',
-                _id,
-              },
-            }}
-          >
-            <Button variant='link' className='p-0'>
-              {title}
-            </Button>
-          </Link>
-          <div className='group-hover:flex hidden items-center space-x-4'>
-            <Link
-              href={{
-                pathname: `/dashboard/project`,
-                query: {
-                  action: 'edit',
-                  _id,
-                },
-              }}
-            >
-              <Button variant='link' className='p-0'>
-                Edit
-              </Button>
-            </Link>
-
-            <Link
-              href={{
-                pathname: `/dashboard/project`,
-                query: {
-                  action: 'preview',
-                  _id,
-                },
-              }}
-            >
-              <Button variant='link' className='p-0'>
-                Preview
-              </Button>
-            </Link>
-
-            <DeletePortfolioAlertDialog portfolioId={_id!} />
-          </div>
-        </div>
+        <Link
+          href={{
+            pathname: `/dashboard/project`,
+            query: {
+              action: 'edit',
+              _id,
+            },
+          }}
+        >
+          <Button variant='link' className='p-0'>
+            {title}
+          </Button>
+        </Link>
       );
     },
   },
@@ -149,11 +116,52 @@ export const columns: ColumnDef<Partial<IPortfolio>>[] = [
       const formatedDate = format(date, 'PPP');
       const formatedTime = format(date, 'hh:mm a');
       return (
-        <div className='flex flex-col space-y-2'>
+        <div className='flex flex-col space-y-1'>
           <span>{blog.isPublished ? 'Published' : 'Last Modified'}</span>
           <span>
             {formatedDate} at {formatedTime}
           </span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'actions',
+    header: 'Actions',
+    cell: ({ row }) => {
+      const _id = row.original._id;
+
+      return (
+        <div className='flex items-center space-x-4'>
+          <Link
+            href={{
+              pathname: `/dashboard/project`,
+              query: {
+                action: 'edit',
+                _id,
+              },
+            }}
+          >
+            <Button variant='link' className='p-0'>
+              Edit
+            </Button>
+          </Link>
+
+          <Link
+            href={{
+              pathname: `/dashboard/project`,
+              query: {
+                action: 'preview',
+                _id,
+              },
+            }}
+          >
+            <Button variant='link' className='p-0'>
+              Preview
+            </Button>
+          </Link>
+
+          <DeletePortfolioAlertDialog portfolioId={_id!} />
         </div>
       );
     },

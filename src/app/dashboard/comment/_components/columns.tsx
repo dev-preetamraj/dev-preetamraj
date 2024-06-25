@@ -1,17 +1,17 @@
 'use client';
 
-import DeleteBlogAlertDialog from '@/components/blog/delete-blog-alert-dialog';
+import DeletePortfolioAlertDialog from '@/components/portfolio/delete-portfolio-alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { IBlog } from '@/models/blog';
 import { ICategory } from '@/models/category';
+import { IPortfolio } from '@/models/portfolio';
 import { ITag } from '@/models/tag';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { ArrowUpDown } from 'lucide-react';
 import Link from 'next/link';
 
-export const columns: ColumnDef<Partial<IBlog>>[] = [
+export const columns: ColumnDef<Partial<IPortfolio>>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -35,14 +35,14 @@ export const columns: ColumnDef<Partial<IBlog>>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'title',
+    accessorKey: 'blog-portfolio',
     header: ({ column }) => {
       return (
         <Button
           variant='ghost'
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
-          Title
+          Blog/Portfolio
           <ArrowUpDown className='ml-2 h-4 w-4' />
         </Button>
       );
@@ -53,7 +53,7 @@ export const columns: ColumnDef<Partial<IBlog>>[] = [
       return (
         <Link
           href={{
-            pathname: `/dashboard/blog`,
+            pathname: `/dashboard/project`,
             query: {
               action: 'edit',
               _id,
@@ -67,6 +67,7 @@ export const columns: ColumnDef<Partial<IBlog>>[] = [
       );
     },
   },
+
   {
     accessorKey: 'category',
     header: 'Category',
@@ -81,6 +82,7 @@ export const columns: ColumnDef<Partial<IBlog>>[] = [
       );
     },
   },
+
   {
     accessorKey: 'tags',
     header: 'Tags',
@@ -94,6 +96,7 @@ export const columns: ColumnDef<Partial<IBlog>>[] = [
       );
     },
   },
+
   {
     accessorKey: 'createdAt',
     header: ({ column }) => {
@@ -127,11 +130,12 @@ export const columns: ColumnDef<Partial<IBlog>>[] = [
     header: 'Actions',
     cell: ({ row }) => {
       const _id = row.original._id;
+
       return (
         <div className='flex items-center space-x-4'>
           <Link
             href={{
-              pathname: `/dashboard/blog`,
+              pathname: `/dashboard/project`,
               query: {
                 action: 'edit',
                 _id,
@@ -145,7 +149,7 @@ export const columns: ColumnDef<Partial<IBlog>>[] = [
 
           <Link
             href={{
-              pathname: `/dashboard/blog`,
+              pathname: `/dashboard/project`,
               query: {
                 action: 'preview',
                 _id,
@@ -157,7 +161,7 @@ export const columns: ColumnDef<Partial<IBlog>>[] = [
             </Button>
           </Link>
 
-          <DeleteBlogAlertDialog blogId={_id!} />
+          <DeletePortfolioAlertDialog portfolioId={_id!} />
         </div>
       );
     },
