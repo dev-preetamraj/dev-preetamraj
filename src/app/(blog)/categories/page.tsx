@@ -18,7 +18,7 @@ const CategoriesPage = async () => {
           categories.data.map((categorie) => (
             <div key={categorie._id}>
               <Link
-                href={`/categories/${categorie.name}`}
+                href={`/categories/${categorie.slug}`}
                 className='text-lg text-primary hover:underline'
               >
                 {categorie.name}

@@ -18,7 +18,7 @@ const TagsPage = async () => {
           tags.data.map((tag) => (
             <div key={tag._id}>
               <Link
-                href={`/tags/${tag.name}`}
+                href={`/tags/${tag.slug}`}
                 className='text-lg text-primary hover:underline'
               >
                 #{tag.name}

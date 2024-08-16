@@ -11,7 +11,7 @@ const skills = [
   {
     id: 1,
     title: 'Languages',
-    items: ['Python', 'C++', 'Javascript', 'Java'],
+    items: ['Python', 'C++', 'Typescript', 'Javascript', 'Java'],
   },
   {
     id: 2,
@@ -27,6 +27,7 @@ const skills = [
       'HTML5',
       'CSS3',
       'Tailwind CSS',
+      'Shadcn',
       'Material UI',
       'Bootstrap',
     ],
