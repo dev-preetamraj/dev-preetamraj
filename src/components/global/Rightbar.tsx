@@ -50,7 +50,7 @@ const Rightbar = async () => {
             {categories?.map((category) => (
               <Link
                 key={category._id}
-                href={`/categories/${category.name}`}
+                href={`/categories/${category.slug}`}
                 className={cn(
                   buttonVariants({
                     variant: 'ghost',

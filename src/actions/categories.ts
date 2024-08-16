@@ -21,6 +21,19 @@ export const fetchCategories = async (): Promise<
   }
 };
 
+export const fetchCategoryBySlug = async (
+  slug: string
+): Promise<IResponse<Partial<ICategory> | null>> => {
+  try {
+    await dbConnect();
+    const response = await Category.findOne({ slug });
+    return response_obj.response(response, 'Category fetched successfully');
+  } catch (error: any) {
+    console.log(error);
+    return response_obj.serverErrorResponse();
+  }
+};
+
 export const fetchTrendingCategories = async (): Promise<
   IResponse<Partial<ICategory>[] | null>
 > => {

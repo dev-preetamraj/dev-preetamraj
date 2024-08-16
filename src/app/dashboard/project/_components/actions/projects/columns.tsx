@@ -74,9 +74,9 @@ export const columns: ColumnDef<Partial<IPortfolio>>[] = [
     cell: ({ row }) => {
       const category: ICategory = row.getValue('category');
       return (
-        <Link href={`/categories/${category.name}`}>
+        <Link href={`/categories/${category?.name}`}>
           <Button variant='link' className='px-0'>
-            {category.name}
+            {category?.name}
           </Button>
         </Link>
       );

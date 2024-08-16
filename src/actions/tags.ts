@@ -21,6 +21,19 @@ export const fetchTags = async (): Promise<
   }
 };
 
+export const fetchTagBySlug = async (
+  slug: string
+): Promise<IResponse<Partial<ITag> | null>> => {
+  try {
+    await dbConnect();
+    const response = await Tag.findOne({ slug });
+    return response_obj.response(response, 'Tag fetched successfully');
+  } catch (error: any) {
+    console.log(error);
+    return response_obj.serverErrorResponse();
+  }
+};
+
 export const createTag = async (name: string): Promise<IResponse<null>> => {
   try {
     await dbConnect();
