@@ -3,9 +3,9 @@
 
 <p align="left"> <a href="https://twitter.com/preetam__raj" target="blank"><img src="https://img.shields.io/twitter/follow/preetam__raj?logo=twitter&style=for-the-badge" alt="preetam__raj" /></a> </p>
 
-- 👨‍💻 All of my projects are available at [https://preetamraj.vercel.app/](https://preetamraj.vercel.app/)
+- 👨‍💻 All of my projects are available at [https://preetamraj.dev](https://preetamraj.dev)
 
-- 📝 I regularly write articles on [https://preetamraj.vercel.app/](https://preetamraj.vercel.app/)
+- 📝 I regularly write articles on [https://preetamraj.dev](https://preetamraj.dev)
 
 - 💬 Ask me about **ReactJS, NextJS, Django, FastAPI**
 
