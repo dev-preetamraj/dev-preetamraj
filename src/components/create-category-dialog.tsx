@@ -1,7 +1,7 @@
 'use client';
 
-import { createCategory } from '@/actions/categories';
-import { useRouter } from 'next/navigation';
+import { createCategory } from '@/server-actions/category';
+import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from './ui/button';
@@ -20,23 +20,21 @@ import { Label } from './ui/label';
 type Props = {};
 
 const CreateCategoryDialog = (props: Props) => {
-  const router = useRouter();
   const [value, setValue] = useState('');
-  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
-  const handleClick = async () => {
-    setLoading(true);
-    const res = await createCategory(value);
-    setLoading(false);
-    setOpen(false);
-    if (res.success) {
-      toast.success(res.message);
-      router.refresh();
-    } else {
-      toast.error(res.message);
-    }
-  };
+  const { isPending, mutate } = useMutation({
+    mutationFn: async (name: string) => {
+      const res = await createCategory(name);
+      setOpen(false);
+      return res;
+    },
+    onSuccess: (data) => {
+      if (data.success) toast.success(data.message);
+      else toast.error(data.message);
+    },
+  });
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -60,10 +58,10 @@ const CreateCategoryDialog = (props: Props) => {
         <DialogFooter>
           <Button
             variant='outline'
-            onClick={handleClick}
+            onClick={() => mutate(value)}
             disabled={value === ''}
           >
-            {loading ? 'Creating...' : 'Create Category'}
+            {isPending ? 'Creating...' : 'Create Category'}
           </Button>
         </DialogFooter>
       </DialogContent>
