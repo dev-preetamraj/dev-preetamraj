@@ -1,5 +1,6 @@
 import { Toaster } from '@/components/ui/sonner';
 import Provider from '@/providers/Provider';
+import QueryClientProvider from '@/providers/QueryClientProvider';
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import '@/styles/globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
@@ -27,8 +28,10 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <Provider>
-              {children}
-              <Toaster />
+              <QueryClientProvider>
+                {children}
+                <Toaster />
+              </QueryClientProvider>
             </Provider>
           </ThemeProvider>
         </body>

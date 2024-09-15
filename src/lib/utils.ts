@@ -70,3 +70,31 @@ export class ServerResponse {
     };
   }
 }
+
+export class CustomResponse {
+  constructor() {}
+
+  success(data: any, message: string) {
+    return {
+      success: true,
+      data: data,
+      message: message,
+    };
+  }
+
+  error(message: string) {
+    return {
+      success: false,
+      data: null,
+      message: message,
+    };
+  }
+
+  internalServerError() {
+    return {
+      success: false,
+      data: null,
+      message: 'Something went wrong',
+    };
+  }
+}

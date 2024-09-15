@@ -1,4 +1,4 @@
-import { fetchCategoryBySlug } from '@/actions/categories';
+import { getCategoryBySlug } from '@/server-actions/category';
 import { Metadata, ResolvingMetadata } from 'next';
 import { FC } from 'react';
 
@@ -13,7 +13,7 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const slug = params.slug;
-  const { data: category } = await fetchCategoryBySlug(slug);
+  const { data: category } = await getCategoryBySlug(slug);
 
   // optionally access and extend (rather than replace) parent metadata
   const previousImages = (await parent).openGraph?.images || [];
@@ -27,7 +27,7 @@ export async function generateMetadata(
 }
 
 const CategoryDetailPage: FC<Props> = async ({ params: { slug } }) => {
-  const { data: category } = await fetchCategoryBySlug(slug);
+  const { data: category } = await getCategoryBySlug(slug);
   return <div>{category?.name}</div>;
 };
 

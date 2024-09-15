@@ -1,7 +1,7 @@
 'use client';
 
-import { createTag } from '@/actions/tags';
-import { useRouter } from 'next/navigation';
+import { createTag } from '@/server-actions/tag';
+import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from './ui/button';
@@ -20,23 +20,21 @@ import { Label } from './ui/label';
 type Props = {};
 
 const CreateTagsDialog = (props: Props) => {
-  const router = useRouter();
   const [value, setValue] = useState('');
-  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
-  const handleClick = async () => {
-    setLoading(true);
-    const res = await createTag(value);
-    setLoading(false);
-    setOpen(false);
-    if (res.success) {
-      toast.success(res.message);
-      router.refresh();
-    } else {
-      toast.error(res.message);
-    }
-  };
+  const { isPending, mutate } = useMutation({
+    mutationFn: async (name: string) => {
+      const res = await createTag(name);
+      setOpen(false);
+      return res;
+    },
+    onSuccess: ({ message, success }) => {
+      if (success) toast.success(message);
+      else toast.error(message);
+    },
+  });
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -60,10 +58,10 @@ const CreateTagsDialog = (props: Props) => {
         <DialogFooter>
           <Button
             variant='outline'
-            onClick={handleClick}
+            onClick={() => mutate(value)}
             disabled={value === ''}
           >
-            {loading ? 'Creating...' : 'Create Tag'}
+            {isPending ? 'Creating...' : 'Create Tag'}
           </Button>
         </DialogFooter>
       </DialogContent>
