@@ -6,7 +6,7 @@ import '@/styles/globals.css';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Home - Preetam Raj',
+  title: 'Preetam Raj',
   description: 'A fullstack web developer',
 };
 

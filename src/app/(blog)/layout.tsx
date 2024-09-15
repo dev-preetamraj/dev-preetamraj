@@ -3,12 +3,6 @@ import Rightbar from '@/components/global/Rightbar';
 import Sidebar from '@/components/global/Sidebar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import '@/styles/globals.css';
-import type { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Home - Preetam Raj',
-  description: 'A fullstack web developer',
-};
 
 export default function BlogLayout({
   children,
