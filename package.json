@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prettier": "prettier --write ."
+    "prettier": "prettier --write .",
+    "db:gen": "npx drizzle-kit generate",
+    "db:migrate": "npx drizzle-kit migrate"
   },
   "dependencies": {
     "@clerk/nextjs": "^5.1.5",
@@ -15,6 +17,7 @@
     "@heroicons/react": "^2.0.18",
     "@hookform/resolvers": "^3.6.0",
     "@monaco-editor/react": "^4.6.0",
+    "@neondatabase/serverless": "^0.9.5",
     "@portabletext/react": "^3.0.11",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.5",
@@ -37,6 +40,7 @@
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",
     "date-fns": "^3.6.0",
+    "drizzle-orm": "^0.33.0",
     "highlight.js": "^11.9.0",
     "lucide-react": "^0.303.0",
     "markdown-it": "^14.1.0",
@@ -63,6 +67,7 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10",
+    "drizzle-kit": "^0.24.2",
     "eslint": "^8",
     "eslint-config-next": "^14.2.4",
     "postcss": "^8",
