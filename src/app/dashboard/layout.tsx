@@ -1,13 +1,7 @@
 import { currentUser } from '@clerk/nextjs/server';
-import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { ReactNode } from 'react';
 import Sidebar from './_components/sidebar';
-
-export const metadata: Metadata = {
-  title: 'Dashboard - Preetam Raj',
-  description: 'A fullstack web developer',
-};
 
 type Props = { children: ReactNode };
 
