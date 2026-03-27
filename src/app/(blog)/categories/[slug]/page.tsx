@@ -8,7 +8,10 @@ type Props = {
   }>;
 };
 
-export async function generateMetadata(props: Props, parent: ResolvingMetadata): Promise<Metadata> {
+export async function generateMetadata(
+  props: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
   const params = await props.params;
   const slug = params.slug;
   const { data: category } = await fetchCategoryBySlug(slug);
@@ -24,12 +27,10 @@ export async function generateMetadata(props: Props, parent: ResolvingMetadata):
   };
 }
 
-const CategoryDetailPage: FC<Props> = async props => {
+const CategoryDetailPage: FC<Props> = async (props) => {
   const params = await props.params;
 
-  const {
-    slug
-  } = params;
+  const { slug } = params;
 
   const { data: category } = await fetchCategoryBySlug(slug);
   return <div>{category?.name}</div>;
