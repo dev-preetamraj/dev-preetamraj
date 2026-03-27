@@ -7,7 +7,10 @@ type Props = {
   }>;
 };
 
-export async function generateMetadata(props: Props, parent: ResolvingMetadata): Promise<Metadata> {
+export async function generateMetadata(
+  props: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
   const params = await props.params;
   const slug = params.slug;
   const { data: tag } = await fetchTagBySlug(slug);
@@ -26,9 +29,7 @@ export async function generateMetadata(props: Props, parent: ResolvingMetadata):
 const TagBlogListPage = async (props: Props) => {
   const params = await props.params;
 
-  const {
-    slug
-  } = params;
+  const { slug } = params;
 
   const { data: tag } = await fetchTagBySlug(slug);
   return (

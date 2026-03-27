@@ -13,7 +13,9 @@ const CallbackPage = async (props: Props) => {
 
   const redirectUrl = searchParams['redirect'] as string;
 
-  await (await clerkClient()).users.updateUserMetadata(user.id, {
+  await (
+    await clerkClient()
+  ).users.updateUserMetadata(user.id, {
     privateMetadata: {
       role:
         user.emailAddresses[0].emailAddress === process.env.ADMIN_EMAIL
