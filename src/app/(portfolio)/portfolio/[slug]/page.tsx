@@ -10,7 +10,10 @@ type Props = {
   }>;
 };
 
-export async function generateMetadata(props: Props, parent: ResolvingMetadata): Promise<Metadata> {
+export async function generateMetadata(
+  props: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
   const params = await props.params;
   const slug = params.slug;
   const { data: project } = await getPortfolioBySlug(slug);
@@ -26,12 +29,10 @@ export async function generateMetadata(props: Props, parent: ResolvingMetadata):
   };
 }
 
-const ProjectDetailsPage: FC<Props> = async props => {
+const ProjectDetailsPage: FC<Props> = async (props) => {
   const params = await props.params;
 
-  const {
-    slug
-  } = params;
+  const { slug } = params;
 
   const { data: project } = await getPortfolioBySlug(slug);
 

@@ -11,7 +11,10 @@ type Props = {
   }>;
 };
 
-export async function generateMetadata(props: Props, parent: ResolvingMetadata): Promise<Metadata> {
+export async function generateMetadata(
+  props: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
   const params = await props.params;
   const slug = params.slug;
   const { data: blog } = await getBlogBySlug(slug);
@@ -27,12 +30,10 @@ export async function generateMetadata(props: Props, parent: ResolvingMetadata):
   };
 }
 
-const BlogPost: FC<Props> = async props => {
+const BlogPost: FC<Props> = async (props) => {
   const params = await props.params;
 
-  const {
-    slug
-  } = params;
+  const { slug } = params;
 
   const user = await currentUser();
   const { data: blog } = await getBlogBySlug(slug);
