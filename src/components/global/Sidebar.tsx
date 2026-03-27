@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/tooltip';
 import { RootState } from '@/features/store';
 import { cn } from '@/lib/utils';
-import { SignedIn, SignedOut, UserButton, useUser } from '@clerk/nextjs';
+import { UserButton, useUser } from '@clerk/nextjs';
 import {
   DashboardIcon,
   EnvelopeClosedIcon,
@@ -81,7 +81,7 @@ const Sidebar = () => {
         <Link href='mailto:dev.preetamraj@gmail.com'>
           <EnvelopeClosedIcon className='h-6 w-6' />
         </Link>
-        <SignedOut>
+        {!user ? (
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -94,15 +94,16 @@ const Sidebar = () => {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-        </SignedOut>
-        <SignedIn>
-          {role === 'admin' && (
-            <Link href='/dashboard'>
-              <DashboardIcon className='h-6 w-6 cursor-pointer' />
-            </Link>
-          )}
-          <UserButton />
-        </SignedIn>
+        ) : (
+          <>
+            {role === 'admin' && (
+              <Link href='/dashboard'>
+                <DashboardIcon className='h-6 w-6 cursor-pointer' />
+              </Link>
+            )}
+            <UserButton />
+          </>
+        )}
       </div>
     </div>
   );

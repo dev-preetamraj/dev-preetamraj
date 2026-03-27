@@ -3,16 +3,17 @@ import { clerkClient, currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 
 type Props = {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-const CallbackPage = async ({ searchParams }: Props) => {
+const CallbackPage = async (props: Props) => {
+  const searchParams = await props.searchParams;
   const user = await currentUser();
   if (!user) return redirect('/auth/login');
 
   const redirectUrl = searchParams['redirect'] as string;
 
-  await clerkClient.users.updateUserMetadata(user.id, {
+  await (await clerkClient()).users.updateUserMetadata(user.id, {
     privateMetadata: {
       role:
         user.emailAddresses[0].emailAddress === process.env.ADMIN_EMAIL

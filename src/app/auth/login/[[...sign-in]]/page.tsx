@@ -1,10 +1,11 @@
 import { SignIn } from '@clerk/nextjs';
 
 type Props = {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export default function Page({ searchParams }: Props) {
+export default async function Page(props: Props) {
+  const searchParams = await props.searchParams;
   const redirectUrl = searchParams['redirect'];
 
   if (redirectUrl)

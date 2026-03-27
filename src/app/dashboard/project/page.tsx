@@ -3,10 +3,11 @@ import PreviewProject from './_components/actions/preview-project';
 import Projects from './_components/actions/projects';
 
 type Props = {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-const Page = ({ searchParams }: Props) => {
+const Page = async (props: Props) => {
+  const searchParams = await props.searchParams;
   if (!searchParams) return <Projects />;
 
   const action = searchParams['action'];
