@@ -6,15 +6,13 @@ import { Metadata, ResolvingMetadata } from 'next';
 import { FC } from 'react';
 
 type Props = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 };
 
-export async function generateMetadata(
-  { params }: Props,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata(props: Props, parent: ResolvingMetadata): Promise<Metadata> {
+  const params = await props.params;
   const slug = params.slug;
   const { data: blog } = await getBlogBySlug(slug);
 
@@ -29,7 +27,13 @@ export async function generateMetadata(
   };
 }
 
-const BlogPost: FC<Props> = async ({ params: { slug } }) => {
+const BlogPost: FC<Props> = async props => {
+  const params = await props.params;
+
+  const {
+    slug
+  } = params;
+
   const user = await currentUser();
   const { data: blog } = await getBlogBySlug(slug);
 

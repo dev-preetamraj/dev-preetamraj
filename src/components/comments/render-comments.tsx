@@ -1,7 +1,7 @@
 'use client';
 
 import { IBlog } from '@/models/blog';
-import { SignedIn, SignedOut, useUser } from '@clerk/nextjs';
+import { useUser } from '@clerk/nextjs';
 import { formatDistanceToNow } from 'date-fns';
 import { AlertTriangle } from 'lucide-react';
 import Image from 'next/image';
@@ -36,12 +36,11 @@ const RenderComments = ({ userId, blog, portfolioId }: Props) => {
     <div className='pb-12 space-y-4'>
       <div className='space-y-4'>
         <h1 className='text-4xl font-semibold'>Leave a comment</h1>
-        <SignedIn>
+        {user ? (
           <p>
             Logged in as <span className='text-primary'>{user?.fullName}</span>
           </p>
-        </SignedIn>
-        <SignedOut>
+        ) : (
           <Link
             href={{
               pathname: '/auth/login',
@@ -54,7 +53,7 @@ const RenderComments = ({ userId, blog, portfolioId }: Props) => {
               Login to comment
             </Button>
           </Link>
-        </SignedOut>
+        )}
       </div>
       <CommentForm
         userId={userId}
@@ -84,16 +83,14 @@ const RenderComments = ({ userId, blog, portfolioId }: Props) => {
                         {formatDateToNow(comment.createdAt)}
                       </span>
                     </div>
-                    <SignedIn>
-                      {comment.author.userId === userId && (
-                        <div className='flex items-center space-x-4'>
-                          <CommentsActionMenu
-                            commentId={comment._id}
-                            userId={comment.author.userId}
-                          />
-                        </div>
-                      )}
-                    </SignedIn>
+                    {user && comment.author.userId === userId && (
+                      <div className='flex items-center space-x-4'>
+                        <CommentsActionMenu
+                          commentId={comment._id}
+                          userId={comment.author.userId}
+                        />
+                      </div>
+                    )}
                   </div>
                   <p className='text-foreground/75'>{comment.content}</p>
                 </div>

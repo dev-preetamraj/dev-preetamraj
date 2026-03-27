@@ -5,15 +5,13 @@ import RenderPortfolio from '@/components/portfolio/render-portfolio';
 import { Metadata, ResolvingMetadata } from 'next';
 
 type Props = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 };
 
-export async function generateMetadata(
-  { params }: Props,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata(props: Props, parent: ResolvingMetadata): Promise<Metadata> {
+  const params = await props.params;
   const slug = params.slug;
   const { data: project } = await getPortfolioBySlug(slug);
 
@@ -28,7 +26,13 @@ export async function generateMetadata(
   };
 }
 
-const ProjectDetailsPage: FC<Props> = async ({ params: { slug } }) => {
+const ProjectDetailsPage: FC<Props> = async props => {
+  const params = await props.params;
+
+  const {
+    slug
+  } = params;
+
   const { data: project } = await getPortfolioBySlug(slug);
 
   return <RenderPortfolio project={project} />;

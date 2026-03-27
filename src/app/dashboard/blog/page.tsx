@@ -3,10 +3,11 @@ import EditBlog from './_components/actions/edit-blog';
 import PreviewBlog from './_components/actions/preview-blog';
 
 type Props = {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-const Page = ({ searchParams }: Props) => {
+const Page = async (props: Props) => {
+  const searchParams = await props.searchParams;
   if (!searchParams) return <Blogs />;
 
   const action = searchParams['action'];
