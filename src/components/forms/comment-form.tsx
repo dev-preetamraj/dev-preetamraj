@@ -29,11 +29,10 @@ const formSchema = z.object({
 
 type Props = {
   userId?: string;
-  blogId?: string;
-  portfolioId?: string;
+  blogSlug: string;
 };
 
-const CommentForm = ({ userId, blogId, portfolioId }: Props) => {
+const CommentForm = ({ userId, blogSlug }: Props) => {
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -48,13 +47,11 @@ const CommentForm = ({ userId, blogId, portfolioId }: Props) => {
       return;
     }
 
-    if (blogId) {
-      const res = await createCommentForBlog(userId, values.content, blogId);
-      if (res.success) {
-        toast.success(res.message);
-        form.reset();
-        router.refresh();
-      }
+    const res = await createCommentForBlog(userId, values.content, blogSlug);
+    if (res.success) {
+      toast.success(res.message);
+      form.reset();
+      router.refresh();
     }
   };
 

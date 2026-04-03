@@ -1,11 +1,18 @@
-import CategoryNav from './_components/category-nav';
+import Link from 'next/link';
 
 const Page = () => {
   return (
-    <div>
-      <CategoryNav />
-
-      <div className='p-4 lg:p-6'>Category</div>
+    <div className='flex flex-col items-center justify-center min-h-[50vh] space-y-4'>
+      <h1 className='text-2xl font-semibold'>Category Management</h1>
+      <p className='text-muted-foreground'>
+        Categories are now managed in Sanity Studio.
+      </p>
+      <Link
+        href='/studio'
+        className='px-6 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90'
+      >
+        Open Sanity Studio
+      </Link>
     </div>
   );
 };

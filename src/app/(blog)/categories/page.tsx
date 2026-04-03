@@ -14,14 +14,14 @@ const CategoriesPage = async () => {
     <div className='w-full flex flex-col space-y-4'>
       <h1 className='text-2xl'>Recent Categories</h1>
       <div className='flex flex-wrap items-center space-x-4'>
-        {categories.data &&
-          categories.data.map((categorie) => (
-            <div key={categorie._id}>
+        {categories &&
+          categories.map((category) => (
+            <div key={category._id}>
               <Link
-                href={`/categories/${categorie.slug}`}
+                href={`/categories/${category.slug?.current}`}
                 className='text-lg text-primary hover:underline'
               >
-                {categorie.name}
+                {category.name}
               </Link>
             </div>
           ))}

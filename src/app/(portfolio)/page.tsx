@@ -20,7 +20,7 @@ const HomePage = async () => {
 
   return (
     <div className='space-y-2'>
-      <BlogList blogs={blogs.data} />
+      <BlogList blogs={blogs} />
     </div>
   );
 };

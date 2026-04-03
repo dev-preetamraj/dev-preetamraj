@@ -14,11 +14,11 @@ const TagsPage = async () => {
     <div className='w-full flex flex-col space-y-4'>
       <h1 className='text-2xl'>Recent Tags</h1>
       <div className='flex flex-wrap items-center space-x-4'>
-        {tags.data &&
-          tags.data.map((tag) => (
+        {tags &&
+          tags.map((tag) => (
             <div key={tag._id}>
               <Link
-                href={`/tags/${tag.slug}`}
+                href={`/tags/${tag.slug?.current}`}
                 className='text-lg text-primary hover:underline'
               >
                 #{tag.name}

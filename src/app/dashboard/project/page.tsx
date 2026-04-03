@@ -1,29 +1,20 @@
-import EditProject from './_components/actions/edit-project';
-import PreviewProject from './_components/actions/preview-project';
-import Projects from './_components/actions/projects';
+import Link from 'next/link';
 
-type Props = {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-};
-
-const Page = async (props: Props) => {
-  const searchParams = await props.searchParams;
-  if (!searchParams) return <Projects />;
-
-  const action = searchParams['action'];
-  const _id = searchParams['_id'] as string;
-  const keyword = searchParams['keyword'] as string;
-
-  switch (action) {
-    case 'edit':
-      if (!_id) return null;
-      return <EditProject _id={_id} />;
-    case 'preview':
-      if (!_id) return null;
-      return <PreviewProject _id={_id} />;
-    default:
-      return <Projects keyword={keyword} />;
-  }
+const Page = () => {
+  return (
+    <div className='flex flex-col items-center justify-center min-h-[50vh] space-y-4'>
+      <h1 className='text-2xl font-semibold'>Project Management</h1>
+      <p className='text-muted-foreground'>
+        Portfolio projects are now managed in Sanity Studio.
+      </p>
+      <Link
+        href='/studio'
+        className='px-6 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90'
+      >
+        Open Sanity Studio
+      </Link>
+    </div>
+  );
 };
 
 export default Page;
