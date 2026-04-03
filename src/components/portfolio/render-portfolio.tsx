@@ -1,9 +1,10 @@
-import { IPortfolio } from '@/models/portfolio';
+import { urlFor } from '@/sanity/lib/image';
 import { GitHubLogoIcon } from '@radix-ui/react-icons';
 import { GithubIcon, LinkIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import RenderMarkdown from '../global/render-markdown';
+import type { PortfolioBySlugQueryResult } from '../../../sanity.types';
+import RenderPortableText from '../global/render-portable-text';
 import {
   Tooltip,
   TooltipContent,
@@ -11,11 +12,18 @@ import {
   TooltipTrigger,
 } from '../ui/tooltip';
 
+const FALLBACK_IMAGE =
+  'https://images.unsplash.com/photo-1549558549-415fe4c37b60';
+
 type Props = {
-  project: Partial<IPortfolio> | null;
+  project: NonNullable<PortfolioBySlugQueryResult>;
 };
 
 const RenderPortfolio = ({ project }: Props) => {
+  const imageUrl = project.featuredImage?.asset
+    ? urlFor(project.featuredImage).width(1200).url()
+    : FALLBACK_IMAGE;
+
   return (
     <div className='w-full'>
       <section className='space-y-2 border border-primary/10 mb-10'>
@@ -23,8 +31,10 @@ const RenderPortfolio = ({ project }: Props) => {
           <div className='absolute top-0 w-full h-full opacity-10 blur-sm'>
             <Image
               className='object-cover object-center mx-auto'
-              src={project?.featuredImage!}
-              alt={project?.title!}
+              src={imageUrl}
+              alt={
+                project.featuredImage?.alt || project?.title || 'Featured Image'
+              }
               fill
             />
           </div>
@@ -36,7 +46,7 @@ const RenderPortfolio = ({ project }: Props) => {
                   {project?.title}
                 </h1>
                 <p>
-                  {new Date(project?.createdAt ?? '').toLocaleDateString(
+                  {new Date(project?._createdAt ?? '').toLocaleDateString(
                     'en-US',
                     {
                       timeZone: 'Asia/Kolkata',
@@ -58,7 +68,7 @@ const RenderPortfolio = ({ project }: Props) => {
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Link href={project?.githubUrl ?? '#'} target='_blank'>
+                        <Link href={project.githubUrl} target='_blank'>
                           <GitHubLogoIcon className='h-4 w-4' />
                         </Link>
                       </TooltipTrigger>
@@ -73,10 +83,7 @@ const RenderPortfolio = ({ project }: Props) => {
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Link
-                          href={project?.frontendGithubUrl ?? '#'}
-                          target='_blank'
-                        >
+                        <Link href={project.frontendGithubUrl} target='_blank'>
                           <GithubIcon className='h-4 w-4' />
                         </Link>
                       </TooltipTrigger>
@@ -90,7 +97,7 @@ const RenderPortfolio = ({ project }: Props) => {
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Link href={project?.liveUrl ?? '#'} target='_blank'>
+                        <Link href={project.liveUrl} target='_blank'>
                           <LinkIcon className='h-4 w-4' />
                         </Link>
                       </TooltipTrigger>
@@ -105,7 +112,7 @@ const RenderPortfolio = ({ project }: Props) => {
           </section>
         </div>
       </section>
-      <RenderMarkdown content={project?.content ?? ''} />
+      {project.content && <RenderPortableText value={project.content} />}
     </div>
   );
 };

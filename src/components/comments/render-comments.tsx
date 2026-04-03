@@ -1,6 +1,6 @@
 'use client';
 
-import { IBlog } from '@/models/blog';
+import { IComment } from '@/models/comment';
 import { useUser } from '@clerk/nextjs';
 import { formatDistanceToNow } from 'date-fns';
 import { AlertTriangle } from 'lucide-react';
@@ -19,8 +19,8 @@ import CommentsActionMenu from './comments-action-menu';
 
 type Props = {
   userId?: string;
-  blog: Partial<IBlog>;
-  portfolioId?: string;
+  blogSlug: string;
+  comments: Partial<IComment>[];
 };
 
 function formatDateToNow(dateString: Date): string {
@@ -28,7 +28,7 @@ function formatDateToNow(dateString: Date): string {
   return formatDistanceToNow(date, { addSuffix: true });
 }
 
-const RenderComments = ({ userId, blog, portfolioId }: Props) => {
+const RenderComments = ({ userId, blogSlug, comments }: Props) => {
   const pathname = usePathname();
   const { user } = useUser();
 
@@ -55,20 +55,16 @@ const RenderComments = ({ userId, blog, portfolioId }: Props) => {
           </Link>
         )}
       </div>
-      <CommentForm
-        userId={userId}
-        blogId={blog?._id}
-        portfolioId={portfolioId}
-      />
+      <CommentForm userId={userId} blogSlug={blogSlug} />
 
       <div className='py-20 space-y-6'>
-        {blog.comments?.map((comment) => {
+        {comments?.map((comment) => {
           if (comment.isApproved) {
             return (
               <div key={comment._id} className='flex space-x-4'>
                 <Image
-                  alt={comment.author.name ?? 'Image'}
-                  src={comment.author.imageUrl ?? '/logo.png'}
+                  alt={comment.author?.name ?? 'Image'}
+                  src={comment.author?.imageUrl ?? '/logo.png'}
                   height={50}
                   width={50}
                   className='w-10 h-10 rounded-full'
@@ -77,17 +73,17 @@ const RenderComments = ({ userId, blog, portfolioId }: Props) => {
                   <div className='flex items-center justify-between'>
                     <div className='flex items-center space-x-2'>
                       <p className='text-lg font-semibold'>
-                        {comment.author.name}
+                        {comment.author?.name}
                       </p>
                       <span className='text-sm text-foreground/75'>
-                        {formatDateToNow(comment.createdAt)}
+                        {comment.createdAt && formatDateToNow(comment.createdAt)}
                       </span>
                     </div>
-                    {user && comment.author.userId === userId && (
+                    {user && comment.author?.userId === userId && (
                       <div className='flex items-center space-x-4'>
                         <CommentsActionMenu
-                          commentId={comment._id}
-                          userId={comment.author.userId}
+                          commentId={comment._id!}
+                          userId={comment.author!.userId}
                         />
                       </div>
                     )}
@@ -96,12 +92,15 @@ const RenderComments = ({ userId, blog, portfolioId }: Props) => {
                 </div>
               </div>
             );
-          } else if (!comment.isApproved && comment.author.userId === userId) {
+          } else if (
+            !comment.isApproved &&
+            comment.author?.userId === userId
+          ) {
             return (
               <div key={comment._id} className='flex space-x-4'>
                 <Image
-                  alt={comment.author.name ?? 'Image'}
-                  src={comment.author.imageUrl ?? '/logo.png'}
+                  alt={comment.author?.name ?? 'Image'}
+                  src={comment.author?.imageUrl ?? '/logo.png'}
                   height={50}
                   width={50}
                   className='w-10 h-10 rounded-full'
@@ -110,10 +109,10 @@ const RenderComments = ({ userId, blog, portfolioId }: Props) => {
                   <div className='flex items-center justify-between'>
                     <div className='flex items-center space-x-2'>
                       <p className='text-lg font-semibold'>
-                        {comment.author.name}
+                        {comment.author?.name}
                       </p>
                       <span className='text-sm text-foreground/75'>
-                        {formatDateToNow(comment.createdAt)}
+                        {comment.createdAt && formatDateToNow(comment.createdAt)}
                       </span>
                     </div>
                     <div className='flex items-center space-x-4'>
@@ -128,8 +127,8 @@ const RenderComments = ({ userId, blog, portfolioId }: Props) => {
                         </Tooltip>
                       </TooltipProvider>
                       <CommentsActionMenu
-                        commentId={comment._id}
-                        userId={comment.author.userId}
+                        commentId={comment._id!}
+                        userId={comment.author!.userId}
                       />
                     </div>
                   </div>

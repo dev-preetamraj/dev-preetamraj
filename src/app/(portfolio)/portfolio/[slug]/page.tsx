@@ -16,9 +16,8 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const params = await props.params;
   const slug = params.slug;
-  const { data: project } = await getPortfolioBySlug(slug);
+  const project = await getPortfolioBySlug(slug);
 
-  // optionally access and extend (rather than replace) parent metadata
   const previousImages = (await parent).openGraph?.images || [];
 
   return {
@@ -31,10 +30,11 @@ export async function generateMetadata(
 
 const ProjectDetailsPage: FC<Props> = async (props) => {
   const params = await props.params;
-
   const { slug } = params;
 
-  const { data: project } = await getPortfolioBySlug(slug);
+  const project = await getPortfolioBySlug(slug);
+
+  if (!project) return null;
 
   return <RenderPortfolio project={project} />;
 };

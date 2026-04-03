@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 const BlogPage = async () => {
   const blogs = await fetchBlogs();
 
-  return <BlogList blogs={blogs.data} />;
+  return <BlogList blogs={blogs} />;
 };
 
 export default BlogPage;
