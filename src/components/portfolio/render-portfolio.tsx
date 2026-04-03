@@ -36,6 +36,7 @@ const RenderPortfolio = ({ project }: Props) => {
                 project.featuredImage?.alt || project?.title || 'Featured Image'
               }
               fill
+              sizes='(max-width: 768px) 100vw, calc(100vw - 350px)'
             />
           </div>
 
