@@ -1,5 +1,4 @@
 import { urlFor } from '@/sanity/lib/image';
-import { currentUser } from '@clerk/nextjs/server';
 import { TagIcon } from '@heroicons/react/24/outline';
 import { CalendarIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
@@ -16,9 +15,7 @@ type Props = {
   blog: BlogsQueryResult[number];
 };
 
-const BlogCard: FC<Props> = async ({ blog }) => {
-  const user = await currentUser();
-  const role = user?.privateMetadata.role;
+const BlogCard: FC<Props> = ({ blog }) => {
   const imageUrl = blog.featuredImage?.asset
     ? urlFor(blog.featuredImage).width(400).height(400).url()
     : FALLBACK_IMAGE;

@@ -26,6 +26,8 @@ const RenderBlog = ({ blog }: Props) => {
               src={imageUrl}
               alt={blog.featuredImage?.alt || blog?.title || 'Featured Image'}
               fill
+              sizes='(max-width: 768px) 100vw, calc(100vw - 350px)'
+              priority
             />
           </div>
 

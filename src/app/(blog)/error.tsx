@@ -1,7 +1,7 @@
 'use client';
 
 const BlogError = ({
-  error,
+  error: _error,
   reset,
 }: {
   error: Error & { digest?: string };

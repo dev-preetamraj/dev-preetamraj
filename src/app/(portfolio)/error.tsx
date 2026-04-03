@@ -1,7 +1,7 @@
 'use client';
 
 const PortfolioError = ({
-  error,
+  error: _error,
   reset,
 }: {
   error: Error & { digest?: string };
