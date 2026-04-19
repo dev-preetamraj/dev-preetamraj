@@ -43,13 +43,29 @@ export const createURL = (array: string[], index: number) => {
   return url;
 };
 
+export function serializeMongo<T>(value: T): T {
+  if (value === null || value === undefined) return value;
+  if (value instanceof Date) return value;
+  if (Array.isArray(value)) return value.map(serializeMongo) as unknown as T;
+  if (typeof value === 'object') {
+    const v = value as any;
+    if (v._bsontype === 'ObjectId' || v?.constructor?.name === 'ObjectId') {
+      return v.toString() as unknown as T;
+    }
+    const out: Record<string, unknown> = {};
+    for (const [k, val] of Object.entries(v)) out[k] = serializeMongo(val);
+    return out as T;
+  }
+  return value;
+}
+
 export class ServerResponse {
   constructor() {}
 
   response(data: any, message: string) {
     return {
       success: true,
-      data: data,
+      data: serializeMongo(data),
       message: message,
     };
   }

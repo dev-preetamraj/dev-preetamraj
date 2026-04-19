@@ -24,7 +24,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Sheet, SheetContent } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { IBlog } from '@/models/blog';
@@ -112,6 +112,7 @@ const BlogMetadata = ({ blog, categories, content }: Props) => {
   return (
     <Sheet open modal={false}>
       <SheetContent className='w-[400px] p-0 border-border'>
+        <SheetTitle className='sr-only'>Blog metadata</SheetTitle>
         <div className='space-4-4'>
           <div className='h-14 lg:h-[60px] px-4 lg:px-6 bg-muted/40 border-b border-border flex items-center justify-between'>
             <Button
