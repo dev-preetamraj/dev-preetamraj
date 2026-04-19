@@ -3,22 +3,16 @@
 import dbConnect from '@/lib/dbConnect';
 import { IResponse } from '@/lib/types';
 import { ServerResponse } from '@/lib/utils';
-import Blog from '@/models/blog';
 import Comment, { IComment } from '@/models/comment';
 import CustomUser from '@/models/user';
-import { User, currentUser } from '@clerk/nextjs/server';
-
-export type CommentType = {
-  comment: Partial<IComment>;
-  user: User;
-};
+import { currentUser } from '@clerk/nextjs/server';
 
 const response_obj = new ServerResponse();
 
 export const createCommentForBlog = async (
   userId: string,
   content: string,
-  blogId: string
+  blogSlug: string
 ): Promise<IResponse<Partial<IComment> | null>> => {
   try {
     await dbConnect();
@@ -29,18 +23,31 @@ export const createCommentForBlog = async (
     const comment = new Comment({
       author: dbUser._id,
       content,
+      blogSlug,
     });
 
     await comment.save();
 
-    const blog = await Blog.findById(blogId);
-    if (!blog) return response_obj.errorResponse('Blog not found');
-
-    blog.comments.push(comment);
-    await blog.save();
-
     return response_obj.response(comment, 'Comment created successfully');
-  } catch (error: any) {
+  } catch (error: unknown) {
+    console.log(error);
+    return response_obj.serverErrorResponse();
+  }
+};
+
+export const fetchCommentsByBlogSlug = async (
+  blogSlug: string
+): Promise<IResponse<Partial<IComment>[] | null>> => {
+  try {
+    await dbConnect();
+
+    const comments = await Comment.find({ blogSlug })
+      .populate('author')
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return response_obj.response(comments, 'Comments fetched successfully');
+  } catch (error: unknown) {
     console.log(error);
     return response_obj.serverErrorResponse();
   }
@@ -59,7 +66,7 @@ export const deleteComment = async (
 
     await Comment.findOneAndDelete({ _id: commentId });
     return response_obj.response(null, 'Comment deleted successfully');
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.log(error);
     return response_obj.serverErrorResponse();
   }

@@ -1,20 +1,25 @@
-import { IBlog } from '@/models/blog';
-import { currentUser } from '@clerk/nextjs/server';
+import { urlFor } from '@/sanity/lib/image';
 import { TagIcon } from '@heroicons/react/24/outline';
 import { CalendarIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FC } from 'react';
+import type { BlogsQueryResult } from '../../../sanity.types';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Separator } from '../ui/separator';
 
+const FALLBACK_IMAGE =
+  'https://images.unsplash.com/photo-1549558549-415fe4c37b60';
+
 type Props = {
-  blog: Partial<IBlog>;
+  blog: BlogsQueryResult[number];
 };
 
-const BlogCard: FC<Props> = async ({ blog }) => {
-  const user = await currentUser();
-  const role = user?.privateMetadata.role;
+const BlogCard: FC<Props> = ({ blog }) => {
+  const imageUrl = blog.featuredImage?.asset
+    ? urlFor(blog.featuredImage).width(400).height(400).url()
+    : FALLBACK_IMAGE;
+
   return (
     <div className='flex items-center w-full space-x-4 border-b border-border pb-4'>
       <div className='space-y-2 w-full'>
@@ -32,7 +37,7 @@ const BlogCard: FC<Props> = async ({ blog }) => {
         </div>
         <Link
           href={{
-            pathname: `/blog/${blog?.slug}`,
+            pathname: `/blog/${blog?.slug?.current}`,
           }}
           className='text-lg font-bold text-primary line-clamp-2'
         >
@@ -46,7 +51,7 @@ const BlogCard: FC<Props> = async ({ blog }) => {
           <div className='flex items-center space-x-2'>
             <CalendarIcon className='h-4 w-4' />
             <span className='text-sm font-thin'>
-              {new Date(blog?.createdAt ?? '').toLocaleDateString('en-IN', {
+              {new Date(blog?._createdAt ?? '').toLocaleDateString('en-IN', {
                 timeZone: 'Asia/Kolkata',
                 month: 'short',
                 day: 'numeric',
@@ -62,8 +67,8 @@ const BlogCard: FC<Props> = async ({ blog }) => {
         </div>
       </div>
       <Image
-        src={blog.featuredImage!}
-        alt={blog.title!}
+        src={imageUrl}
+        alt={blog.featuredImage?.alt || blog.title || 'Blog image'}
         height={400}
         width={400}
         className='aspect-square object-cover h-28 w-28 sm:aspect-video sm:w-48 sm:h-auto md:aspect-square md:h-28 md:w-28 lg:aspect-video lg:w-80 lg:h-auto xl:aspect-square xl:h-28 xl:w-28 2xl:aspect-video 2xl:w-80 2xl:h-auto'

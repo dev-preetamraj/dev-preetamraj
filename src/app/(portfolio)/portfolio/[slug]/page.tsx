@@ -10,12 +10,14 @@ type Props = {
   }>;
 };
 
-export async function generateMetadata(props: Props, parent: ResolvingMetadata): Promise<Metadata> {
+export async function generateMetadata(
+  props: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
   const params = await props.params;
   const slug = params.slug;
-  const { data: project } = await getPortfolioBySlug(slug);
+  const project = await getPortfolioBySlug(slug);
 
-  // optionally access and extend (rather than replace) parent metadata
   const previousImages = (await parent).openGraph?.images || [];
 
   return {
@@ -26,14 +28,13 @@ export async function generateMetadata(props: Props, parent: ResolvingMetadata):
   };
 }
 
-const ProjectDetailsPage: FC<Props> = async props => {
+const ProjectDetailsPage: FC<Props> = async (props) => {
   const params = await props.params;
+  const { slug } = params;
 
-  const {
-    slug
-  } = params;
+  const project = await getPortfolioBySlug(slug);
 
-  const { data: project } = await getPortfolioBySlug(slug);
+  if (!project) return null;
 
   return <RenderPortfolio project={project} />;
 };

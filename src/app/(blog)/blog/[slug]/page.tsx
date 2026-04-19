@@ -1,4 +1,5 @@
 import { getBlogBySlug } from '@/actions/blog';
+import { fetchCommentsByBlogSlug } from '@/actions/comment';
 import RenderBlog from '@/components/blog/render-blog';
 import RenderComments from '@/components/comments/render-comments';
 import { currentUser } from '@clerk/nextjs/server';
@@ -11,12 +12,14 @@ type Props = {
   }>;
 };
 
-export async function generateMetadata(props: Props, parent: ResolvingMetadata): Promise<Metadata> {
+export async function generateMetadata(
+  props: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
   const params = await props.params;
   const slug = params.slug;
-  const { data: blog } = await getBlogBySlug(slug);
+  const blog = await getBlogBySlug(slug);
 
-  // optionally access and extend (rather than replace) parent metadata
   const previousImages = (await parent).openGraph?.images || [];
 
   return {
@@ -27,22 +30,26 @@ export async function generateMetadata(props: Props, parent: ResolvingMetadata):
   };
 }
 
-const BlogPost: FC<Props> = async props => {
+const BlogPost: FC<Props> = async (props) => {
   const params = await props.params;
+  const { slug } = params;
 
-  const {
-    slug
-  } = params;
+  const [user, blog, commentsResponse] = await Promise.all([
+    currentUser(),
+    getBlogBySlug(slug),
+    fetchCommentsByBlogSlug(slug),
+  ]);
 
-  const user = await currentUser();
-  const { data: blog } = await getBlogBySlug(slug);
-
-  if (!blog) return;
+  if (!blog) return null;
 
   return (
     <div className='space-y-12'>
       <RenderBlog blog={blog} />
-      <RenderComments userId={user?.id} blog={blog} />
+      <RenderComments
+        userId={user?.id}
+        blogSlug={slug}
+        comments={commentsResponse.data ?? []}
+      />
     </div>
   );
 };

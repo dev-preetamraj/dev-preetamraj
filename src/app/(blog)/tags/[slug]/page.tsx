@@ -7,12 +7,14 @@ type Props = {
   }>;
 };
 
-export async function generateMetadata(props: Props, parent: ResolvingMetadata): Promise<Metadata> {
+export async function generateMetadata(
+  props: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
   const params = await props.params;
   const slug = params.slug;
-  const { data: tag } = await fetchTagBySlug(slug);
+  const tag = await fetchTagBySlug(slug);
 
-  // optionally access and extend (rather than replace) parent metadata
   const previousImages = (await parent).openGraph?.images || [];
 
   return {
@@ -25,12 +27,9 @@ export async function generateMetadata(props: Props, parent: ResolvingMetadata):
 
 const TagBlogListPage = async (props: Props) => {
   const params = await props.params;
+  const { slug } = params;
 
-  const {
-    slug
-  } = params;
-
-  const { data: tag } = await fetchTagBySlug(slug);
+  const tag = await fetchTagBySlug(slug);
   return (
     <div>
       <p>{tag?.name}</p>

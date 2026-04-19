@@ -1,9 +1,9 @@
-import { IBlog } from '@/models/blog';
 import { FC } from 'react';
+import type { BlogsQueryResult } from '../../../sanity.types';
 import BlogCard from './BlogCard';
 
 type Props = {
-  blogs: Partial<IBlog>[] | null;
+  blogs: BlogsQueryResult | null;
 };
 
 const BlogList: FC<Props> = ({ blogs }) => {

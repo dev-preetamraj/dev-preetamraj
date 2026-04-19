@@ -9,6 +9,7 @@ const Loading = () => {
         height={100}
         width={100}
         className='animate-pulse'
+        style={{ width: 'auto', height: 'auto' }}
       />
     </div>
   );
