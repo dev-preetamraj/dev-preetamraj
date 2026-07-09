@@ -1,5 +1,5 @@
-import { IBlog } from '@/models/blog';
-import { currentUser } from '@clerk/nextjs/server';
+import { urlFor } from '@/sanity/lib/image';
+import { PostListItem } from '@/sanity/lib/queries';
 import { TagIcon } from '@heroicons/react/24/outline';
 import { CalendarIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
@@ -9,12 +9,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Separator } from '../ui/separator';
 
 type Props = {
-  blog: Partial<IBlog>;
+  blog: PostListItem;
 };
 
-const BlogCard: FC<Props> = async ({ blog }) => {
-  const user = await currentUser();
-  const role = user?.privateMetadata.role;
+const BlogCard: FC<Props> = ({ blog }) => {
   return (
     <div className='flex items-center w-full space-x-4 border-b border-border pb-4'>
       <div className='space-y-2 w-full'>
@@ -46,7 +44,9 @@ const BlogCard: FC<Props> = async ({ blog }) => {
           <div className='flex items-center space-x-2'>
             <CalendarIcon className='h-4 w-4' />
             <span className='text-sm font-thin'>
-              {new Date(blog?.createdAt ?? '').toLocaleDateString('en-IN', {
+              {new Date(
+                blog?.publishedAt ?? blog?._createdAt,
+              ).toLocaleDateString('en-IN', {
                 timeZone: 'Asia/Kolkata',
                 month: 'short',
                 day: 'numeric',
@@ -62,8 +62,8 @@ const BlogCard: FC<Props> = async ({ blog }) => {
         </div>
       </div>
       <Image
-        src={blog.featuredImage!}
-        alt={blog.title!}
+        src={urlFor(blog.featuredImage).url()}
+        alt={blog.title}
         height={400}
         width={400}
         className='aspect-square object-cover h-28 w-28 sm:aspect-video sm:w-48 sm:h-auto md:aspect-square md:h-28 md:w-28 lg:aspect-video lg:w-80 lg:h-auto xl:aspect-square xl:h-28 xl:w-28 2xl:aspect-video 2xl:w-80 2xl:h-auto'

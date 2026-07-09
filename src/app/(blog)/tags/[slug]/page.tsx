@@ -1,4 +1,5 @@
-import { fetchTagBySlug } from '@/actions/tags';
+import BlogList from '@/components/blog/BlogList';
+import { TagWithPosts, TAG_BY_SLUG_QUERY, sanityFetch } from '@/sanity/lib/queries';
 import { Metadata, ResolvingMetadata } from 'next';
 
 type Props = {
@@ -13,7 +14,9 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const params = await props.params;
   const slug = params.slug;
-  const { data: tag } = await fetchTagBySlug(slug);
+  const tag = await sanityFetch<TagWithPosts | null>(TAG_BY_SLUG_QUERY, {
+    slug,
+  });
 
   // optionally access and extend (rather than replace) parent metadata
   const previousImages = (await parent).openGraph?.images || [];
@@ -31,10 +34,22 @@ const TagBlogListPage = async (props: Props) => {
 
   const { slug } = params;
 
-  const { data: tag } = await fetchTagBySlug(slug);
+  const tag = await sanityFetch<TagWithPosts | null>(TAG_BY_SLUG_QUERY, {
+    slug,
+  });
+
+  if (!tag) return;
+
   return (
-    <div>
-      <p>{tag?.name}</p>
+    <div className='w-full flex flex-col space-y-6'>
+      <h1 className='text-2xl'>
+        Posts tagged <span className='text-primary'>#{tag.name}</span>
+      </h1>
+      {tag.posts.length ? (
+        <BlogList blogs={tag.posts} />
+      ) : (
+        <p className='text-foreground/75'>No posts with this tag yet.</p>
+      )}
     </div>
   );
 };

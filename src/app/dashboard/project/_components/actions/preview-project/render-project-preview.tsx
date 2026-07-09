@@ -1,22 +1,26 @@
-import { urlFor } from '@/sanity/lib/image';
-import { Project } from '@/sanity/lib/queries';
+import RenderMarkdown from '@/components/global/render-markdown';
+import { IPortfolio } from '@/models/portfolio';
 import { GitHubLogoIcon } from '@radix-ui/react-icons';
 import { GithubIcon, LinkIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import RenderPortableText from '../global/render-portable-text';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '../ui/tooltip';
+} from '@/components/ui/tooltip';
 
 type Props = {
-  project: Project | null;
+  project: Partial<IPortfolio> | null;
 };
 
-const RenderPortfolio = ({ project }: Props) => {
+/**
+ * Dashboard-only preview of a MongoDB-authored project. The public /portfolio
+ * pages render from Sanity (Portable Text); authoring still lives on MongoDB
+ * with a Markdown `content` string, so the preview keeps the Markdown renderer.
+ */
+const RenderProjectPreview = ({ project }: Props) => {
   return (
     <div className='w-full'>
       <section className='space-y-2 border border-primary/10 mb-10'>
@@ -24,9 +28,7 @@ const RenderPortfolio = ({ project }: Props) => {
           <div className='absolute top-0 w-full h-full opacity-10 blur-sm'>
             <Image
               className='object-cover object-center mx-auto'
-              src={
-                project?.featuredImage ? urlFor(project.featuredImage).url() : ''
-              }
+              src={project?.featuredImage ?? ''}
               alt={project?.title ?? 'Featured Image'}
               fill
             />
@@ -39,7 +41,7 @@ const RenderPortfolio = ({ project }: Props) => {
                   {project?.title}
                 </h1>
                 <p>
-                  {new Date(project?._createdAt ?? '').toLocaleDateString(
+                  {new Date(project?.createdAt ?? '').toLocaleDateString(
                     'en-US',
                     {
                       timeZone: 'Asia/Kolkata',
@@ -108,9 +110,9 @@ const RenderPortfolio = ({ project }: Props) => {
           </section>
         </div>
       </section>
-      <RenderPortableText value={project?.content ?? []} />
+      <RenderMarkdown content={project?.content ?? ''} />
     </div>
   );
 };
 
-export default RenderPortfolio;
+export default RenderProjectPreview;

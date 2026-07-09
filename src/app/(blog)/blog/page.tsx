@@ -1,5 +1,5 @@
-import { fetchBlogs } from '@/actions/blog';
 import BlogList from '@/components/blog/BlogList';
+import { POSTS_QUERY, PostListItem, sanityFetch } from '@/sanity/lib/queries';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -8,9 +8,9 @@ export const metadata: Metadata = {
 };
 
 const BlogPage = async () => {
-  const blogs = await fetchBlogs();
+  const blogs = await sanityFetch<PostListItem[]>(POSTS_QUERY);
 
-  return <BlogList blogs={blogs.data} />;
+  return <BlogList blogs={blogs} />;
 };
 
 export default BlogPage;

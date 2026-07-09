@@ -1,4 +1,9 @@
-import { fetchCategoryBySlug } from '@/actions/categories';
+import BlogList from '@/components/blog/BlogList';
+import {
+  CategoryWithPosts,
+  CATEGORY_BY_SLUG_QUERY,
+  sanityFetch,
+} from '@/sanity/lib/queries';
 import { Metadata, ResolvingMetadata } from 'next';
 import { FC } from 'react';
 
@@ -14,7 +19,10 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const params = await props.params;
   const slug = params.slug;
-  const { data: category } = await fetchCategoryBySlug(slug);
+  const category = await sanityFetch<CategoryWithPosts | null>(
+    CATEGORY_BY_SLUG_QUERY,
+    { slug }
+  );
 
   // optionally access and extend (rather than replace) parent metadata
   const previousImages = (await parent).openGraph?.images || [];
@@ -32,8 +40,25 @@ const CategoryDetailPage: FC<Props> = async (props) => {
 
   const { slug } = params;
 
-  const { data: category } = await fetchCategoryBySlug(slug);
-  return <div>{category?.name}</div>;
+  const category = await sanityFetch<CategoryWithPosts | null>(
+    CATEGORY_BY_SLUG_QUERY,
+    { slug }
+  );
+
+  if (!category) return;
+
+  return (
+    <div className='w-full flex flex-col space-y-6'>
+      <h1 className='text-2xl'>
+        Posts in <span className='text-primary'>{category.name}</span>
+      </h1>
+      {category.posts.length ? (
+        <BlogList blogs={category.posts} />
+      ) : (
+        <p className='text-foreground/75'>No posts in this category yet.</p>
+      )}
+    </div>
+  );
 };
 
 export default CategoryDetailPage;

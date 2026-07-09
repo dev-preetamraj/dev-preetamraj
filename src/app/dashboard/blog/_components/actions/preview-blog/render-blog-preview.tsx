@@ -1,14 +1,18 @@
-import { urlFor } from '@/sanity/lib/image';
-import { Post } from '@/sanity/lib/queries';
+import RenderMarkdown from '@/components/global/render-markdown';
+import { IBlog } from '@/models/blog';
 import Image from 'next/image';
 import Link from 'next/link';
-import RenderPortableText from '../global/render-portable-text';
 
 type Props = {
-  blog: Post;
+  blog: Partial<IBlog>;
 };
 
-const RenderBlog = ({ blog }: Props) => {
+/**
+ * Dashboard-only preview of a MongoDB-authored blog. The public /blog pages
+ * render from Sanity (Portable Text); authoring still lives on MongoDB with a
+ * Markdown `content` string, so the preview keeps the Markdown renderer.
+ */
+const RenderBlogPreview = ({ blog }: Props) => {
   return (
     <div>
       <section className='space-y-2 border border-primary/10 mb-10'>
@@ -16,7 +20,7 @@ const RenderBlog = ({ blog }: Props) => {
           <div className='absolute top-0 w-full h-full opacity-10 blur-sm'>
             <Image
               className='object-cover object-center mx-auto'
-              src={blog?.featuredImage ? urlFor(blog.featuredImage).url() : ''}
+              src={blog?.featuredImage ?? ''}
               alt={blog?.title ?? 'Featured Image'}
               fill
             />
@@ -26,9 +30,7 @@ const RenderBlog = ({ blog }: Props) => {
             <div>
               <h1 className='text-4xl font-extrabold'>{blog?.title}</h1>
               <p>
-                {new Date(
-                  blog?.publishedAt ?? blog?._createdAt,
-                ).toLocaleDateString('en-US', {
+                {new Date(blog?.createdAt ?? '').toLocaleDateString('en-US', {
                   timeZone: 'Asia/Kolkata',
                   day: 'numeric',
                   month: 'long',
@@ -40,23 +42,21 @@ const RenderBlog = ({ blog }: Props) => {
             <div>
               <h2 className='italic line-clamp-2 pt-10'>{blog?.description}</h2>
               <div className='flex items-center justify-end mt-auto space-x-2'>
-                {blog?.category && (
-                  <Link
-                    href={`/categories/${blog.category.slug}`}
-                    className='bg-muted text-white px-3 py-1 rounded-full text-sm font-semibold mt-4'
-                  >
-                    {blog.category.name}
-                  </Link>
-                )}
+                <Link
+                  href={`/categories/${blog?.category?.name}`}
+                  className='bg-muted text-white px-3 py-1 rounded-full text-sm font-semibold mt-4'
+                >
+                  {blog?.category?.name}
+                </Link>
               </div>
             </div>
           </section>
         </div>
       </section>
 
-      <RenderPortableText value={blog?.content ?? []} />
+      <RenderMarkdown content={blog?.content ?? ''} />
     </div>
   );
 };
 
-export default RenderBlog;
+export default RenderBlogPreview;

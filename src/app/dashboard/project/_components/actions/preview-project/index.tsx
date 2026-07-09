@@ -1,7 +1,7 @@
 import { getPortfolioById } from '@/actions/portfolio';
 import Rightbar from '@/components/global/Rightbar';
-import RenderPortfolio from '@/components/portfolio/render-portfolio';
 import ExitPreviewButton from './exit-preview-button';
+import RenderProjectPreview from './render-project-preview';
 
 type Props = {
   _id: string;
@@ -18,7 +18,7 @@ const PreviewProject = async ({ _id }: Props) => {
       </div>
       <div className='flex space-x-4'>
         <div className='flex-1 py-4 px-32'>
-          <RenderPortfolio project={project} />
+          <RenderProjectPreview project={project} />
         </div>
 
         <div className='max-w-2xl pr-10 sticky top-40'>

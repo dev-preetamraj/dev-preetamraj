@@ -21,6 +21,11 @@ export const fetchCategories = async (): Promise<
   }
 };
 
+/**
+ * @deprecated Public category pages now read from Sanity. Use
+ * `CATEGORY_BY_SLUG_QUERY` with `sanityFetch` from `@/sanity/lib/queries`
+ * instead. Kept only until the MongoDB read path is fully retired.
+ */
 export const fetchCategoryBySlug = async (
   slug: string
 ): Promise<IResponse<Partial<ICategory> | null>> => {
@@ -34,6 +39,11 @@ export const fetchCategoryBySlug = async (
   }
 };
 
+/**
+ * @deprecated Sidebar trending categories now read from Sanity. Use
+ * `TRENDING_CATEGORIES_QUERY` with `sanityFetch` from `@/sanity/lib/queries`
+ * instead. Kept only until the MongoDB read path is fully retired.
+ */
 export const fetchTrendingCategories = async (): Promise<
   IResponse<Partial<ICategory>[] | null>
 > => {

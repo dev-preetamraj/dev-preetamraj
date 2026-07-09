@@ -1,7 +1,7 @@
 import { getBlogById } from '@/actions/blog';
-import RenderBlog from '@/components/blog/render-blog';
 import Rightbar from '@/components/global/Rightbar';
 import ExitPreviewButton from './exit-preview-button';
+import RenderBlogPreview from './render-blog-preview';
 
 type Props = {
   _id: string;
@@ -18,7 +18,7 @@ const PreviewBlog = async ({ _id }: Props) => {
       </div>
       <div className='flex space-x-4'>
         <div className='flex-1 py-4 px-32'>
-          <RenderBlog blog={blog} />
+          <RenderBlogPreview blog={blog} />
         </div>
 
         <div className='max-w-2xl pr-10 sticky top-40'>

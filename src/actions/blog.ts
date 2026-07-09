@@ -164,6 +164,11 @@ export const updateContent = async (blogId: string, content: string) => {
   }
 };
 
+/**
+ * @deprecated Public blog listing now reads from Sanity. Use `POSTS_QUERY`
+ * with `sanityFetch` from `@/sanity/lib/queries` instead. Kept only until the
+ * MongoDB read path is fully retired.
+ */
 export const fetchBlogs = async (): Promise<
   IResponse<Partial<IBlog>[] | null>
 > => {
@@ -181,6 +186,11 @@ export const fetchBlogs = async (): Promise<
   }
 };
 
+/**
+ * @deprecated Sidebar trending posts now read from Sanity. Use
+ * `TRENDING_POSTS_QUERY` with `sanityFetch` from `@/sanity/lib/queries`
+ * instead. Kept only until the MongoDB read path is fully retired.
+ */
 export const fetchTrendingBlogs = async (): Promise<
   IResponse<Partial<IBlog>[] | null>
 > => {

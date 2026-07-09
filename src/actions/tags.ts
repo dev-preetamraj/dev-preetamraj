@@ -8,6 +8,11 @@ import { currentUser } from '@clerk/nextjs/server';
 
 const response_obj = new ServerResponse();
 
+/**
+ * @deprecated Public tag listing now reads from Sanity. Use `TAGS_QUERY`
+ * with `sanityFetch` from `@/sanity/lib/queries` instead. Kept only until the
+ * MongoDB read path is fully retired.
+ */
 export const fetchTags = async (): Promise<
   IResponse<Partial<ITag>[] | null>
 > => {
@@ -21,6 +26,11 @@ export const fetchTags = async (): Promise<
   }
 };
 
+/**
+ * @deprecated Public tag pages now read from Sanity. Use `TAG_BY_SLUG_QUERY`
+ * with `sanityFetch` from `@/sanity/lib/queries` instead. Kept only until the
+ * MongoDB read path is fully retired.
+ */
 export const fetchTagBySlug = async (
   slug: string
 ): Promise<IResponse<Partial<ITag> | null>> => {

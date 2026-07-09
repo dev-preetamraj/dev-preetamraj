@@ -1,9 +1,9 @@
-import { IBlog } from '@/models/blog';
+import { PostListItem } from '@/sanity/lib/queries';
 import { FC } from 'react';
 import BlogCard from './BlogCard';
 
 type Props = {
-  blogs: Partial<IBlog>[] | null;
+  blogs: PostListItem[] | null;
 };
 
 const BlogList: FC<Props> = ({ blogs }) => {

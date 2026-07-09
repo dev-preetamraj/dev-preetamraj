@@ -1,4 +1,4 @@
-import { fetchTags } from '@/actions/tags';
+import { Tag, TAGS_QUERY, sanityFetch } from '@/sanity/lib/queries';
 import { Metadata } from 'next';
 import Link from 'next/link';
 
@@ -8,14 +8,14 @@ export const metadata: Metadata = {
 };
 
 const TagsPage = async () => {
-  const tags = await fetchTags();
+  const tags = await sanityFetch<Tag[]>(TAGS_QUERY);
 
   return (
     <div className='w-full flex flex-col space-y-4'>
       <h1 className='text-2xl'>Recent Tags</h1>
       <div className='flex flex-wrap items-center space-x-4'>
-        {tags.data &&
-          tags.data.map((tag) => (
+        {tags &&
+          tags.map((tag) => (
             <div key={tag._id}>
               <Link
                 href={`/tags/${tag.slug}`}

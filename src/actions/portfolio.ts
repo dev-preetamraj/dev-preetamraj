@@ -9,6 +9,11 @@ import { currentUser } from '@clerk/nextjs/server';
 
 const response_obj = new ServerResponse();
 
+/**
+ * @deprecated Public portfolio listing now reads from Sanity. Use
+ * `PROJECTS_QUERY` with `sanityFetch` from `@/sanity/lib/queries` instead.
+ * Kept only until the MongoDB read path is fully retired.
+ */
 export const fetchProjects = async (): Promise<
   IResponse<Partial<IPortfolio>[] | null>
 > => {
@@ -57,6 +62,11 @@ export const deletePortfolioById = async (
   }
 };
 
+/**
+ * @deprecated Public project pages now read from Sanity. Use
+ * `PROJECT_BY_SLUG_QUERY` with `sanityFetch` from `@/sanity/lib/queries`
+ * instead. Kept only until the MongoDB read path is fully retired.
+ */
 export const getPortfolioBySlug = async (
   slug: string
 ): Promise<IResponse<Partial<IPortfolio> | null>> => {
@@ -184,6 +194,11 @@ export const updatePortfolioContent = async (
   }
 };
 
+/**
+ * @deprecated Sidebar featured projects now read from Sanity. Use
+ * `FEATURED_PROJECTS_QUERY` with `sanityFetch` from `@/sanity/lib/queries`
+ * instead. Kept only until the MongoDB read path is fully retired.
+ */
 export const fetchFeaturedProjects = async (): Promise<
   IResponse<Partial<IPortfolio>[] | null>
 > => {

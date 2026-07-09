@@ -1,5 +1,10 @@
-import { fetchProjects } from '@/actions/portfolio';
 import PortfolioCard from '@/components/PortfolioCard';
+import { urlFor } from '@/sanity/lib/image';
+import {
+  PROJECTS_QUERY,
+  ProjectListItem,
+  sanityFetch,
+} from '@/sanity/lib/queries';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -8,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 const PortfolioPage = async () => {
-  const { data: projects } = await fetchProjects();
+  const projects = await sanityFetch<ProjectListItem[]>(PROJECTS_QUERY);
   return (
     <div className='space-y-4'>
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
@@ -16,9 +21,9 @@ const PortfolioPage = async () => {
           projects.map((project) => (
             <PortfolioCard
               key={project._id}
-              title={project.title!}
-              imgUrl={project.featuredImage!}
-              slug={project.slug!}
+              title={project.title}
+              imgUrl={urlFor(project.featuredImage).url()}
+              slug={project.slug}
             />
           ))}
       </div>
