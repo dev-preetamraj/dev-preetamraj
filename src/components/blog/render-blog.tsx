@@ -19,6 +19,8 @@ const RenderBlog = ({ blog }: Props) => {
               src={blog?.featuredImage ? urlFor(blog.featuredImage).url() : ''}
               alt={blog?.title ?? 'Featured Image'}
               fill
+              sizes='100vw'
+              priority
             />
           </div>
 

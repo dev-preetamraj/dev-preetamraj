@@ -29,6 +29,8 @@ const RenderPortfolio = ({ project }: Props) => {
               }
               alt={project?.title ?? 'Featured Image'}
               fill
+              sizes='100vw'
+              priority
             />
           </div>
 
