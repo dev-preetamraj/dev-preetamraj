@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
+  env: {
+    SANITY_API_WRITE_TOKEN: process.env.SANITY_API_WRITE_TOKEN,
+  },
   images: {
     remotePatterns: [
       {
@@ -10,10 +13,6 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'res.cloudinary.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
       },
     ],
   },
