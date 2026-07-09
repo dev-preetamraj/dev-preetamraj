@@ -50,7 +50,7 @@ Redux Toolkit (`src/features/store.ts`) with a single `navbar` slice. The store 
 
 ### Auth
 
-There is no app-level auth. Content administration happens inside the embedded Sanity Studio at `/studio`, which uses Sanity's own authentication. Remote images allowed from: cdn.sanity.io, res.cloudinary.com, images.unsplash.com.
+There is no app-level auth. Content administration happens inside the embedded Sanity Studio at `/studio`, which uses Sanity's own authentication. Remote images allowed from: cdn.sanity.io, res.cloudinary.com.
 
 ### Environment Variables
 
