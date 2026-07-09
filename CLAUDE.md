@@ -9,10 +9,11 @@ Personal portfolio and blog website for Preetam Raj (preetamraj.dev). Built with
 ## Commands
 
 ```bash
-yarn dev          # Start dev server
-yarn build        # Production build
-yarn lint         # ESLint (next/core-web-vitals)
-yarn prettier     # Format all files with Prettier
+bun install       # Install dependencies
+bun run dev       # Start dev server
+bun run build     # Production build
+bun run lint      # ESLint (next/core-web-vitals)
+bun run prettier  # Format all files with Prettier
 ```
 
 No test framework is configured.
