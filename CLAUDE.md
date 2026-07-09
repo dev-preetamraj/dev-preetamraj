@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Personal portfolio and blog website for Preetam Raj (preetamraj.dev). Built with Next.js 14 (App Router), MongoDB/Mongoose, Clerk auth, Redux Toolkit, shadcn/ui (new-york style), and Tailwind CSS. Uses dark mode via next-themes with class strategy.
+Personal portfolio and blog website for Preetam Raj (preetamraj.dev). Built with Next.js 14 (App Router), Sanity (content + embedded Studio), Redux Toolkit, shadcn/ui (new-york style), and Tailwind CSS. Uses dark mode via next-themes with class strategy.
 
 ## Commands
 
@@ -24,18 +24,18 @@ No test framework is configured.
 
 - `src/app/(portfolio)/` — Public portfolio pages (home, about, contact, portfolio/[slug])
 - `src/app/(blog)/` — Public blog pages (blog/[slug], categories/[slug], tags/[slug])
-- `src/app/dashboard/` — Admin dashboard (blog, category, tags, comments, projects, media, courses)
-- `src/app/auth/` — Clerk sign-in/sign-up pages
+- `src/app/studio/` — Embedded Sanity Studio (content authoring/admin, uses Sanity's own auth)
 
-Each route group has its own layout. The root layout wraps everything in ClerkProvider > ThemeProvider > ReduxProvider.
+Each route group has its own layout. The root layout wraps everything in ThemeProvider > ReduxProvider.
 
 ### Data Flow
 
-**No API routes.** All data access uses Next.js Server Actions in `src/actions/`. Each action file corresponds to a Mongoose model and follows the pattern: connect to DB, perform operation, return typed `IResponse<T>`.
+**Sanity is the single source of truth.** Content is authored in the embedded Studio at `/studio` and read on the public site via the GROQ query layer in `src/sanity/`.
 
-- `src/actions/` — Server actions (blog, categories, tags, comments, portfolio, user)
-- `src/models/` — Mongoose schemas and TypeScript interfaces (Blog, Category, Tag, Comment, Portfolio, User)
-- `src/lib/dbConnect.ts` — Cached MongoDB connection using global singleton pattern
+- `src/sanity/lib/client.ts` / `write-client.ts` — read client (CDN) and server-only write client (write token)
+- `src/sanity/lib/queries/` — GROQ queries + types (posts, projects, categories, tags, search, comments) with a `sanityFetch<T>()` wrapper
+- `src/sanity/schemaTypes/` — Sanity document schemas (post, project, category, tag, comment, blockContent)
+- `src/actions/` — the two remaining Server Actions, both Sanity-backed: `sanity-comment.ts` (public comment read/write with honeypot + IP rate limiting) and `search.ts` (navbar search)
 
 ### State Management
 
@@ -45,13 +45,13 @@ Redux Toolkit (`src/features/store.ts`) with a single `navbar` slice. The store 
 
 - `src/components/ui/` — shadcn/ui primitives (new-york style, zinc base color, CSS variables for theming)
 - `src/components/` — Domain components (blog, portfolio, comments, forms, global)
-- `src/components/forms/` — React Hook Form + Zod validation for dashboard CRUD forms
+- `src/components/forms/` — React Hook Form + Zod validation (e.g. the public comment form)
 - Path alias: `@/*` maps to `./src/*`
 
 ### Auth
 
-Clerk handles authentication via `clerkMiddleware()` in `src/middleware.ts`. Dashboard routes are protected. Remote images allowed from: cdn.sanity.io, res.cloudinary.com, images.unsplash.com, img.clerk.com.
+There is no app-level auth. Content administration happens inside the embedded Sanity Studio at `/studio`, which uses Sanity's own authentication. Remote images allowed from: cdn.sanity.io, res.cloudinary.com, images.unsplash.com.
 
 ### Environment Variables
 
-Requires `MONGODB_URI` and Clerk keys in `.env.local`.
+Requires the `NEXT_PUBLIC_SANITY_*` keys (project id, dataset, API version) and `SANITY_API_WRITE_TOKEN` in `.env`.
