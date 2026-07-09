@@ -7,14 +7,12 @@ import {
 } from '@/components/ui/tooltip';
 import { RootState } from '@/features/store';
 import { cn } from '@/lib/utils';
-import { UserButton, useUser } from '@clerk/nextjs';
 import {
-  DashboardIcon,
   EnvelopeClosedIcon,
   GitHubLogoIcon,
   LinkedInLogoIcon,
 } from '@radix-ui/react-icons';
-import { LogInIcon } from 'lucide-react';
+import { PenSquareIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSelector } from 'react-redux';
@@ -23,8 +21,6 @@ import { ThemeToggler } from './ThemeToggler';
 
 const Sidebar = () => {
   const clicked = useSelector((state: RootState) => state.navbar.clicked);
-  const { user } = useUser();
-  const role = user?.publicMetadata.role;
   return (
     <div
       className={cn(
@@ -81,29 +77,18 @@ const Sidebar = () => {
         <Link href='mailto:dev.preetamraj@gmail.com'>
           <EnvelopeClosedIcon className='h-6 w-6' />
         </Link>
-        {!user ? (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link href='/auth/login'>
-                  <LogInIcon className='h-6 w-6' />
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Login</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        ) : (
-          <>
-            {role === 'admin' && (
-              <Link href='/dashboard'>
-                <DashboardIcon className='h-6 w-6 cursor-pointer' />
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link href='/studio' target='_blank' rel='noopener noreferrer'>
+                <PenSquareIcon className='h-6 w-6' />
               </Link>
-            )}
-            <UserButton />
-          </>
-        )}
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Sanity Studio</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
     </div>
   );
