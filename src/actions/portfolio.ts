@@ -234,6 +234,11 @@ export const fetchAllProjectsForDashboard = async (
   }
 };
 
+/**
+ * @deprecated Global search now reads from Sanity in a single query. Use
+ * `searchContent` from `@/actions/search` instead. Kept only until the MongoDB
+ * read path is fully retired.
+ */
 export const fetchAllProjectsForSearch = async (
   keyword: string
 ): Promise<IResponse<Partial<IPortfolio>[] | null>> => {

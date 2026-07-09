@@ -65,6 +65,11 @@ export const createTag = async (name: string): Promise<IResponse<null>> => {
   }
 };
 
+/**
+ * @deprecated Global search now reads from Sanity in a single query. Use
+ * `searchContent` from `@/actions/search` instead. Kept only until the MongoDB
+ * read path is fully retired.
+ */
 export const fetchAllTagsForSearch = async (
   keyword: string
 ): Promise<IResponse<Partial<ITag>[] | null>> => {
