@@ -39,6 +39,14 @@ export const commentType = defineType({
       type: 'boolean',
       initialValue: false,
     }),
+    defineField({
+      name: 'authorIp',
+      title: 'Author IP',
+      type: 'string',
+      readOnly: true,
+      description:
+        'Captured server-side for rate limiting and moderation. Not shown publicly.',
+    }),
   ],
   preview: {
     select: {

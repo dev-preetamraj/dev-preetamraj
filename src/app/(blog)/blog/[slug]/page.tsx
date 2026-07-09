@@ -1,8 +1,6 @@
-import { getBlogBySlug } from '@/actions/blog';
 import RenderBlog from '@/components/blog/render-blog';
 import RenderComments from '@/components/comments/render-comments';
 import { Post, POST_BY_SLUG_QUERY, sanityFetch } from '@/sanity/lib/queries';
-import { currentUser } from '@clerk/nextjs/server';
 import { Metadata, ResolvingMetadata } from 'next';
 import { FC } from 'react';
 
@@ -36,20 +34,18 @@ const BlogPost: FC<Props> = async (props) => {
 
   const { slug } = params;
 
-  const user = await currentUser();
   const blog = await sanityFetch<Post | null>(POST_BY_SLUG_QUERY, { slug });
 
   if (!blog) return;
 
-  // Content + metadata come from Sanity; comments still live on MongoDB
-  // (the comment write path + Clerk auth are unchanged this phase). Both
-  // stores are keyed by the same slug, so this is an isolated bridge.
-  const { data: mongoBlog } = await getBlogBySlug(slug);
-
   return (
     <div className='space-y-12'>
       <RenderBlog blog={blog} />
-      <RenderComments userId={user?.id} blog={mongoBlog ?? {}} />
+      <RenderComments
+        postId={blog._id}
+        comments={blog.comments ?? []}
+        commentsCount={blog.commentsCount ?? 0}
+      />
     </div>
   );
 };

@@ -2,9 +2,10 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
-import { createCommentForBlog } from '@/actions/comment';
+import { createComment } from '@/actions/sanity-comment';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -12,77 +13,133 @@ import {
   FormDescription,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
-import { Textarea } from '../ui/textarea';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 const formSchema = z.object({
+  authorName: z.string().trim().min(1, { message: 'Name is required' }).max(80),
+  authorEmail: z
+    .string()
+    .trim()
+    .min(1, { message: 'Email is required' })
+    .email({ message: 'Enter a valid email' }),
   content: z
     .string()
-    .min(1, {
-      message: 'Required field',
-    })
+    .trim()
+    .min(1, { message: 'Comment is required' })
     .max(500, { message: 'Maximum 500 characters are allowed' }),
+  // Honeypot — hidden from real users.
+  website: z.string().optional(),
 });
 
 type Props = {
-  userId?: string;
-  blogId?: string;
-  portfolioId?: string;
+  postId: string;
 };
 
-const CommentForm = ({ userId, blogId, portfolioId }: Props) => {
-  const router = useRouter();
+const CommentForm = ({ postId }: Props) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      authorName: '',
+      authorEmail: '',
       content: '',
+      website: '',
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (!userId) {
-      toast.error('Unauthorized');
-      return;
-    }
-
-    if (blogId) {
-      const res = await createCommentForBlog(userId, values.content, blogId);
-      if (res.success) {
-        toast.success(res.message);
-        form.reset();
-        router.refresh();
-      }
+    const res = await createComment({ postId, ...values });
+    if (res.success) {
+      toast.success(res.message);
+      form.reset();
+    } else {
+      toast.error(res.message);
     }
   };
 
-  if (!userId) return null;
-
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
+        <div className='grid gap-6 sm:grid-cols-2'>
+          <FormField
+            control={form.control}
+            name='authorName'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Name <span className='text-destructive'>*</span>
+                </FormLabel>
+                <FormControl>
+                  <Input placeholder='Your name' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='authorEmail'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Email <span className='text-destructive'>*</span>
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    type='email'
+                    placeholder='you@example.com'
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
         <FormField
           control={form.control}
           name='content'
           render={({ field }) => (
             <FormItem>
+              <FormLabel>
+                Comment <span className='text-destructive'>*</span>
+              </FormLabel>
               <FormControl>
                 <Textarea
                   placeholder='Write comment here...'
-                  {...field}
                   maxLength={500}
-                  cols={4}
+                  rows={4}
+                  {...field}
                 />
               </FormControl>
               <FormDescription>
-                This is a required field to post your comment.
+                Your comment will be visible once it&apos;s approved.
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
+
+        {/* Honeypot: hidden from users, tempting to bots. */}
+        <FormField
+          control={form.control}
+          name='website'
+          render={({ field }) => (
+            <div className='hidden' aria-hidden='true'>
+              <Input
+                {...field}
+                tabIndex={-1}
+                autoComplete='off'
+                placeholder='Leave this field empty'
+              />
+            </div>
+          )}
+        />
+
         <Button type='submit' disabled={form.formState.isSubmitting}>
           {form.formState.isSubmitting ? 'Posting...' : 'Post comment'}
         </Button>
