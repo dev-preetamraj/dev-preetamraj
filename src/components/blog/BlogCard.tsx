@@ -1,6 +1,6 @@
 import { urlFor } from '@/sanity/lib/image';
 import { PostListItem } from '@/sanity/lib/queries';
-import { TagIcon } from '@heroicons/react/24/outline';
+import { PhotoIcon, TagIcon } from '@heroicons/react/24/outline';
 import { CalendarIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -12,7 +12,14 @@ type Props = {
   blog: PostListItem;
 };
 
+const IMAGE_CLASSES =
+  'aspect-square object-cover h-28 w-28 sm:aspect-video sm:w-48 sm:h-auto md:aspect-square md:h-28 md:w-28 lg:aspect-video lg:w-80 lg:h-auto xl:aspect-square xl:h-28 xl:w-28 2xl:aspect-video 2xl:w-80 2xl:h-auto';
+
 const BlogCard: FC<Props> = ({ blog }) => {
+  const imageUrl = blog.featuredImage?.asset
+    ? urlFor(blog.featuredImage).url()
+    : null;
+
   return (
     <div className='flex items-center w-full space-x-4 border-b border-border pb-4'>
       <div className='space-y-2 w-full'>
@@ -61,13 +68,22 @@ const BlogCard: FC<Props> = ({ blog }) => {
           </div>
         </div>
       </div>
-      <Image
-        src={urlFor(blog.featuredImage).url()}
-        alt={blog.title}
-        height={400}
-        width={400}
-        className='aspect-square object-cover h-28 w-28 sm:aspect-video sm:w-48 sm:h-auto md:aspect-square md:h-28 md:w-28 lg:aspect-video lg:w-80 lg:h-auto xl:aspect-square xl:h-28 xl:w-28 2xl:aspect-video 2xl:w-80 2xl:h-auto'
-      />
+      {imageUrl ? (
+        <Image
+          src={imageUrl}
+          alt={blog.title}
+          height={400}
+          width={400}
+          className={IMAGE_CLASSES}
+        />
+      ) : (
+        <div
+          className={`${IMAGE_CLASSES} flex shrink-0 items-center justify-center bg-muted text-muted-foreground`}
+          aria-label={`${blog.title} (no featured image)`}
+        >
+          <PhotoIcon className='h-8 w-8' />
+        </div>
+      )}
     </div>
   );
 };
