@@ -27,5 +27,6 @@ export const POST_LIST_PROJECTION = `
   featuredImage,
   publishedAt,
   _createdAt,
+  "views": coalesce(views, 0),
   category->{name, "slug": slug.current}
 `;

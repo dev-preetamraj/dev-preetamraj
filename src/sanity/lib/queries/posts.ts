@@ -11,6 +11,7 @@ export type PostListItem = {
   featuredImage: SanityImage;
   publishedAt: string | null;
   _createdAt: string;
+  views: number;
   category: CategoryRef | null;
 };
 

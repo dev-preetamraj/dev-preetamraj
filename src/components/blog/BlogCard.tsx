@@ -1,6 +1,7 @@
+import { formatViews } from '@/lib/utils';
 import { urlFor } from '@/sanity/lib/image';
 import { PostListItem } from '@/sanity/lib/queries';
-import { PhotoIcon, TagIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, PhotoIcon, TagIcon } from '@heroicons/react/24/outline';
 import { CalendarIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -65,6 +66,10 @@ const BlogCard: FC<Props> = ({ blog }) => {
           <div className='hidden md:flex items-center space-x-2'>
             <TagIcon className='h-4 w-4' />
             <span className='text-sm font-thin'>{blog?.category?.name}</span>
+          </div>
+          <div className='flex items-center space-x-2'>
+            <EyeIcon className='h-4 w-4' />
+            <span className='text-sm font-thin'>{formatViews(blog?.views)}</span>
           </div>
         </div>
       </div>

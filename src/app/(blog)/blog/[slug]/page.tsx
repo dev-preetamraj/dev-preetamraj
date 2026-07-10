@@ -1,4 +1,5 @@
 import RenderBlog from '@/components/blog/render-blog';
+import ViewTracker from '@/components/blog/view-tracker';
 import RenderComments from '@/components/comments/render-comments';
 import { Post, POST_BY_SLUG_QUERY, sanityFetch } from '@/sanity/lib/queries';
 import { Metadata, ResolvingMetadata } from 'next';
@@ -40,6 +41,7 @@ const BlogPost: FC<Props> = async (props) => {
 
   return (
     <div className='space-y-12'>
+      <ViewTracker postId={blog._id} />
       <RenderBlog blog={blog} />
       <RenderComments
         postId={blog._id}

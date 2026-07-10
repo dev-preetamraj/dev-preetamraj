@@ -1,5 +1,7 @@
+import { formatViews } from '@/lib/utils';
 import { urlFor } from '@/sanity/lib/image';
 import { Post } from '@/sanity/lib/queries';
+import { EyeIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import Link from 'next/link';
 import RenderPortableText from '../global/render-portable-text';
@@ -29,16 +31,22 @@ const RenderBlog = ({ blog }: Props) => {
           <section className='p-5 bg-primary/10 w-full z-10'>
             <div>
               <h1 className='text-4xl font-extrabold'>{blog?.title}</h1>
-              <p>
-                {new Date(
-                  blog?.publishedAt ?? blog?._createdAt,
-                ).toLocaleDateString('en-US', {
-                  timeZone: 'Asia/Kolkata',
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric',
-                })}
-              </p>
+              <div className='flex items-center gap-3'>
+                <p>
+                  {new Date(
+                    blog?.publishedAt ?? blog?._createdAt,
+                  ).toLocaleDateString('en-US', {
+                    timeZone: 'Asia/Kolkata',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                  })}
+                </p>
+                <span className='flex items-center gap-1' title='Views'>
+                  <EyeIcon className='h-4 w-4' />
+                  {formatViews(blog?.views)}
+                </span>
+              </div>
             </div>
 
             <div>

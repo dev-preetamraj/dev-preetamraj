@@ -22,6 +22,20 @@ export const slugToTitle = (slug: string) => {
   return title;
 };
 
+/**
+ * Format a count into a compact Indian-system string, e.g. 4000 -> "4K",
+ * 1_000_000 -> "10L", 200_000_000 -> "20Cr". Falls back to "0" for
+ * missing/invalid values.
+ */
+const compactIndianFormatter = new Intl.NumberFormat('en-IN', {
+  notation: 'compact',
+  maximumFractionDigits: 1,
+});
+
+export const formatViews = (value?: number | null) => {
+  return compactIndianFormatter.format(value ?? 0);
+};
+
 export const capitalizeWord = (word: string) => {
   if (word.length === 0) {
     return word;
