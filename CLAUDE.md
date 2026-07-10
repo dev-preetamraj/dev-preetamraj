@@ -14,9 +14,17 @@ bun run dev       # Start dev server
 bun run build     # Production build
 bun run lint      # ESLint (next/core-web-vitals)
 bun run prettier  # Format all files with Prettier
+bun test          # Run unit tests (Bun's built-in test runner)
 ```
 
-No test framework is configured.
+### Testing
+
+Unit tests use Bun's built-in runner (`bun test`, imports from `bun:test`). Tests live in a
+`__tests__/` folder colocated with the module under test and are named `<module>.test.ts`
+(e.g. `src/lib/__tests__/ranking.test.ts` tests `src/lib/ranking.ts`). Keep tests
+deterministic — pass time in explicitly (e.g. a fixed `NOW`) rather than reading the clock.
+Pure logic (the ranking module) is unit-tested; GROQ queries and React Server Components that
+need live Sanity data are verified end-to-end via the running app.
 
 ## Architecture
 
@@ -36,6 +44,15 @@ Each route group has its own layout. The root layout wraps everything in ThemePr
 - `src/sanity/lib/queries/` — GROQ queries + types (posts, projects, categories, tags, search, comments) with a `sanityFetch<T>()` wrapper
 - `src/sanity/schemaTypes/` — Sanity document schemas (post, project, category, tag, comment, blockContent)
 - `src/actions/` — the two remaining Server Actions, both Sanity-backed: `sanity-comment.ts` (public comment read/write with honeypot + IP rate limiting) and `search.ts` (navbar search)
+
+### Ranking / recommendation algorithm
+
+`src/lib/ranking.ts` is the single source of truth for how content is scored and ordered
+(home-page post recommendations, trending categories). GROQ queries only gather raw signals
+(views, dates, counts); all scoring formulas and tunable weights live in the module's
+`RANKING` object. The module is pure — time is passed in as a `nowMs` argument — so it is
+directly unit-testable. Consumers: `src/app/(portfolio)/page.tsx` (`rankPosts`) and
+`src/components/global/Rightbar.tsx` (`rankCategories`, fed by `TRENDING_CATEGORY_STATS_QUERY`).
 
 ### State Management
 

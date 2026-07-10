@@ -1,22 +1,27 @@
 import { buttonVariants } from '@/components/ui/button';
+import { rankCategories, trendingWindowSince } from '@/lib/ranking';
 import { cn } from '@/lib/utils';
 import {
-  CategoryLink,
+  CategoryStat,
   FEATURED_PROJECTS_QUERY,
   PostLink,
   ProjectLink,
   sanityFetch,
-  TRENDING_CATEGORIES_QUERY,
+  TRENDING_CATEGORY_STATS_QUERY,
   TRENDING_POSTS_QUERY,
 } from '@/sanity/lib/queries';
 import Link from 'next/link';
 
 const Rightbar = async () => {
-  const [recentBlogs, projects, categories] = await Promise.all([
+  const now = Date.now();
+  const [recentBlogs, projects, categoryStats] = await Promise.all([
     sanityFetch<PostLink[]>(TRENDING_POSTS_QUERY),
     sanityFetch<ProjectLink[]>(FEATURED_PROJECTS_QUERY),
-    sanityFetch<CategoryLink[]>(TRENDING_CATEGORIES_QUERY),
+    sanityFetch<CategoryStat[]>(TRENDING_CATEGORY_STATS_QUERY, {
+      since: trendingWindowSince(now),
+    }),
   ]);
+  const categories = rankCategories(categoryStats, 8);
   return (
     <aside className='w-full md:w-[380px] lg:w-[600px] xl:w-72 2xl:w-96 h-full sticky top-20'>
       <div className='flex flex-col space-y-10'>

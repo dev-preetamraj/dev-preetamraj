@@ -1,4 +1,5 @@
 import BlogList from '@/components/blog/BlogList';
+import { rankPosts } from '@/lib/ranking';
 import { POSTS_QUERY, PostListItem, sanityFetch } from '@/sanity/lib/queries';
 
 import type { Metadata } from 'next';
@@ -17,10 +18,11 @@ export const metadata: Metadata = {
 
 const HomePage = async () => {
   const blogs = await sanityFetch<PostListItem[]>(POSTS_QUERY);
+  const rankedBlogs = rankPosts(blogs, Date.now());
 
   return (
     <div className='space-y-2'>
-      <BlogList blogs={blogs} />
+      <BlogList blogs={rankedBlogs} />
     </div>
   );
 };
