@@ -59,6 +59,14 @@ export const POST_BY_SLUG_QUERY = `*[_type == "post" && slug.current == $slug &&
   "commentsCount": count(*[_type == "comment" && post._ref == ^._id && isApproved == true])
 }`;
 
+/** Minimal fields for OG image generation. */
+export const POST_OG_QUERY = `*[_type == "post" && slug.current == $slug && isPublished == true][0] {
+  title,
+  description,
+  featuredImage,
+  category->{name}
+}`;
+
 /** A single page of approved comments for a post, used for infinite scroll. */
 export const COMMENTS_PAGE_QUERY = `*[_type == "comment" && post._ref == $postId && isApproved == true] | order(_createdAt asc)[$start...$end]{
   _id,
