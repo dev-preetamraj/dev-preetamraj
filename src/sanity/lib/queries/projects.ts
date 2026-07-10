@@ -1,6 +1,6 @@
 import type { PortableTextBlock } from '@portabletext/types';
 
-import { CategoryRef, SanityImage, TagRef } from './shared';
+import { CategoryRef, SanityImage, SITEMAP_PROJECTION, TagRef } from './shared';
 
 export type ProjectListItem = {
   _id: string;
@@ -33,6 +33,8 @@ export const PROJECTS_QUERY = `*[_type == "project" && isPublished == true] | or
   "slug": slug.current,
   featuredImage
 }`;
+
+export const PROJECTS_SITEMAP_QUERY = `*[_type == "project" && isPublished == true && defined(slug.current)]{${SITEMAP_PROJECTION}}`;
 
 export const PROJECT_BY_SLUG_QUERY = `*[_type == "project" && slug.current == $slug && isPublished == true][0] {
   _id,

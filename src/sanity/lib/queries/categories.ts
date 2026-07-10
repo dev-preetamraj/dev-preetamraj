@@ -1,5 +1,5 @@
 import { PostListItem } from './posts';
-import { POST_LIST_PROJECTION } from './shared';
+import { POST_LIST_PROJECTION, SITEMAP_PROJECTION } from './shared';
 
 export type Category = {
   _id: string;
@@ -32,6 +32,8 @@ export const CATEGORIES_QUERY = `*[_type == "category"] | order(name asc) {
   "slug": slug.current,
   description
 }`;
+
+export const CATEGORIES_SITEMAP_QUERY = `*[_type == "category" && defined(slug.current) && count(*[_type == "post" && references(^._id) && isPublished == true]) > 0]{${SITEMAP_PROJECTION}}`;
 
 export const CATEGORY_BY_SLUG_QUERY = `*[_type == "category" && slug.current == $slug][0] {
   _id,

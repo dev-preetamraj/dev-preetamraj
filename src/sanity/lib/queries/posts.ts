@@ -1,7 +1,13 @@
 import type { PortableTextBlock } from '@portabletext/types';
 
 import { COMMENTS_BATCH_SIZE } from '@/lib/constants';
-import { CategoryRef, POST_LIST_PROJECTION, SanityImage, TagRef } from './shared';
+import {
+  CategoryRef,
+  POST_LIST_PROJECTION,
+  SanityImage,
+  SITEMAP_PROJECTION,
+  TagRef,
+} from './shared';
 
 export type PostListItem = {
   _id: string;
@@ -37,6 +43,8 @@ export type PostLink = {
 };
 
 export const POSTS_QUERY = `*[_type == "post" && isPublished == true] | order(publishedAt desc) {${POST_LIST_PROJECTION}}`;
+
+export const POSTS_SITEMAP_QUERY = `*[_type == "post" && isPublished == true && defined(slug.current)]{${SITEMAP_PROJECTION}}`;
 
 export const POST_BY_SLUG_QUERY = `*[_type == "post" && slug.current == $slug && isPublished == true][0] {
   ${POST_LIST_PROJECTION},

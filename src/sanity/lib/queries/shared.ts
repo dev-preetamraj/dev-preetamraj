@@ -18,6 +18,13 @@ export type TagRef = {
   slug: string;
 };
 
+export type SitemapEntry = {
+  slug: string;
+  _updatedAt: string;
+};
+
+export const SITEMAP_PROJECTION = `"slug": slug.current, _updatedAt`;
+
 /** Fields projected for every post listing (home, /blog, category, tag). */
 export const POST_LIST_PROJECTION = `
   _id,
