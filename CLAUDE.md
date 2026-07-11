@@ -45,6 +45,10 @@ Each route group has its own layout. The root layout wraps everything in ThemePr
 - `src/sanity/schemaTypes/` — Sanity document schemas (post, project, category, tag, comment, blockContent)
 - `src/actions/` — the two remaining Server Actions, both Sanity-backed: `sanity-comment.ts` (public comment read/write with honeypot + IP rate limiting) and `search.ts` (navbar search)
 
+### Content authoring (markdown import)
+
+Blog posts are drafted as local markdown files in the git-ignored `content/` workspace and pushed into Sanity as Studio drafts via `scripts/import-post.ts` (`bun run import:post <file>`). The script parses frontmatter, converts the body to Portable Text, and resolves the post's `category` + `tags` against existing documents (reusing by slug, creating any that are missing). The markdown file contract (required frontmatter, how slugs and category/tag names are derived) is documented in `content/README.md` - read it before changing the importer or the frontmatter format.
+
 ### Ranking / recommendation algorithm
 
 `src/lib/ranking.ts` is the single source of truth for how content is scored and ordered
