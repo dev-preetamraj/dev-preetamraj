@@ -12,7 +12,9 @@ const CategoriesPage = async () => {
 
   return (
     <div className='w-full flex flex-col space-y-4'>
-      <h1 className='text-2xl'>Recent Categories</h1>
+      <h1 className='text-2xl md:text-3xl font-bold text-foreground leading-tight'>
+        Recent Categories
+      </h1>
       <div className='flex flex-wrap items-center space-x-4'>
         {categories &&
           categories.map((categorie) => (

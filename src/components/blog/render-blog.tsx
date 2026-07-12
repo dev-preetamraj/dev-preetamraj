@@ -30,7 +30,9 @@ const RenderBlog = ({ blog }: Props) => {
 
           <section className='p-5 bg-primary/10 w-full z-10'>
             <div>
-              <h1 className='text-4xl font-extrabold'>{blog?.title}</h1>
+              <h1 className='text-2xl md:text-3xl font-bold leading-tight'>
+                {blog?.title}
+              </h1>
               <div className='flex items-center gap-3'>
                 <p>
                   {new Date(

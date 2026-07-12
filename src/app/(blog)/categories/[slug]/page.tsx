@@ -49,7 +49,7 @@ const CategoryDetailPage: FC<Props> = async (props) => {
 
   return (
     <div className='w-full flex flex-col space-y-6'>
-      <h1 className='text-2xl'>
+      <h1 className='text-2xl md:text-3xl font-bold text-foreground leading-tight'>
         Posts in <span className='text-primary'>{category.name}</span>
       </h1>
       {category.posts.length ? (

@@ -12,7 +12,9 @@ const RenderComments = ({ postId, comments = [], commentsCount }: Props) => {
   return (
     <div className='pb-12 space-y-4'>
       <div className='space-y-4'>
-        <h1 className='text-4xl font-semibold'>Leave a comment</h1>
+        <h1 className='text-xl md:text-2xl font-bold text-foreground'>
+          Leave a comment
+        </h1>
         <p className='text-foreground/75'>
           All fields are required. Your comment appears after approval.
         </p>

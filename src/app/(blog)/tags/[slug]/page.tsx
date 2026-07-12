@@ -42,7 +42,7 @@ const TagBlogListPage = async (props: Props) => {
 
   return (
     <div className='w-full flex flex-col space-y-6'>
-      <h1 className='text-2xl'>
+      <h1 className='text-2xl md:text-3xl font-bold text-foreground leading-tight'>
         Posts tagged <span className='text-primary'>#{tag.name}</span>
       </h1>
       {tag.posts.length ? (

@@ -37,7 +37,7 @@ const RenderPortfolio = ({ project }: Props) => {
           <section className='p-5 bg-primary/10 w-full z-10'>
             <div className='flex flex-col 2xl:flex-row justify-between gap-y-5'>
               <div className='space-y-2 w-full'>
-                <h1 className='text-2xl md:text-3xl xl:text-4xl font-extrabold'>
+                <h1 className='text-2xl md:text-3xl font-bold leading-tight'>
                   {project?.title}
                 </h1>
                 <p>

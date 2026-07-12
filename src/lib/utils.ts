@@ -36,6 +36,16 @@ export const formatViews = (value?: number | null) => {
   return compactIndianFormatter.format(value ?? 0);
 };
 
+export const formatPostDate = (value?: string | null) => {
+  if (!value) return '';
+  return new Date(value).toLocaleDateString('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+};
+
 export const capitalizeWord = (word: string) => {
   if (word.length === 0) {
     return word;

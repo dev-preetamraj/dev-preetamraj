@@ -1,3 +1,4 @@
+import SectionHeading from '@/components/global/SectionHeading';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -211,16 +212,6 @@ const identityChips = [
   'Bangalore, India',
 ];
 
-const SectionHeading = ({ index, title }: { index: string; title: string }) => (
-  <div className='flex items-center gap-4'>
-    <h2 className='flex items-baseline gap-2 whitespace-nowrap text-xl font-bold text-foreground md:text-2xl'>
-      <span className='font-mono text-sm text-primary'>{index}.</span>
-      {title}
-    </h2>
-    <span className='h-px flex-1 bg-border' />
-  </div>
-);
-
 const AboutPage = () => {
   return (
     <div className='flex flex-col space-y-12'>
@@ -228,7 +219,7 @@ const AboutPage = () => {
         <p className='text-primary text-sm font-medium uppercase tracking-wide'>
           Fullstack Software Engineer
         </p>
-        <h1 className='text-3xl md:text-4xl xl:text-5xl font-extrabold text-foreground leading-tight'>
+        <h1 className='text-2xl md:text-3xl font-bold text-foreground leading-tight'>
           I build and run platforms end to end.
         </h1>
         <p className='text-muted-foreground max-w-2xl'>
