@@ -24,7 +24,7 @@ const Sidebar = () => {
   return (
     <div
       className={cn(
-        'hidden md:flex flex-col justify-between h-screen min-w-[300px] w-[300px] sm:min-w-[350px] sm:w-[350px] bg-muted p-10 sticky top-0',
+        'hidden md:flex flex-col justify-between h-screen min-w-[260px] w-[260px] sm:min-w-[300px] sm:w-[300px] bg-muted p-10 sticky top-0',
         {
           flex: clicked,
         }

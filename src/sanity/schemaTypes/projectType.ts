@@ -82,6 +82,13 @@ export const projectType = defineType({
       validation: (Rule) => Rule.uri({ scheme: ['http', 'https'] }),
     }),
     defineField({
+      name: 'featured',
+      title: 'Featured',
+      description: 'Pin to the top of the portfolio and the sidebar list.',
+      type: 'boolean',
+      initialValue: false,
+    }),
+    defineField({
       name: 'isPublished',
       title: 'Published',
       type: 'boolean',
@@ -93,6 +100,12 @@ export const projectType = defineType({
       title: 'title',
       subtitle: 'category.name',
       media: 'featuredImage',
+      featured: 'featured',
     },
+    prepare: ({ title, subtitle, media, featured }) => ({
+      title: featured ? `★ ${title}` : title,
+      subtitle,
+      media,
+    }),
   },
 });

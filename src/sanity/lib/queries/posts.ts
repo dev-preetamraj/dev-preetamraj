@@ -80,3 +80,15 @@ export const TRENDING_POSTS_QUERY = `*[_type == "post" && isPublished == true] |
   title,
   "slug": slug.current
 }`;
+
+/** Post link plus view count, for the sidebar's "most read" list. */
+export type PopularPostLink = PostLink & {
+  views: number;
+};
+
+export const POPULAR_POSTS_QUERY = `*[_type == "post" && isPublished == true] | order(coalesce(views, 0) desc)[0...5] {
+  _id,
+  title,
+  "slug": slug.current,
+  "views": coalesce(views, 0)
+}`;
