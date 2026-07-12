@@ -1,11 +1,12 @@
 'use client';
 
 import { formatDistanceToNow } from 'date-fns';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback } from 'react';
 
 import { getApprovedComments } from '@/actions/sanity-comment';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useInfiniteScroll } from '@/hooks/use-infinite-scroll';
 import {
   COMMENTS_BATCH_SIZE,
   COMMENTS_SCROLL_TRIGGER_RATIO,
@@ -43,66 +44,24 @@ function CommentSkeleton() {
 }
 
 const CommentsList = ({ postId, initialComments, totalCount }: Props) => {
-  const [comments, setComments] = useState<PostComment[]>(initialComments);
-  const [isLoading, setIsLoading] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  // Guards against firing multiple loads for the same scroll gesture.
-  const loadingRef = useRef(false);
+  const fetchPage = useCallback(
+    (start: number, end: number) => getApprovedComments(postId, start, end),
+    [postId],
+  );
 
-  const hasMore = comments.length < totalCount;
-
-  const loadMore = useCallback(async () => {
-    if (loadingRef.current) return;
-    loadingRef.current = true;
-    setIsLoading(true);
-
-    const start = comments.length;
-    const next = await getApprovedComments(
-      postId,
-      start,
-      start + COMMENTS_BATCH_SIZE,
-    );
-
-    setComments((prev) => {
-      const seen = new Set(prev.map((c) => c._id));
-      const fresh = next.filter((c) => !seen.has(c._id));
-      return fresh.length ? [...prev, ...fresh] : prev;
-    });
-
-    setIsLoading(false);
-    loadingRef.current = false;
-  }, [comments.length, postId]);
-
-  useEffect(() => {
-    if (!hasMore) return;
-
-    // The page scrolls inside a Radix ScrollArea viewport, not the window —
-    // find it, falling back to the window if the layout ever changes.
-    const scroller: HTMLElement | Window =
-      containerRef.current?.closest<HTMLElement>(
-        '[data-radix-scroll-area-viewport]',
-      ) ?? window;
-
-    const isReached = () => {
-      if (scroller instanceof Window) {
-        const scrolled = window.scrollY + window.innerHeight;
-        const total = document.documentElement.scrollHeight;
-        return scrolled >= total * COMMENTS_SCROLL_TRIGGER_RATIO;
-      }
-      const scrolled = scroller.scrollTop + scroller.clientHeight;
-      return scrolled >= scroller.scrollHeight * COMMENTS_SCROLL_TRIGGER_RATIO;
-    };
-
-    const onScroll = () => {
-      if (loadingRef.current) return;
-      if (isReached()) loadMore();
-    };
-
-    scroller.addEventListener('scroll', onScroll, { passive: true });
-    // In case the list is already short enough to be past the threshold.
-    onScroll();
-    return () => scroller.removeEventListener('scroll', onScroll);
-  }, [hasMore, loadMore]);
+  const {
+    items: comments,
+    isLoading,
+    remaining,
+    containerRef,
+  } = useInfiniteScroll<PostComment>({
+    initialItems: initialComments,
+    totalCount,
+    batchSize: COMMENTS_BATCH_SIZE,
+    getKey: (comment) => comment._id,
+    fetchPage,
+    triggerRatio: COMMENTS_SCROLL_TRIGGER_RATIO,
+  });
 
   if (comments.length === 0) {
     return (
@@ -132,7 +91,7 @@ const CommentsList = ({ postId, initialComments, totalCount }: Props) => {
       ))}
 
       {isLoading &&
-        Array.from({ length: Math.min(COMMENTS_BATCH_SIZE, totalCount - comments.length) }).map(
+        Array.from({ length: Math.min(COMMENTS_BATCH_SIZE, remaining) }).map(
           (_, i) => <CommentSkeleton key={`skeleton-${i}`} />,
         )}
     </div>

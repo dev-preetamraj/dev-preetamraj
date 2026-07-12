@@ -12,6 +12,10 @@ export type CategoryWithPosts = Category & {
   posts: PostListItem[];
 };
 
+export type CategoryListItem = Category & {
+  postCount: number;
+};
+
 /** Minimal shape for sidebar / "trending categories" links. */
 export type CategoryLink = {
   _id: string;
@@ -26,11 +30,12 @@ export type CategoryStat = CategoryLink & {
   postCount: number;
 };
 
-export const CATEGORIES_QUERY = `*[_type == "category"] | order(name asc) {
+export const CATEGORIES_QUERY = `*[_type == "category" && count(*[_type == "post" && references(^._id) && isPublished == true]) > 0] | order(count(*[_type == "post" && references(^._id) && isPublished == true]) desc, name asc) {
   _id,
   name,
   "slug": slug.current,
-  description
+  description,
+  "postCount": count(*[_type == "post" && references(^._id) && isPublished == true])
 }`;
 
 export const CATEGORIES_SITEMAP_QUERY = `*[_type == "category" && defined(slug.current) && count(*[_type == "post" && references(^._id) && isPublished == true]) > 0]{${SITEMAP_PROJECTION}}`;

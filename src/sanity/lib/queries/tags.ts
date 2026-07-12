@@ -11,10 +11,15 @@ export type TagWithPosts = Tag & {
   posts: PostListItem[];
 };
 
-export const TAGS_QUERY = `*[_type == "tag"] | order(name asc) {
+export type TagListItem = Tag & {
+  postCount: number;
+};
+
+export const TAGS_QUERY = `*[_type == "tag" && count(*[_type == "post" && references(^._id) && isPublished == true]) > 0] | order(count(*[_type == "post" && references(^._id) && isPublished == true]) desc, name asc) {
   _id,
   name,
-  "slug": slug.current
+  "slug": slug.current,
+  "postCount": count(*[_type == "post" && references(^._id) && isPublished == true])
 }`;
 
 export const TAGS_SITEMAP_QUERY = `*[_type == "tag" && defined(slug.current) && count(*[_type == "post" && references(^._id) && isPublished == true]) > 0]{${SITEMAP_PROJECTION}}`;
