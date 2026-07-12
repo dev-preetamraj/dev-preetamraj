@@ -3,7 +3,7 @@ import { POSTS_QUERY, PostListItem, sanityFetch } from '@/sanity/lib/queries';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Blog - Preetam Raj',
+  title: 'Blog',
   description: 'A fullstack web developer',
 };
 

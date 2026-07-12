@@ -27,7 +27,7 @@ export async function generateMetadata(
   const previousImages = (await parent).openGraph?.images || [];
 
   return {
-    title: `${project?.title} - Preetam Raj`,
+    title: project?.title,
     openGraph: {
       images: previousImages,
     },

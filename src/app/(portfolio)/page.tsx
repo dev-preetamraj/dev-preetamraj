@@ -5,9 +5,9 @@ import { POSTS_QUERY, PostListItem, sanityFetch } from '@/sanity/lib/queries';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Preetam Raj',
+  title: { absolute: 'Preetam Raj' },
   description:
-    'A fullstack web/app developer passionate about creating robust application that can handle every user.',
+    'Preetam Raj, a backend-focused fullstack developer - articles on backend systems, APIs, scalable architecture, and building applications that hold up in production.',
   openGraph: {
     images: ['https://preetamraj.dev/preview.png'],
   },

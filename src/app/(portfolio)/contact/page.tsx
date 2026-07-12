@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Contact - Preetam Raj',
+  title: 'Contact',
   description: 'A fullstack web developer',
 };
 

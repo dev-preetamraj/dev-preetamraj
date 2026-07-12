@@ -8,7 +8,7 @@ import {
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Portfolio - Preetam Raj',
+  title: 'Portfolio',
   description: 'A fullstack web developer',
 };
 
