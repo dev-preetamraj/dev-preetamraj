@@ -6,6 +6,7 @@ import {
   AUTHOR_NAME,
   canonical,
   ogImageUrl,
+  PERSON_ID,
   SITE_NAME,
   SITE_URL,
   TWITTER_HANDLE,
@@ -73,8 +74,13 @@ const BlogPost: FC<Props> = async (props) => {
     ...(image ? { image: [image] } : {}),
     datePublished: published,
     dateModified: published,
-    author: { '@type': 'Person', name: AUTHOR_NAME, url: SITE_URL },
-    publisher: { '@type': 'Person', name: AUTHOR_NAME, url: SITE_URL },
+    author: {
+      '@type': 'Person',
+      '@id': PERSON_ID,
+      name: AUTHOR_NAME,
+      url: SITE_URL,
+    },
+    publisher: { '@id': PERSON_ID },
     ...(blog.category ? { articleSection: blog.category.name } : {}),
     ...(blog.tags?.length
       ? { keywords: blog.tags.map((t) => t.name).join(', ') }

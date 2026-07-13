@@ -1,4 +1,6 @@
+import JsonLd from '@/components/global/json-ld';
 import SectionHeading from '@/components/global/SectionHeading';
+import { personLd, websiteLd } from '@/lib/seo';
 import CategoryCard from '@/components/home/CategoryCard';
 import FeaturedPostCard from '@/components/home/FeaturedPostCard';
 import LatestPostsGrid from '@/components/home/LatestPostsGrid';
@@ -41,9 +43,7 @@ const HomePage = async () => {
 
   const ranked = rankPosts(posts, now);
   const featured = ranked[0];
-  const latest = posts
-    .filter((post) => post._id !== featured?._id)
-    .slice(0, 6);
+  const latest = posts.filter((post) => post._id !== featured?._id).slice(0, 6);
   const categories = rankCategories(categoryStats, 6);
   const popular = [...posts]
     .sort((a, b) => (b.views ?? 0) - (a.views ?? 0))
@@ -52,6 +52,7 @@ const HomePage = async () => {
 
   return (
     <div className='flex flex-col space-y-12'>
+      <JsonLd data={[personLd, websiteLd]} />
       <section className='flex flex-col space-y-5'>
         <p className='text-primary text-sm font-medium uppercase tracking-wide'>
           The Blog
@@ -123,10 +124,7 @@ const HomePage = async () => {
                 Every post, in one place.
               </p>
             </div>
-            <Link
-              href='/blog'
-              className={cn(buttonVariants(), 'space-x-2')}
-            >
+            <Link href='/blog' className={cn(buttonVariants(), 'space-x-2')}>
               <span>Browse all posts</span>
               <ArrowRight className='h-4 w-4' />
             </Link>
