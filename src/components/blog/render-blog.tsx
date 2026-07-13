@@ -57,7 +57,7 @@ const RenderBlog = ({ blog }: Props) => {
                 {blog?.category && (
                   <Link
                     href={`/categories/${blog.category.slug}`}
-                    className='bg-muted text-white px-3 py-1 rounded-full text-sm font-semibold mt-4'
+                    className='bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-semibold mt-4'
                   >
                     {blog.category.name}
                   </Link>
