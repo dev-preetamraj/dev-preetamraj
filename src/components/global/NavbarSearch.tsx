@@ -19,10 +19,23 @@ import {
   SunIcon,
   TextAlignLeftIcon,
 } from '@radix-ui/react-icons';
-import { BookIcon, BookmarkIcon, SearchIcon } from 'lucide-react';
+import {
+  BookIcon,
+  BookmarkIcon,
+  CheckIcon,
+  CornerDownLeftIcon,
+  SearchIcon,
+} from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/navigation';
-import { ComponentType, Fragment, useEffect, useRef, useState } from 'react';
+import {
+  ComponentType,
+  Fragment,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 type SearchLink = { _id: string; label: string; href: string };
 
@@ -48,7 +61,7 @@ const SEARCH_DEBOUNCE_MS = 250;
 
 const NavbarSearch = () => {
   const router = useRouter();
-  const { setTheme } = useTheme();
+  const { setTheme, theme: activeTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [query, setQuery] = useState('');
@@ -263,15 +276,44 @@ const NavbarSearch = () => {
                   >
                     <theme.icon className='mr-2 h-4 w-4' />
                     <span>{theme.label}</span>
+                    {activeTheme === theme.value && (
+                      <CheckIcon className='ml-auto h-4 w-4 text-primary' />
+                    )}
                   </CommandItem>
                 ))}
               </CommandGroup>
             </>
           )}
         </CommandList>
+
+        <div className='relative hidden items-center justify-between px-4 py-2.5 text-xs text-muted-foreground before:absolute before:inset-x-3 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-primary/25 before:to-transparent sm:flex'>
+          <div className='flex items-center gap-3'>
+            <span className='flex items-center gap-1.5'>
+              <Kbd>↑</Kbd>
+              <Kbd>↓</Kbd>
+              <span>Navigate</span>
+            </span>
+            <span className='flex items-center gap-1.5'>
+              <Kbd>
+                <CornerDownLeftIcon className='h-3 w-3' />
+              </Kbd>
+              <span>Open</span>
+            </span>
+          </div>
+          <span className='flex items-center gap-1.5'>
+            <Kbd>Esc</Kbd>
+            <span>Close</span>
+          </span>
+        </div>
       </CommandDialog>
     </>
   );
 };
+
+const Kbd = ({ children }: { children: ReactNode }) => (
+  <kbd className='inline-flex h-5 min-w-5 items-center justify-center rounded border border-primary/15 bg-primary/5 px-1 font-mono text-[10px] font-medium text-muted-foreground'>
+    {children}
+  </kbd>
+);
 
 export default NavbarSearch;

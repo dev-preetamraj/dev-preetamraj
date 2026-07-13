@@ -34,7 +34,7 @@ const CommandDialog = ({
 }: CommandDialogProps) => {
   return (
     <Dialog {...props}>
-      <DialogContent className='overflow-hidden p-0'>
+      <DialogContent className='w-[calc(100%-2rem)] overflow-hidden rounded-lg border-primary/20 p-0 shadow-[0_0_0_1px_hsl(var(--primary)/0.06),0_20px_60px_-15px_hsl(var(--primary)/0.25)] sm:w-full'>
         <Command
           {...commandProps}
           className={cn(
@@ -53,8 +53,11 @@ const CommandInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
 >(({ className, ...props }, ref) => (
-  <div className='flex items-center border-b px-3' cmdk-input-wrapper=''>
-    <MagnifyingGlassIcon className='mr-2 h-4 w-4 shrink-0 opacity-50' />
+  <div
+    className='relative flex items-center px-3 after:absolute after:inset-x-3 after:bottom-0 after:h-px after:bg-gradient-to-r after:from-transparent after:via-primary/25 after:to-transparent'
+    cmdk-input-wrapper=''
+  >
+    <MagnifyingGlassIcon className='mr-2 h-4 w-4 shrink-0 text-primary/70' />
     <CommandPrimitive.Input
       ref={ref}
       className={cn(
@@ -116,7 +119,10 @@ const CommandSeparator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <CommandPrimitive.Separator
     ref={ref}
-    className={cn('-mx-1 h-px bg-border', className)}
+    className={cn(
+      'mx-1 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent',
+      className
+    )}
     {...props}
   />
 ));
