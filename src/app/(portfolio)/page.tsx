@@ -40,8 +40,10 @@ const HomePage = async () => {
   ]);
 
   const ranked = rankPosts(posts, now);
-  const [featured, ...rest] = ranked;
-  const latest = rest.slice(0, 6);
+  const featured = ranked[0];
+  const latest = posts
+    .filter((post) => post._id !== featured?._id)
+    .slice(0, 6);
   const categories = rankCategories(categoryStats, 6);
   const popular = [...posts]
     .sort((a, b) => (b.views ?? 0) - (a.views ?? 0))

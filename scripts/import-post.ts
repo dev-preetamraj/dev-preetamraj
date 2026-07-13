@@ -7,6 +7,7 @@
  * Usage: bun run scripts/import-post.ts content/drafts/<file>.md
  */
 import { readFileSync } from 'node:fs';
+import { basename, isAbsolute, resolve } from 'node:path';
 
 import { createClient } from '@sanity/client';
 import matter from 'gray-matter';
@@ -268,6 +269,42 @@ async function resolveRef(
   return created._id;
 }
 
+type FeaturedImage = {
+  _type: 'image';
+  asset: { _type: 'reference'; _ref: string };
+  alt: string;
+};
+
+/**
+ * Upload the local thumbnail as a Sanity image asset and return a `featuredImage`
+ * value. Sanity dedupes assets by content hash, so re-importing the same file
+ * reuses the existing asset instead of creating a duplicate. A missing file is a
+ * warning, not a failure - the image is optional in the schema.
+ */
+async function uploadFeaturedImage(
+  thumbnail: string,
+  alt: string
+): Promise<FeaturedImage | null> {
+  const imgPath = isAbsolute(thumbnail)
+    ? thumbnail
+    : resolve(process.cwd(), thumbnail);
+  let bytes: Buffer;
+  try {
+    bytes = readFileSync(imgPath);
+  } catch {
+    warn(`thumbnail not found, skipping featured image: ${thumbnail}`);
+    return null;
+  }
+  const filename = basename(imgPath);
+  const asset = await client.assets.upload('image', bytes, { filename });
+  console.log(`  + featured image "${filename}" (uploaded)`);
+  return {
+    _type: 'image',
+    asset: { _type: 'reference', _ref: asset._id },
+    alt,
+  };
+}
+
 async function main() {
   const filePath = process.argv[2];
   if (!filePath) {
@@ -294,6 +331,10 @@ async function main() {
   const tags: string[] = Array.isArray(data.tags)
     ? data.tags.map((x) => String(x).trim()).filter(Boolean)
     : [];
+  const thumbnail =
+    typeof data.thumbnail === 'string' ? data.thumbnail.trim() : '';
+  const imageAlt =
+    typeof data.alt === 'string' && data.alt.trim() ? data.alt.trim() : title;
 
   const missing = [
     !title && 'title',
@@ -325,6 +366,10 @@ async function main() {
     tagRefs.push({ _type: 'reference', _ref: id, _key: key() });
   }
 
+  const featuredImage = thumbnail
+    ? await uploadFeaturedImage(thumbnail, imageAlt)
+    : null;
+
   const _id = `drafts.${slug}`;
   await client.createOrReplace({
     _id,
@@ -332,6 +377,7 @@ async function main() {
     title,
     slug: { _type: 'slug', current: slug },
     description,
+    ...(featuredImage ? { featuredImage } : {}),
     content: portableText,
     category: { _type: 'reference', _ref: categoryId },
     ...(tagRefs.length ? { tags: tagRefs } : {}),
