@@ -1,7 +1,8 @@
+import { readingTimeMinutes } from '@/lib/reading-time';
 import { formatViews } from '@/lib/utils';
 import { urlFor } from '@/sanity/lib/image';
 import { Post } from '@/sanity/lib/queries';
-import { EyeIcon } from '@heroicons/react/24/outline';
+import { ClockIcon, EyeIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import Link from 'next/link';
 import RenderPortableText from '../global/render-portable-text';
@@ -11,8 +12,10 @@ type Props = {
 };
 
 const RenderBlog = ({ blog }: Props) => {
+  const readingTime = readingTimeMinutes(blog?.content);
+
   return (
-    <div>
+    <div id='article-body'>
       <section className='space-y-2 border border-primary/10 mb-10'>
         <div className='relative flex flex-col xl:flex-row justify-between'>
           {blog?.featuredImage?.asset && (
@@ -48,6 +51,15 @@ const RenderBlog = ({ blog }: Props) => {
                   <EyeIcon className='h-4 w-4' />
                   {formatViews(blog?.views)}
                 </span>
+                {readingTime > 0 && (
+                  <span
+                    className='flex items-center gap-1'
+                    title='Estimated reading time'
+                  >
+                    <ClockIcon className='h-4 w-4' />
+                    {readingTime} min read
+                  </span>
+                )}
               </div>
             </div>
 

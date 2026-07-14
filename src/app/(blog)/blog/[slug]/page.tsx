@@ -1,3 +1,4 @@
+import ReadingProgress from '@/components/blog/reading-progress';
 import RenderBlog from '@/components/blog/render-blog';
 import ViewTracker from '@/components/blog/view-tracker';
 import JsonLd from '@/components/global/json-ld';
@@ -105,6 +106,7 @@ const BlogPost: FC<Props> = async (props) => {
   return (
     <div className='space-y-12'>
       <JsonLd data={[articleLd, breadcrumbLd]} />
+      <ReadingProgress />
       <ViewTracker postId={blog._id} />
       <RenderBlog blog={blog} />
       <RenderComments
