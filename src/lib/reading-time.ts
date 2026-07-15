@@ -41,9 +41,8 @@ export function countCodeLines(content: PortableTextBlock[] | null | undefined):
   let lines = 0;
   for (const block of content) {
     if (block?._type !== 'code') continue;
-    const code = typeof (block as { code?: unknown }).code === 'string'
-      ? ((block as { code: string }).code)
-      : '';
+    const raw = (block as { code?: unknown }).code;
+    const code = typeof raw === 'string' ? raw : '';
     for (const line of code.split('\n')) {
       if (line.trim()) lines += 1;
     }
