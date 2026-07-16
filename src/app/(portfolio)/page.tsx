@@ -1,5 +1,6 @@
 import JsonLd from '@/components/global/json-ld';
 import SectionHeading from '@/components/global/SectionHeading';
+import { FEED_ALTERNATES } from '@/lib/feed';
 import { personLd, websiteLd } from '@/lib/seo';
 import CategoryCard from '@/components/home/CategoryCard';
 import FeaturedPostCard from '@/components/home/FeaturedPostCard';
@@ -29,6 +30,7 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: 'https://preetamraj.dev',
+    ...FEED_ALTERNATES,
   },
 };
 

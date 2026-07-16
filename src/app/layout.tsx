@@ -1,4 +1,5 @@
 import { Toaster } from '@/components/ui/sonner';
+import { FEED_ALTERNATES } from '@/lib/feed';
 import {
   SITE_DESCRIPTION,
   SITE_NAME,
@@ -21,6 +22,7 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  alternates: { ...FEED_ALTERNATES },
   openGraph: {
     type: 'website',
     url: SITE_URL,

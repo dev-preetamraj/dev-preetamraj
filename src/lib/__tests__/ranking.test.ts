@@ -4,11 +4,14 @@ import {
   RANKING,
   rankCategories,
   rankPosts,
+  rankRelated,
   scoreCategory,
   scorePost,
+  scoreRelated,
   trendingWindowSince,
   type CategoryStats,
   type RankablePost,
+  type RelatablePost,
 } from '../ranking';
 
 const DAY_MS = 86_400_000;
@@ -29,6 +32,19 @@ const category = (over: Partial<CategoryStats> = {}): CategoryStats => ({
   postCount: 0,
   ...over,
 });
+
+let relatableId = 0;
+const relatable = (over: Partial<RelatablePost> = {}): RelatablePost => ({
+  _id: `post-${(relatableId += 1)}`,
+  views: 0,
+  publishedAt: daysAgo(0),
+  _createdAt: daysAgo(0),
+  category: { slug: 'engineering' },
+  tags: [],
+  ...over,
+});
+
+const tags = (...slugs: string[]) => slugs.map((slug) => ({ slug }));
 
 describe('scorePost', () => {
   test('a brand-new post gets (near) full freshness weight', () => {
@@ -97,6 +113,263 @@ describe('rankPosts', () => {
 
   test('empty input yields empty output', () => {
     expect(rankPosts([], NOW)).toEqual([]);
+  });
+});
+
+describe('scoreRelated', () => {
+  const reference = relatable({
+    _id: 'reference',
+    category: { slug: 'engineering' },
+    tags: tags('react', 'testing'),
+  });
+
+  // The tie-break must stay bounded below the lattice's minimum gap of 1.
+  // An unsquashed `scorePost` term is unbounded (log10 of views) and lets a
+  // popular post jump a whole relatedness band - the bug this guards against.
+  test('a fresh, heavily-viewed same-category post loses to a dead shared-tag post', () => {
+    const catViral = relatable({
+      category: { slug: 'engineering' },
+      tags: [],
+      views: 10_000,
+      publishedAt: daysAgo(0),
+    });
+    const tagDead = relatable({
+      category: { slug: 'design' },
+      tags: tags('react'),
+      views: 0,
+      publishedAt: daysAgo(730),
+    });
+
+    expect(scoreRelated(tagDead, reference, NOW)).toBeGreaterThan(
+      scoreRelated(catViral, reference, NOW)
+    );
+  });
+
+  test('an absurd view count still cannot cross a relatedness band', () => {
+    const absurd = relatable({
+      category: { slug: 'engineering' },
+      tags: [],
+      views: 1_000_000_000,
+      publishedAt: daysAgo(0),
+    });
+    const barelyRelated = relatable({
+      category: { slug: 'design' },
+      tags: tags('react'),
+      views: 0,
+      publishedAt: daysAgo(3650),
+    });
+
+    expect(scoreRelated(barelyRelated, reference, NOW)).toBeGreaterThan(
+      scoreRelated(absurd, reference, NOW)
+    );
+  });
+
+  test('within a band, scorePost still breaks the tie (squash stays monotonic)', () => {
+    const shared = { category: { slug: 'design' }, tags: tags('react') };
+    const fresh = relatable({ ...shared, views: 50, publishedAt: daysAgo(0) });
+    const stale = relatable({
+      ...shared,
+      views: 50,
+      publishedAt: daysAgo(400),
+    });
+
+    expect(scoreRelated(fresh, reference, NOW)).toBeGreaterThan(
+      scoreRelated(stale, reference, NOW)
+    );
+  });
+
+  test('one shared tag outranks a bare category match', () => {
+    const tagged = relatable({
+      category: { slug: 'design' },
+      tags: tags('react'),
+    });
+    const sameCategory = relatable({
+      category: { slug: 'engineering' },
+      tags: [],
+    });
+
+    expect(scoreRelated(tagged, reference, NOW)).toBeGreaterThan(
+      scoreRelated(sameCategory, reference, NOW)
+    );
+  });
+
+  test('more shared tags outrank fewer', () => {
+    const two = relatable({ category: null, tags: tags('react', 'testing') });
+    const one = relatable({ category: null, tags: tags('react') });
+
+    expect(scoreRelated(two, reference, NOW)).toBeGreaterThan(
+      scoreRelated(one, reference, NOW)
+    );
+  });
+
+  test('shared tags stop counting past maxSharedTags', () => {
+    const many = relatable({
+      _id: 'many',
+      category: null,
+      tags: tags('a', 'b', 'c', 'd', 'e'),
+    });
+    const capped = relatable({
+      _id: 'capped',
+      category: null,
+      tags: tags('a', 'b', 'c'),
+    });
+    const wide = relatable({
+      category: null,
+      tags: tags('a', 'b', 'c', 'd', 'e'),
+    });
+
+    // Both share more than the cap allows, so they land in the same band.
+    expect(scoreRelated(many, wide, NOW)).toBeCloseTo(
+      scoreRelated(capped, wide, NOW),
+      5
+    );
+  });
+
+  test('two uncategorised posts do not count as a category match', () => {
+    const noCategory = relatable({ category: null, tags: [] });
+    const referenceNoCategory = relatable({
+      _id: 'ref2',
+      category: null,
+      tags: [],
+    });
+
+    // A bare `===` would make null === null true and award the category weight.
+    expect(scoreRelated(noCategory, referenceNoCategory, NOW)).toBeLessThan(
+      RANKING.related.categoryMatchWeight
+    );
+  });
+
+  test('duplicate tag refs do not inflate the score', () => {
+    const duped = relatable({
+      category: null,
+      tags: tags('react', 'react', 'react'),
+    });
+    const single = relatable({ category: null, tags: tags('react') });
+
+    expect(scoreRelated(duped, reference, NOW)).toBeCloseTo(
+      scoreRelated(single, reference, NOW),
+      5
+    );
+  });
+
+  test('a post with no tags falls back to the category band', () => {
+    const untagged = relatable({
+      category: { slug: 'engineering' },
+      tags: null,
+    });
+    expect(scoreRelated(untagged, reference, NOW)).toBeGreaterThan(
+      RANKING.related.categoryMatchWeight
+    );
+    expect(scoreRelated(untagged, reference, NOW)).toBeLessThan(
+      RANKING.related.categoryMatchWeight + 1
+    );
+  });
+
+  test('a reference with no tags still matches on category', () => {
+    const referenceUntagged = relatable({
+      _id: 'ref3',
+      category: { slug: 'engineering' },
+      tags: null,
+    });
+    const sameCategory = relatable({
+      category: { slug: 'engineering' },
+      tags: tags('react'),
+    });
+    const unrelated = relatable({
+      category: { slug: 'design' },
+      tags: tags('react'),
+    });
+
+    expect(scoreRelated(sameCategory, referenceUntagged, NOW)).toBeGreaterThan(
+      scoreRelated(unrelated, referenceUntagged, NOW)
+    );
+  });
+});
+
+describe('rankRelated', () => {
+  const reference = relatable({
+    _id: 'reference',
+    category: { slug: 'engineering' },
+    tags: tags('react', 'testing'),
+  });
+
+  test('excludes the reference post from its own results', () => {
+    const other = relatable({ _id: 'other' });
+    expect(
+      rankRelated([reference, other], reference, NOW).map((p) => p._id)
+    ).toEqual(['other']);
+  });
+
+  test('orders by relatedness and does not mutate the input', () => {
+    const unrelated = relatable({
+      _id: 'unrelated',
+      category: { slug: 'design' },
+      tags: [],
+    });
+    const sameCategory = relatable({
+      _id: 'category',
+      category: { slug: 'engineering' },
+      tags: [],
+    });
+    const twoTags = relatable({
+      _id: 'two',
+      category: { slug: 'design' },
+      tags: tags('react', 'testing'),
+    });
+    const input = [unrelated, sameCategory, twoTags];
+
+    const ranked = rankRelated(input, reference, NOW);
+
+    expect(ranked.map((p) => p._id)).toEqual(['two', 'category', 'unrelated']);
+    expect(input).toEqual([unrelated, sameCategory, twoTags]);
+  });
+
+  test('unrelated posts sort last but still backfill, ranked by scorePost', () => {
+    const related = relatable({
+      _id: 'related',
+      category: { slug: 'design' },
+      tags: tags('react'),
+    });
+    const popular = relatable({
+      _id: 'popular',
+      category: { slug: 'design' },
+      tags: [],
+      views: 900,
+    });
+    const quiet = relatable({
+      _id: 'quiet',
+      category: { slug: 'design' },
+      tags: [],
+      views: 0,
+    });
+
+    const ranked = rankRelated([quiet, popular, related], reference, NOW);
+
+    expect(ranked.map((p) => p._id)).toEqual(['related', 'popular', 'quiet']);
+  });
+
+  test('respects the limit and preserves extra fields', () => {
+    const posts = [
+      { ...relatable({ _id: 'a', tags: tags('react') }), title: 'A' },
+      {
+        ...relatable({ _id: 'b', tags: tags('react', 'testing') }),
+        title: 'B',
+      },
+      { ...relatable({ _id: 'c', category: null, tags: [] }), title: 'C' },
+    ];
+    const ranked = rankRelated(posts, reference, NOW, 2);
+
+    expect(ranked).toHaveLength(2);
+    expect(ranked.map((p) => p.title)).toEqual(['B', 'A']);
+  });
+
+  test('empty input yields empty output', () => {
+    expect(rankRelated([], reference, NOW)).toEqual([]);
+  });
+
+  test('fewer candidates than the limit returns what exists', () => {
+    const only = relatable({ _id: 'only' });
+    expect(rankRelated([only], reference, NOW, 4)).toHaveLength(1);
   });
 });
 

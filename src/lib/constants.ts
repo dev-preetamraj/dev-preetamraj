@@ -9,3 +9,9 @@ export const POSTS_INITIAL_BATCH_SIZE = 10;
 
 /** Number of posts appended on each infinite-scroll fetch of the blog list. */
 export const POSTS_BATCH_SIZE = 5;
+
+/** Number of most-recent posts carried in the RSS feed. */
+export const FEED_POSTS_COUNT = 20;
+
+/** Number of related posts shown at the foot of a post - two full rows. */
+export const RELATED_POSTS_COUNT = 4;

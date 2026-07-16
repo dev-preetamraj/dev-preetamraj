@@ -1,6 +1,6 @@
 import type { PortableTextBlock } from '@portabletext/types';
 
-import { COMMENTS_BATCH_SIZE } from '@/lib/constants';
+import { COMMENTS_BATCH_SIZE, FEED_POSTS_COUNT } from '@/lib/constants';
 import {
   CategoryRef,
   POST_LIST_PROJECTION,
@@ -57,6 +57,29 @@ export const POST_BY_SLUG_QUERY = `*[_type == "post" && slug.current == $slug &&
     _createdAt
   },
   "commentsCount": count(*[_type == "comment" && post._ref == ^._id && isApproved == true])
+}`;
+
+export type FeedPost = PostListItem & {
+  _updatedAt: string;
+};
+
+export const POSTS_FEED_QUERY = `*[_type == "post" && isPublished == true] | order(coalesce(publishedAt, _createdAt) desc)[0...${FEED_POSTS_COUNT}] {
+  ${POST_LIST_PROJECTION},
+  _updatedAt
+}`;
+
+export type RelatedPostCandidate = PostListItem & {
+  tags: TagRef[] | null;
+};
+
+/**
+ * Every published post plus the raw relatedness signals; `@/lib/ranking` scores
+ * them and excludes the post being viewed. Deliberately takes no params, so all
+ * posts share one ISR cache entry rather than one per slug.
+ */
+export const RELATED_POSTS_QUERY = `*[_type == "post" && isPublished == true] {
+  ${POST_LIST_PROJECTION},
+  tags[]->{name, "slug": slug.current}
 }`;
 
 /** Minimal fields for OG image generation. */
