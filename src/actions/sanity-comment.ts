@@ -3,13 +3,16 @@
 import { headers } from 'next/headers';
 import { z } from 'zod';
 
+import { computeReplyThreading } from '@/lib/comment-thread';
 import { IResponse } from '@/lib/types';
 import { client } from '@/sanity/lib/client';
-import { COMMENTS_PAGE_QUERY, PostComment } from '@/sanity/lib/queries';
+import { COMMENTS_PAGE_QUERY, PostCommentThread } from '@/sanity/lib/queries';
 import { writeClient } from '@/sanity/lib/write-client';
 
 const commentSchema = z.object({
   postId: z.string().min(1),
+  // Present when this comment is a reply to another comment.
+  parentId: z.string().optional(),
   authorName: z.string().trim().min(1, 'Name is required').max(80),
   authorEmail: z.string().trim().email('A valid email is required'),
   content: z
@@ -46,10 +49,10 @@ export async function getApprovedComments(
   postId: string,
   start: number,
   end: number,
-): Promise<PostComment[]> {
+): Promise<PostCommentThread[]> {
   if (!postId || end <= start) return [];
   try {
-    return await client.fetch<PostComment[]>(COMMENTS_PAGE_QUERY, {
+    return await client.fetch<PostCommentThread[]>(COMMENTS_PAGE_QUERY, {
       postId,
       start,
       end,
@@ -58,6 +61,35 @@ export async function getApprovedComments(
     console.error('Failed to fetch comments page:', error);
     return [];
   }
+}
+
+/**
+ * Resolve the threading fields for a reply to `parentId`. Returns null when the
+ * target is missing or belongs to a different post; otherwise delegates the cap
+ * arithmetic to the pure `computeReplyThreading`.
+ */
+async function resolveThread(parentId: string, postId: string) {
+  const target = await writeClient.fetch<{
+    _id: string;
+    depth: number | null;
+    postRef: string;
+    rootId: string | null;
+    parentRef: string | null;
+  } | null>(
+    `*[_type == "comment" && _id == $parentId][0]{
+      _id, depth, "postRef": post._ref, "rootId": root._ref, "parentRef": parent._ref
+    }`,
+    { parentId },
+  );
+
+  if (!target || target.postRef !== postId) return null;
+
+  return computeReplyThreading({
+    id: target._id,
+    depth: target.depth,
+    rootId: target.rootId,
+    parentRef: target.parentRef,
+  });
 }
 
 export async function createComment(
@@ -72,7 +104,8 @@ export async function createComment(
     };
   }
 
-  const { postId, authorName, authorEmail, content, website } = parsed.data;
+  const { postId, parentId, authorName, authorEmail, content, website } =
+    parsed.data;
 
   // Honeypot: silently pretend success without creating anything, so bots
   // get no signal that they were caught.
@@ -101,9 +134,26 @@ export async function createComment(
       }
     }
 
+    // Resolve reply threading. Depth is capped at MAX_COMMENT_DEPTH: replying to
+    // a comment already at the cap attaches the new comment as its sibling
+    // (same parent), so the tree never grows past the limit.
+    const thread = parentId ? await resolveThread(parentId, postId) : null;
+    if (parentId && !thread) {
+      return {
+        success: false,
+        data: null,
+        message: 'That comment no longer exists.',
+      };
+    }
+
     await writeClient.create({
       _type: 'comment',
       post: { _type: 'reference', _ref: postId },
+      ...(thread && {
+        parent: { _type: 'reference', _ref: thread.parentRef },
+        root: { _type: 'reference', _ref: thread.rootId },
+      }),
+      depth: thread?.depth ?? 1,
       authorName,
       authorEmail,
       content,

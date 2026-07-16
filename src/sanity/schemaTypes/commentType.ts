@@ -15,6 +15,30 @@ export const commentType = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'parent',
+      title: 'Parent comment',
+      type: 'reference',
+      to: [{ type: 'comment' }],
+      readOnly: true,
+      description: 'Immediate parent when this is a reply. Empty for top-level comments.',
+    }),
+    defineField({
+      name: 'root',
+      title: 'Thread root',
+      type: 'reference',
+      to: [{ type: 'comment' }],
+      readOnly: true,
+      description:
+        'Top-level ancestor of the thread. Empty for top-level comments.',
+    }),
+    defineField({
+      name: 'depth',
+      title: 'Depth',
+      type: 'number',
+      readOnly: true,
+      description: 'Nesting level 1-4, set server-side.',
+    }),
+    defineField({
       name: 'authorName',
       title: 'Author name',
       type: 'string',
@@ -54,10 +78,12 @@ export const commentType = defineType({
       content: 'content',
       isApproved: 'isApproved',
       postTitle: 'post.title',
+      parentId: 'parent._ref',
     },
-    prepare({ authorName, content, isApproved, postTitle }) {
+    prepare({ authorName, content, isApproved, postTitle, parentId }) {
+      const reply = parentId ? '↳ ' : '';
       return {
-        title: `${isApproved ? '✓' : '•'} ${authorName}`,
+        title: `${isApproved ? '✓' : '•'} ${reply}${authorName}`,
         subtitle: postTitle ? `on “${postTitle}” — ${content}` : content,
       };
     },

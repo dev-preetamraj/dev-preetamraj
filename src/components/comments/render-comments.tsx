@@ -1,10 +1,10 @@
-import { PostComment } from '@/sanity/lib/queries';
+import { PostCommentThread } from '@/sanity/lib/queries';
 import CommentForm from '../forms/comment-form';
 import CommentsList from './comments-list';
 
 type Props = {
   postId: string;
-  comments: PostComment[];
+  comments: PostCommentThread[];
   commentsCount: number;
 };
 

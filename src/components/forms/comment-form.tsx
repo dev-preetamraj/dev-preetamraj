@@ -37,9 +37,15 @@ const formSchema = z.object({
 
 type Props = {
   postId: string;
+  /** Set when this form posts a reply to an existing comment. */
+  parentId?: string;
+  /** Called after a successful submit (and on Cancel) — used to close inline reply forms. */
+  onSuccess?: () => void;
+  /** Tighter layout for use as an inline reply box. */
+  compact?: boolean;
 };
 
-const CommentForm = ({ postId }: Props) => {
+const CommentForm = ({ postId, parentId, onSuccess, compact }: Props) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -51,10 +57,11 @@ const CommentForm = ({ postId }: Props) => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const res = await createComment({ postId, ...values });
+    const res = await createComment({ postId, parentId, ...values });
     if (res.success) {
       toast.success(res.message);
       form.reset();
+      onSuccess?.();
     } else {
       toast.error(res.message);
     }
@@ -62,8 +69,15 @@ const CommentForm = ({ postId }: Props) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
-        <div className='grid gap-6 sm:grid-cols-2'>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className={compact ? 'space-y-3' : 'space-y-6'}
+      >
+        <div
+          className={
+            compact ? 'grid gap-3 sm:grid-cols-2' : 'grid gap-6 sm:grid-cols-2'
+          }
+        >
           <FormField
             control={form.control}
             name='authorName'
@@ -110,14 +124,17 @@ const CommentForm = ({ postId }: Props) => {
               </FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder='Write comment here...'
+                  placeholder={
+                    parentId ? 'Write your reply...' : 'Write comment here...'
+                  }
                   maxLength={500}
-                  rows={4}
+                  rows={compact ? 3 : 4}
                   {...field}
                 />
               </FormControl>
               <FormDescription>
-                Your comment will be visible once it&apos;s approved.
+                Your {parentId ? 'reply' : 'comment'} will be visible once
+                it&apos;s approved.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -140,9 +157,30 @@ const CommentForm = ({ postId }: Props) => {
           )}
         />
 
-        <Button type='submit' disabled={form.formState.isSubmitting}>
-          {form.formState.isSubmitting ? 'Posting...' : 'Post comment'}
-        </Button>
+        <div className='flex items-center gap-2'>
+          <Button
+            type='submit'
+            size={compact ? 'sm' : 'default'}
+            disabled={form.formState.isSubmitting}
+          >
+            {form.formState.isSubmitting
+              ? 'Posting...'
+              : parentId
+                ? 'Post reply'
+                : 'Post comment'}
+          </Button>
+          {onSuccess && (
+            <Button
+              type='button'
+              variant='ghost'
+              size={compact ? 'sm' : 'default'}
+              onClick={onSuccess}
+              disabled={form.formState.isSubmitting}
+            >
+              Cancel
+            </Button>
+          )}
+        </div>
       </form>
     </Form>
   );

@@ -1,31 +1,22 @@
 'use client';
 
-import { formatDistanceToNow } from 'date-fns';
 import { useCallback } from 'react';
 
 import { getApprovedComments } from '@/actions/sanity-comment';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useInfiniteScroll } from '@/hooks/use-infinite-scroll';
 import {
   COMMENTS_BATCH_SIZE,
   COMMENTS_SCROLL_TRIGGER_RATIO,
 } from '@/lib/constants';
-import { PostComment } from '@/sanity/lib/queries';
+import { CommentDescendant, PostCommentThread } from '@/sanity/lib/queries';
+import CommentNode from './comment-node';
 
 type Props = {
   postId: string;
-  initialComments: PostComment[];
+  initialComments: PostCommentThread[];
   totalCount: number;
 };
-
-function formatDateToNow(dateString: string): string {
-  return formatDistanceToNow(new Date(dateString), { addSuffix: true });
-}
-
-function initials(name: string): string {
-  return name.trim().charAt(0).toUpperCase() || '?';
-}
 
 /** Skeleton placeholder shown while the next batch of comments loads. */
 function CommentSkeleton() {
@@ -43,6 +34,19 @@ function CommentSkeleton() {
   );
 }
 
+/** Bucket a thread's flat descendants by their immediate parent for tree rendering. */
+function groupByParent(
+  descendants: CommentDescendant[],
+): Map<string, CommentDescendant[]> {
+  const map = new Map<string, CommentDescendant[]>();
+  for (const descendant of descendants) {
+    const bucket = map.get(descendant.parentId);
+    if (bucket) bucket.push(descendant);
+    else map.set(descendant.parentId, [descendant]);
+  }
+  return map;
+}
+
 const CommentsList = ({ postId, initialComments, totalCount }: Props) => {
   const fetchPage = useCallback(
     (start: number, end: number) => getApprovedComments(postId, start, end),
@@ -54,7 +58,7 @@ const CommentsList = ({ postId, initialComments, totalCount }: Props) => {
     isLoading,
     remaining,
     containerRef,
-  } = useInfiniteScroll<PostComment>({
+  } = useInfiniteScroll<PostCommentThread>({
     initialItems: initialComments,
     totalCount,
     batchSize: COMMENTS_BATCH_SIZE,
@@ -72,21 +76,20 @@ const CommentsList = ({ postId, initialComments, totalCount }: Props) => {
   }
 
   return (
-    <div ref={containerRef} className='space-y-6'>
-      {comments.map((comment) => (
-        <div key={comment._id} className='flex space-x-4'>
-          <Avatar>
-            <AvatarFallback>{initials(comment.authorName)}</AvatarFallback>
-          </Avatar>
-          <div className='w-full'>
-            <div className='flex items-center space-x-2'>
-              <p className='text-lg font-semibold'>{comment.authorName}</p>
-              <span className='text-sm text-foreground/75'>
-                {formatDateToNow(comment._createdAt)}
-              </span>
-            </div>
-            <p className='text-foreground/75'>{comment.content}</p>
-          </div>
+    <div ref={containerRef} className='space-y-8'>
+      {comments.map((thread) => (
+        <div key={thread._id} className='group/thread'>
+          <CommentNode
+            comment={{
+              _id: thread._id,
+              authorName: thread.authorName,
+              content: thread.content,
+              _createdAt: thread._createdAt,
+              depth: 1,
+            }}
+            postId={postId}
+            childrenByParent={groupByParent(thread.descendants)}
+          />
         </div>
       ))}
 

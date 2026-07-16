@@ -28,10 +28,21 @@ export type PostComment = {
   _createdAt: string;
 };
 
+/** A reply at any nesting level; `parentId` links it to its parent for tree building. */
+export type CommentDescendant = PostComment & {
+  parentId: string;
+  depth: number;
+};
+
+/** A top-level comment plus every approved reply in its thread (flat, tree-built client-side). */
+export type PostCommentThread = PostComment & {
+  descendants: CommentDescendant[];
+};
+
 export type Post = PostListItem & {
   content: PortableTextBlock[];
   tags: TagRef[] | null;
-  comments: PostComment[];
+  comments: PostCommentThread[];
   commentsCount: number;
 };
 
@@ -46,17 +57,34 @@ export const POSTS_QUERY = `*[_type == "post" && isPublished == true] | order(pu
 
 export const POSTS_SITEMAP_QUERY = `*[_type == "post" && isPublished == true && defined(slug.current)]{${SITEMAP_PROJECTION}}`;
 
+/**
+ * A top-level comment with its whole thread. `descendants` gathers every approved
+ * reply (any depth) via the denormalized `root` ref, so the client can rebuild the
+ * tree without recursive queries. `^._id` is the top-level comment being projected.
+ */
+const COMMENT_THREAD_PROJECTION = `
+  _id,
+  authorName,
+  content,
+  _createdAt,
+  "descendants": *[_type == "comment" && root._ref == ^._id && isApproved == true] | order(_createdAt asc){
+    _id,
+    authorName,
+    content,
+    _createdAt,
+    "parentId": parent._ref,
+    depth
+  }
+`;
+
 export const POST_BY_SLUG_QUERY = `*[_type == "post" && slug.current == $slug && isPublished == true][0] {
   ${POST_LIST_PROJECTION},
   content,
   tags[]->{name, "slug": slug.current},
-  "comments": *[_type == "comment" && post._ref == ^._id && isApproved == true] | order(_createdAt asc)[0...${COMMENTS_BATCH_SIZE}]{
-    _id,
-    authorName,
-    content,
-    _createdAt
+  "comments": *[_type == "comment" && post._ref == ^._id && isApproved == true && !defined(parent)] | order(_createdAt asc)[0...${COMMENTS_BATCH_SIZE}]{
+    ${COMMENT_THREAD_PROJECTION}
   },
-  "commentsCount": count(*[_type == "comment" && post._ref == ^._id && isApproved == true])
+  "commentsCount": count(*[_type == "comment" && post._ref == ^._id && isApproved == true && !defined(parent)])
 }`;
 
 export type FeedPost = PostListItem & {
@@ -90,12 +118,9 @@ export const POST_OG_QUERY = `*[_type == "post" && slug.current == $slug && isPu
   category->{name}
 }`;
 
-/** A single page of approved comments for a post, used for infinite scroll. */
-export const COMMENTS_PAGE_QUERY = `*[_type == "comment" && post._ref == $postId && isApproved == true] | order(_createdAt asc)[$start...$end]{
-  _id,
-  authorName,
-  content,
-  _createdAt
+/** A single page of top-level comments (each with its thread), used for infinite scroll. */
+export const COMMENTS_PAGE_QUERY = `*[_type == "comment" && post._ref == $postId && isApproved == true && !defined(parent)] | order(_createdAt asc)[$start...$end]{
+  ${COMMENT_THREAD_PROJECTION}
 }`;
 
 export const TRENDING_POSTS_QUERY = `*[_type == "post" && isPublished == true] | order(publishedAt desc)[0...5] {
