@@ -1,7 +1,10 @@
 import SectionHeading from '@/components/global/SectionHeading';
-import { AUTHOR_NAME } from '@/lib/seo';
 import { formatPostDate, formatViews } from '@/lib/utils';
+import { urlFor } from '@/sanity/lib/image';
 import { PostListItem } from '@/sanity/lib/queries';
+import { EyeIcon, PhotoIcon } from '@heroicons/react/24/outline';
+import { CalendarIcon } from '@radix-ui/react-icons';
+import Image from 'next/image';
 import Link from 'next/link';
 import { FC } from 'react';
 
@@ -9,65 +12,66 @@ type Props = {
   posts: PostListItem[];
 };
 
-/** Stable 7-char hex from the post id, styled as a commit hash. */
-function commitHash(id: string): string {
-  let h = 0;
-  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
-  return h.toString(16).padStart(7, '0').slice(0, 7);
-}
-
 const RelatedPosts: FC<Props> = ({ posts }) => {
   if (!posts.length) return null;
 
   return (
     <section className='space-y-5'>
       <SectionHeading index='01' title='Keep reading' />
-      <div className='rounded-xl border border-border bg-card/50 p-4 font-mono sm:p-5'>
-        <p className='mb-4 text-sm text-muted-foreground'>
-          <span className='text-primary'>➜</span> ~{' '}
-          <span className='text-sky-600 dark:text-sky-400'>git</span> log
-          --oneline related/
-        </p>
-        <ul>
-          {posts.map((post, i) => (
-            <li key={post._id}>
-              <Link
-                href={`/blog/${post.slug}`}
-                className='group grid grid-cols-[20px_1fr] rounded-md px-2 py-1.5 transition-colors hover:bg-foreground/[0.03]'
-              >
-                <span className='relative' aria-hidden>
-                  <span className='absolute left-[3px] top-[6px] h-[9px] w-[9px] rounded-full bg-primary shadow-[0_0_0_3px_rgba(34,197,94,0.15)]' />
-                  {i < posts.length - 1 && (
-                    <span className='absolute -bottom-[9px] left-[7px] top-[13px] w-0.5 bg-foreground/15' />
-                  )}
-                </span>
-                <span className='min-w-0'>
-                  <span className='flex items-baseline gap-2.5'>
-                    <span className='shrink-0 text-sm text-amber-500 dark:text-amber-400'>
-                      {commitHash(post._id)}
-                    </span>
-                    <span className='truncate font-sans text-sm font-semibold text-foreground transition-colors group-hover:text-primary'>
-                      {post.title}
-                    </span>
+      <div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
+        {posts.map((post) => {
+          const imageUrl = post.featuredImage?.asset
+            ? urlFor(post.featuredImage).width(320).height(240).url()
+            : null;
+
+          return (
+            <Link
+              key={post._id}
+              href={`/blog/${post.slug}`}
+              className='group flex gap-4 rounded-xl border border-border/60 bg-card/40 p-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:bg-card hover:shadow-md hover:shadow-primary/[0.05]'
+            >
+              <div className='relative aspect-[4/3] w-28 shrink-0 overflow-hidden rounded-lg bg-muted sm:w-32'>
+                {imageUrl ? (
+                  <Image
+                    src={imageUrl}
+                    alt={post.featuredImage?.alt || post.title}
+                    fill
+                    sizes='128px'
+                    className='object-cover transition-transform duration-300 group-hover:scale-[1.03]'
+                  />
+                ) : (
+                  <div
+                    className='flex h-full w-full items-center justify-center text-muted-foreground'
+                    aria-label={`${post.title} (no featured image)`}
+                  >
+                    <PhotoIcon className='h-6 w-6' />
+                  </div>
+                )}
+              </div>
+
+              <div className='flex min-w-0 flex-col gap-1.5 py-0.5'>
+                {post.category && (
+                  <span className='font-mono text-[11px] font-medium text-primary'>
+                    {post.category.name}
                   </span>
-                  <span className='mt-0.5 block truncate text-xs text-muted-foreground'>
-                    Author: {AUTHOR_NAME} ·{' '}
-                    {formatPostDate(post.publishedAt ?? post._createdAt)} ·{' '}
-                    {formatViews(post.views)} views
-                    {post.category && (
-                      <>
-                        {' · '}
-                        <span className='text-sky-600 dark:text-sky-400'>
-                          {post.category.slug}
-                        </span>
-                      </>
-                    )}
+                )}
+                <h3 className='line-clamp-2 text-sm font-semibold leading-snug text-foreground transition-colors group-hover:text-primary'>
+                  {post.title}
+                </h3>
+                <div className='mt-auto flex items-center gap-3 pt-0.5 text-xs text-muted-foreground'>
+                  <span className='flex items-center gap-1'>
+                    <CalendarIcon className='h-3 w-3' />
+                    {formatPostDate(post.publishedAt ?? post._createdAt)}
                   </span>
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+                  <span className='flex items-center gap-1'>
+                    <EyeIcon className='h-3 w-3' />
+                    {formatViews(post.views)}
+                  </span>
+                </div>
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </section>
   );
