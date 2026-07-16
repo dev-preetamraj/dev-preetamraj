@@ -121,18 +121,20 @@ const BlogPost: FC<Props> = async (props) => {
   };
 
   return (
-    <div className='space-y-12'>
+    <>
       <JsonLd data={[articleLd, breadcrumbLd]} />
-      <ReadingProgress />
-      <ViewTracker postId={blog._id} />
-      <RenderBlog blog={blog} />
-      <RelatedPosts posts={related} />
-      <RenderComments
-        postId={blog._id}
-        comments={blog.comments ?? []}
-        commentsCount={blog.commentsCount ?? 0}
-      />
-    </div>
+      <div className='space-y-12'>
+        <ReadingProgress />
+        <ViewTracker postId={blog._id} />
+        <RenderBlog blog={blog} />
+        <RelatedPosts posts={related} />
+        <RenderComments
+          postId={blog._id}
+          comments={blog.comments ?? []}
+          commentsCount={blog.commentsCount ?? 0}
+        />
+      </div>
+    </>
   );
 };
 

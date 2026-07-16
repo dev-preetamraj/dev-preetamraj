@@ -14,7 +14,7 @@ export default function BlogLayout({
       <Sidebar />
       <ScrollArea className='flex flex-col w-full h-screen overflow-y-auto'>
         <Navbar />
-        <div className='w-screen md:w-full px-4 sm:px-8 md:px-10 py-4 flex flex-col xl:flex-row space-x-0 space-y-4 xl:space-x-10'>
+        <div className='w-screen md:w-full px-4 sm:px-8 md:px-10 py-4 flex flex-col xl:flex-row space-x-0 max-xl:space-y-4 xl:space-x-10'>
           <div className='flex-1'>{children}</div>
           <Rightbar />
         </div>
