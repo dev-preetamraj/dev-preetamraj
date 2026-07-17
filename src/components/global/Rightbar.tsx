@@ -1,6 +1,6 @@
-import { buttonVariants } from '@/components/ui/button';
+import WorkTogetherCta from '@/components/global/WorkTogetherCta';
 import { rankCategories, trendingWindowSince } from '@/lib/ranking';
-import { cn, formatViews } from '@/lib/utils';
+import { formatViews } from '@/lib/utils';
 import {
   CategoryStat,
   FEATURED_PROJECTS_QUERY,
@@ -10,14 +10,7 @@ import {
   sanityFetch,
   TRENDING_CATEGORY_STATS_QUERY,
 } from '@/sanity/lib/queries';
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Eye,
-  FlameIcon,
-  FolderGit2,
-  Hash,
-} from 'lucide-react';
+import { ArrowUpRight, Eye, FlameIcon, FolderGit2, Hash } from 'lucide-react';
 import Link from 'next/link';
 import { FC, ReactNode } from 'react';
 
@@ -141,21 +134,7 @@ const Rightbar = async () => {
           </SidebarSection>
         )}
 
-        <div className='rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-5'>
-          <h3 className='font-semibold text-foreground'>
-            Let&apos;s work together
-          </h3>
-          <p className='mt-1 text-sm text-muted-foreground'>
-            Got something in mind? I&apos;m always up for a good problem.
-          </p>
-          <Link
-            href='/contact'
-            className={cn(buttonVariants({ size: 'sm' }), 'mt-4 w-full gap-1.5')}
-          >
-            Get in touch
-            <ArrowRight className='h-4 w-4' />
-          </Link>
-        </div>
+        <WorkTogetherCta />
       </div>
     </aside>
   );
