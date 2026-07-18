@@ -54,10 +54,9 @@ One typed, async Python interface across **Anthropic, Gemini, OpenAI, and Bedroc
 ## 📊 GitHub Stats
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=dev-preetamraj&show_icons=true&count_private=true&hide_border=true&theme=tokyonight" height="165" alt="dev-preetamraj stats" />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs?username=dev-preetamraj&layout=compact&hide_border=true&theme=tokyonight" height="165" alt="dev-preetamraj top languages" />
+  <img src="https://streak-stats.demolab.com/?user=dev-preetamraj&hide_border=true&theme=tokyonight" alt="dev-preetamraj streak" />
 </p>
 
 <p align="center">
-  <img src="https://streak-stats.demolab.com/?user=dev-preetamraj&hide_border=true&theme=tokyonight" alt="dev-preetamraj streak" />
+  <img src="https://github-readme-activity-graph.vercel.app/graph?username=dev-preetamraj&theme=tokyo-night&hide_border=true&area=true" alt="dev-preetamraj contribution graph" />
 </p>
