@@ -39,3 +39,6 @@ schema.json
 
 # local content workspace (blog drafts, never committed)
 /content
+
+# local scratch output, never committed
+/tmp
