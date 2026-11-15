@@ -1,11 +1,11 @@
 import Prose from '@/components/layout/article/Prose';
-import { MetaItem, MetaLink } from '@/components/layout/Meta';
+import { MetaLink, PublishedDate } from '@/components/layout/Meta';
 import PageLayout from '@/components/layout/PageLayout';
-import { formatDate, toISODate } from '@/lib/format-date';
+import { BreadcrumbTitle } from '@/components/layout/SiteShell';
 import { buildToc } from '@/lib/toc';
 import { urlFor } from '@/sanity/lib/image';
 import { Project } from '@/sanity/lib/queries';
-import { CalendarIcon, GithubIcon, LinkIcon } from 'lucide-react';
+import { GithubIcon, LinkIcon } from 'lucide-react';
 
 type Props = {
   project: Project;
@@ -15,7 +15,6 @@ type Props = {
 
 /** A project on the `article` PageLayout. */
 const RenderPortfolio = ({ project, url }: Props) => {
-  const date = formatDate(project._createdAt);
   const cover = project.featuredImage?.asset
     ? urlFor(project.featuredImage).width(1280).url()
     : undefined;
@@ -23,11 +22,7 @@ const RenderPortfolio = ({ project, url }: Props) => {
 
   const meta = (
     <>
-      {date && (
-        <MetaItem icon={CalendarIcon}>
-          <time dateTime={toISODate(project._createdAt)}>{date}</time>
-        </MetaItem>
-      )}
+      <PublishedDate item={project} />
       {project.githubUrl && (
         <MetaLink href={project.githubUrl} icon={GithubIcon}>
           GitHub
@@ -66,6 +61,7 @@ const RenderPortfolio = ({ project, url }: Props) => {
       toc={buildToc(content)}
       aside={{ meta, topics, url }}
     >
+      <BreadcrumbTitle title={project.title} />
       <Prose value={content} />
     </PageLayout>
   );

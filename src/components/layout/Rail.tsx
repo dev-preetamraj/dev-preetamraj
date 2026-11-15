@@ -1,5 +1,5 @@
 import { rankPosts } from '@/lib/ranking';
-import { cn } from '@/lib/utils';
+import { cn, currentTimeMs } from '@/lib/utils';
 import {
   FEATURED_PROJECTS_QUERY,
   POPULAR_POSTS_QUERY,
@@ -22,9 +22,6 @@ export type RailOptions = {
   /** Work-together CTA (off on /contact, which is the pitch itself). */
   cta?: boolean;
 };
-
-// Wall-clock read lives outside the component so render stays pure; ranking takes it as `nowMs`.
-const currentTimeMs = () => Date.now();
 
 /** Most-read posts, never repeating the post featured on the home page. */
 export const MostRead = async ({ limit = 4 }: { limit?: number }) => {

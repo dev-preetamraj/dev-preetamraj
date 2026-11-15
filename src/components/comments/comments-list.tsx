@@ -7,11 +7,8 @@ import Text from '@/components/layout/Text';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useInfiniteScroll } from '@/hooks/use-infinite-scroll';
-import {
-  COMMENTS_BATCH_SIZE,
-  COMMENTS_SCROLL_TRIGGER_RATIO,
-} from '@/lib/constants';
-import { CommentDescendant, PostCommentThread } from '@/sanity/lib/queries';
+import { COMMENTS_BATCH_SIZE } from '@/lib/constants';
+import { PostCommentThread } from '@/sanity/lib/queries';
 import CommentNode from './comment-node';
 
 type Props = {
@@ -19,6 +16,17 @@ type Props = {
   initialComments: PostCommentThread[];
   totalCount: number;
 };
+
+/** Group descendants by parent id (Map.groupBy needs newer runtimes). */
+function groupByParent(items: PostCommentThread['descendants']) {
+  const map = new Map<string, PostCommentThread['descendants']>();
+  for (const item of items) {
+    const group = map.get(item.parentId);
+    if (group) group.push(item);
+    else map.set(item.parentId, [item]);
+  }
+  return map;
+}
 
 /** Skeleton placeholder shown while the next batch of comments loads. */
 function CommentSkeleton() {
@@ -34,19 +42,6 @@ function CommentSkeleton() {
       </div>
     </div>
   );
-}
-
-/** Bucket a thread's flat descendants by their immediate parent for tree rendering. */
-function groupByParent(
-  descendants: CommentDescendant[]
-): Map<string, CommentDescendant[]> {
-  const map = new Map<string, CommentDescendant[]>();
-  for (const descendant of descendants) {
-    const bucket = map.get(descendant.parentId);
-    if (bucket) bucket.push(descendant);
-    else map.set(descendant.parentId, [descendant]);
-  }
-  return map;
 }
 
 const CommentsList = ({ postId, initialComments, totalCount }: Props) => {
@@ -65,14 +60,12 @@ const CommentsList = ({ postId, initialComments, totalCount }: Props) => {
     error,
     retry,
     remaining,
-    containerRef,
   } = useInfiniteScroll<PostCommentThread>({
     initialItems: initialComments,
     totalCount,
     batchSize: COMMENTS_BATCH_SIZE,
     getKey: (comment) => comment._id,
     fetchPage,
-    triggerRatio: COMMENTS_SCROLL_TRIGGER_RATIO,
   });
 
   if (comments.length === 0 && totalCount === 0) {
@@ -80,17 +73,11 @@ const CommentsList = ({ postId, initialComments, totalCount }: Props) => {
   }
 
   return (
-    <div ref={containerRef} className='flex flex-col gap-8'>
+    <div className='flex flex-col gap-8'>
       {comments.map((thread) => (
         <div key={thread._id} className='group/thread'>
           <CommentNode
-            comment={{
-              _id: thread._id,
-              authorName: thread.authorName,
-              content: thread.content,
-              _createdAt: thread._createdAt,
-              depth: 1,
-            }}
+            comment={{ ...thread, depth: 1 }}
             postId={postId}
             childrenByParent={groupByParent(thread.descendants)}
           />

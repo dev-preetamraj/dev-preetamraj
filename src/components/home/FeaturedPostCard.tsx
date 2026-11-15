@@ -1,10 +1,9 @@
 import Card from '@/components/layout/Card';
 import Chip from '@/components/layout/Chip';
-import { MetaItem, ViewCount } from '@/components/layout/Meta';
-import { formatDate, toISODate } from '@/lib/format-date';
+import { PublishedDate, ViewCount } from '@/components/layout/Meta';
 import { urlFor } from '@/sanity/lib/image';
 import { PostListItem } from '@/sanity/lib/queries';
-import { CalendarIcon, Star } from 'lucide-react';
+import { Star } from 'lucide-react';
 import { FC } from 'react';
 
 type Props = {
@@ -13,7 +12,6 @@ type Props = {
 
 /** The home page's top-ranked post on the shared Card (featured size). */
 const FeaturedPostCard: FC<Props> = ({ blog }) => {
-  const published = blog.publishedAt ?? blog._createdAt;
   const imageUrl = blog.featuredImage?.asset
     ? urlFor(blog.featuredImage).width(960).url()
     : null;
@@ -41,9 +39,7 @@ const FeaturedPostCard: FC<Props> = ({ blog }) => {
       lines='none'
       meta={
         <>
-          <MetaItem icon={CalendarIcon}>
-            <time dateTime={toISODate(published)}>{formatDate(published)}</time>
-          </MetaItem>
+          <PublishedDate item={blog} />
           <ViewCount views={blog.views} />
         </>
       }

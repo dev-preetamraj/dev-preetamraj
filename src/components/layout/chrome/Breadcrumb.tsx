@@ -1,61 +1,18 @@
 'use client';
 
-import { SITE_NAME } from '@/lib/seo';
 import { capitalizeWord, createURL, slugToTitle } from '@/lib/utils';
 import Link from 'next/link';
-import { LINK } from '../roles';
 import { usePathname } from 'next/navigation';
-import { useSyncExternalStore } from 'react';
+import { LINK } from '../roles';
+import type { PageTitle } from '../SiteShell';
 
-// Live document.title: Next updates <title> after client navigation, so the
-// last crumb re-renders when the new page's metadata lands.
-const subscribeTitle = (onChange: () => void) => {
-  const observer = new MutationObserver(onChange);
-  observer.observe(document.head, {
-    subtree: true,
-    childList: true,
-    characterData: true,
-  });
-  return () => observer.disconnect();
-};
-const getTitle = () => document.title;
-const getServerTitle = () => '';
-
-const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, ' ');
-
-/**
- * Label for the last crumb: the page title (e.g. "LLM Kit Pro"), not the
- * slug ("Llm Kit Pro"). Strips the "%s - Preetam Raj" template and any
- * " | Tag"-style suffix. Falls back to the slug when the title is not yet
- * the current page's (shares no word with the slug) or is unavailable.
- */
-const titleForSlug = (docTitle: string, slug: string) => {
-  const fallback = slugToTitle(decodeURIComponent(slug));
-  const suffix = ` - ${SITE_NAME}`;
-  let title = docTitle.endsWith(suffix)
-    ? docTitle.slice(0, -suffix.length)
-    : docTitle;
-  title = title.split(' | ')[0].trim();
-  if (!title || title === SITE_NAME) return fallback;
-
-  const titleWords = new Set(normalize(title).split(' '));
-  const slugWords = normalize(slug)
-    .split(' ')
-    .filter((w) => w.length > 2);
-  const belongsToPage =
-    slugWords.length === 0 || slugWords.some((w) => titleWords.has(w));
-  return belongsToPage ? title : fallback;
-};
-
-const Breadcrumb = () => {
+const Breadcrumb = ({ pageTitle }: { pageTitle: PageTitle | null }) => {
   const pathname = usePathname();
-  const docTitle = useSyncExternalStore(
-    subscribeTitle,
-    getTitle,
-    getServerTitle
-  );
+  // Detail pages report their real title (BreadcrumbTitle); until then, or
+  // on pages that don't, the last crumb is derived from the slug.
+  const title = pageTitle?.path === pathname ? pageTitle.title : undefined;
   const items = pathname.split('/');
-  if (items) items[0] = 'home';
+  items[0] = 'home';
   if (items.length === 2 && items[1] === '') items.pop();
 
   return (
@@ -84,8 +41,10 @@ const Breadcrumb = () => {
                 className='block min-w-0 max-w-[14rem] truncate text-foreground xl:max-w-sm'
               >
                 {/* Top-level sections keep their short name ("Blog"); only
-                    detail pages (depth > 1) use the document title. */}
-                {index > 1 ? titleForSlug(docTitle, item) : slugToTitle(item)}
+                    detail pages (depth > 1) use the page title. */}
+                {index > 1
+                  ? title ?? slugToTitle(decodeURIComponent(item))
+                  : slugToTitle(item)}
               </span>
             ) : (
               <Link href={createURL(items, index)} className={LINK.action}>

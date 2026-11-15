@@ -9,9 +9,7 @@ import { createPortal } from 'react-dom';
  *
  * It's portalled onto the top edge of the sticky navbar, so it spans exactly
  * the navbar's width, sits above it, and moves with it. Scroll is measured
- * against the article's own scroll container — the blog layout scrolls inside a
- * Radix ScrollArea viewport, not the window — resolved via `.closest()` so we
- * never grab the wrong scroller.
+ * against the window (the page scroller).
  */
 const noopSubscribe = () => () => {};
 const getNavbar = () =>
@@ -33,22 +31,14 @@ const ReadingProgress = () => {
     const article = document.getElementById('article-body');
     if (!article) return;
 
-    const viewport = article.closest<HTMLElement>(
-      '[data-radix-scroll-area-viewport]'
-    );
-    const scrollTarget: EventTarget = viewport ?? window;
-
     let frame = 0;
 
     const measure = () => {
       frame = 0;
-      const scrollTop = viewport ? viewport.scrollTop : window.scrollY;
-      const viewHeight = viewport ? viewport.clientHeight : window.innerHeight;
-      const originTop = viewport ? viewport.getBoundingClientRect().top : 0;
-      const articleEnd =
-        article.getBoundingClientRect().bottom - originTop + scrollTop;
+      const scrollTop = window.scrollY;
+      const articleEnd = article.getBoundingClientRect().bottom + scrollTop;
 
-      const distance = articleEnd - viewHeight;
+      const distance = articleEnd - window.innerHeight;
       const ratio = distance > 0 ? scrollTop / distance : 0;
       setProgress(Math.min(1, Math.max(0, ratio)));
     };
@@ -58,14 +48,14 @@ const ReadingProgress = () => {
     };
 
     measure();
-    scrollTarget.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule);
     const observer = new ResizeObserver(schedule);
     observer.observe(article);
 
     return () => {
       if (frame) cancelAnimationFrame(frame);
-      scrollTarget.removeEventListener('scroll', schedule);
+      window.removeEventListener('scroll', schedule);
       window.removeEventListener('resize', schedule);
       observer.disconnect();
     };

@@ -1,18 +1,20 @@
 'use client';
 import { buttonVariants } from '@/components/ui/button';
-import { clickMenuButton } from '@/features/slices/navbarSlice';
-import { AppDispatch, RootState } from '@/features/store';
 import { cn } from '@/lib/utils';
 import { MenuIcon, XIcon } from 'lucide-react';
 import Link from 'next/link';
-import { useDispatch, useSelector } from 'react-redux';
+import type { PageTitle } from '../SiteShell';
 import Breadcrumb from './Breadcrumb';
 import NavbarSearch from './NavbarSearch';
 
-const Navbar = () => {
-  const clicked = useSelector((state: RootState) => state.navbar.clicked);
-  const dispatch: AppDispatch = useDispatch();
-  const MenuToggleIcon = clicked ? XIcon : MenuIcon;
+type Props = {
+  menuOpen: boolean;
+  onMenuToggle: () => void;
+  pageTitle: PageTitle | null;
+};
+
+const Navbar = ({ menuOpen, onMenuToggle, pageTitle }: Props) => {
+  const MenuToggleIcon = menuOpen ? XIcon : MenuIcon;
   return (
     <header
       id='site-navbar'
@@ -26,10 +28,10 @@ const Navbar = () => {
         <div className='flex min-w-0 items-center gap-3 md:hidden'>
           <button
             type='button'
-            aria-expanded={clicked}
+            aria-expanded={menuOpen}
             aria-controls='site-sidebar'
-            aria-label={clicked ? 'Close menu' : 'Open menu'}
-            onClick={() => dispatch(clickMenuButton(!clicked))}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            onClick={onMenuToggle}
             className={buttonVariants({ variant: 'outline', size: 'icon' })}
           >
             <MenuToggleIcon
@@ -48,7 +50,7 @@ const Navbar = () => {
             Preetam Raj
           </Link>
         </div>
-        <Breadcrumb />
+        <Breadcrumb pageTitle={pageTitle} />
         <NavbarSearch />
       </div>
     </header>

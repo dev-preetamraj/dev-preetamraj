@@ -36,7 +36,6 @@ type Props = {
   meta?: ReactNode;
   /** Trailing element on the title line (compact rows, e.g. view count). */
   trailing?: ReactNode;
-  external?: boolean;
   /**
    * `default` = post list row: h4 title, 2-line summary, meta row.
    * `compact` = rail/aside link: small muted title (2 lines) + trailing meta.
@@ -56,21 +55,12 @@ const ListRow = ({
   description,
   meta,
   trailing,
-  external,
   variant = 'default',
 }: Props) => {
-  const linkProps = external
-    ? { target: '_blank', rel: 'noopener noreferrer' }
-    : {};
-
   if (variant === 'compact') {
     return (
       <li className='group'>
-        <Link
-          href={href}
-          {...linkProps}
-          className={cn('flex items-start gap-3 py-2', FOCUS)}
-        >
+        <Link href={href} className={cn('flex items-start gap-3 py-2', FOCUS)}>
           <span
             className={cn(
               'line-clamp-2 flex-1 text-small text-foreground',
@@ -94,7 +84,6 @@ const ListRow = ({
       <Title className={cn('text-h4 text-foreground', LINK.contentGroup)}>
         <Link
           href={href}
-          {...linkProps}
           className='after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:rounded-md focus-visible:after:ring-2 focus-visible:after:ring-ring'
         >
           {title}

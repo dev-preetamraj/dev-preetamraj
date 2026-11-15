@@ -10,23 +10,15 @@ import {
   CommandList,
   CommandSeparator,
 } from '@/components/ui/command';
-import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { SearchResults } from '@/sanity/lib/queries';
-import {
-  DesktopIcon,
-  MoonIcon,
-  Share1Icon,
-  SunIcon,
-  TextAlignLeftIcon,
-} from '@radix-ui/react-icons';
 import {
   BookIcon,
   BookmarkIcon,
-  CheckIcon,
+  BriefcaseIcon,
   CornerDownLeftIcon,
+  FolderIcon,
   SearchIcon,
 } from 'lucide-react';
-import { useTheme } from 'next-themes';
 import { useRouter } from 'next/navigation';
 import {
   ComponentType,
@@ -35,7 +27,6 @@ import {
   useEffect,
   useRef,
   useState,
-  useSyncExternalStore,
 } from 'react';
 
 type SearchLink = { _id: string; label: string; href: string };
@@ -62,20 +53,11 @@ const SEARCH_DEBOUNCE_MS = 250;
 
 const SEARCH_DIALOG_ID = 'site-search-dialog';
 
-const noopSubscribe = () => () => {};
-
 const NavbarSearch = () => {
   const router = useRouter();
-  const { setTheme, theme: activeTheme } = useTheme();
   const [open, setOpen] = useState(false);
-  const mounted = useSyncExternalStore(
-    noopSubscribe,
-    () => true,
-    () => false
-  );
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResults>(EMPTY_RESULTS);
-  const isDesktop = useMediaQuery('(min-width: 768px)');
   // Monotonic id so a slow response can never overwrite a newer one.
   const requestId = useRef(0);
 
@@ -133,7 +115,7 @@ const NavbarSearch = () => {
     },
     {
       heading: 'Portfolio',
-      icon: Share1Icon,
+      icon: BriefcaseIcon,
       items: projects.map((p) => ({
         _id: p._id,
         label: p.title,
@@ -142,7 +124,7 @@ const NavbarSearch = () => {
     },
     {
       heading: 'Category',
-      icon: TextAlignLeftIcon,
+      icon: FolderIcon,
       items: categories.map((c) => ({
         _id: c._id,
         label: c.name,
@@ -177,40 +159,17 @@ const NavbarSearch = () => {
   const visibleGroups =
     query.trim() === '' ? [] : groups.filter((group) => group.items.length > 0);
 
-  // Theme commands are static/local, so they're filtered client-side against
-  // the query (content results come pre-filtered from the server).
-  const themeCommands: {
-    value: 'dark' | 'light' | 'system';
-    label: string;
-    icon: ComponentType<{ className?: string }>;
-  }[] = [
-    { value: 'dark', label: 'Dark', icon: MoonIcon },
-    { value: 'light', label: 'Light', icon: SunIcon },
-    { value: 'system', label: 'System', icon: DesktopIcon },
-  ];
-
-  const themeQuery = query.trim().toLowerCase();
-  const visibleThemes = themeQuery
-    ? themeCommands.filter(
-        (theme) =>
-          theme.label.toLowerCase().includes(themeQuery) ||
-          'theme'.includes(themeQuery)
-      )
-    : themeCommands;
-
-  if (!mounted) return null;
-
   return (
     <>
       <Button
         variant='outline'
-        size={isDesktop ? 'default' : 'icon'}
+        size='icon'
         onClick={() => setOpen(true)}
         aria-haspopup='dialog'
         aria-expanded={open}
         aria-controls={open ? SEARCH_DIALOG_ID : undefined}
         aria-keyshortcuts='Meta+K Control+K'
-        className='group flex shrink-0 items-center gap-2 lg:min-w-[20rem] lg:justify-start xl:min-w-[22rem]'
+        className='group flex shrink-0 items-center gap-2 md:w-auto md:px-4 md:py-2 lg:min-w-[20rem] lg:justify-start xl:min-w-[22rem]'
       >
         {/* Accessible name when only the icon is visible (below lg). */}
         <span className='sr-only lg:hidden'>Search</span>
@@ -222,7 +181,7 @@ const NavbarSearch = () => {
           className='icon block shrink-0 lg:h-4 lg:w-4 lg:text-muted-foreground lg:group-hover:text-foreground'
         />
         <span className='hidden text-left text-small text-muted-foreground group-hover:text-foreground lg:inline-block'>
-          Search project, blog or settings...
+          Search projects, posts or topics...
         </span>
         <kbd
           aria-hidden='true'
@@ -237,16 +196,16 @@ const NavbarSearch = () => {
         onOpenChange={setOpen}
         contentId={SEARCH_DIALOG_ID}
         title='Search'
-        description='Search blog posts, projects, categories and tags, or switch the theme.'
+        description='Search blog posts, projects, categories and tags.'
         commandProps={{ shouldFilter: false }}
       >
         <CommandInput
-          placeholder='Type a command or search...'
+          placeholder='Type to search...'
           value={query}
           onValueChange={handleQueryChange}
         />
         <CommandList className='border-border'>
-          <CommandEmpty>No results found.</CommandEmpty>
+          {query.trim() && <CommandEmpty>No results found.</CommandEmpty>}
 
           {visibleGroups.map((group, index) => (
             <Fragment key={group.heading}>
@@ -289,30 +248,6 @@ const NavbarSearch = () => {
               </CommandGroup>
             </Fragment>
           ))}
-
-          {visibleThemes.length > 0 && (
-            <>
-              {visibleGroups.length > 0 && <CommandSeparator />}
-              <CommandGroup heading='Theme' className='border-border'>
-                {visibleThemes.map((theme) => (
-                  <CommandItem
-                    key={theme.value}
-                    value={`Theme:${theme.label}`}
-                    onSelect={() => {
-                      setTheme(theme.value);
-                      setOpen(false);
-                    }}
-                  >
-                    <theme.icon className='mr-2 h-4 w-4' />
-                    <span>{theme.label}</span>
-                    {activeTheme === theme.value && (
-                      <CheckIcon className='ml-auto h-4 w-4 text-foreground' />
-                    )}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </>
-          )}
         </CommandList>
 
         <div className='hidden items-center justify-between border-t px-4 py-2.5 text-caption text-muted-foreground sm:flex'>

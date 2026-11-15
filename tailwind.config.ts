@@ -169,8 +169,6 @@ const typeScale = Object.fromEntries(
     })
 );
 
-const proseRole = roleStyle;
-
 /** Emits the per-screen type variables into the base layer. */
 const typeScalePlugin = plugin(({ addBase }: any) => {
   addBase({
@@ -312,54 +310,38 @@ module.exports = {
             '--tw-prose-code': 'hsl(var(--foreground))',
             '--tw-prose-th-borders': 'hsl(var(--border))',
             '--tw-prose-td-borders': 'hsl(var(--border))',
-            '--tw-prose-invert-body': 'hsl(var(--foreground) / 0.9)',
-            '--tw-prose-invert-headings': 'hsl(var(--foreground))',
-            '--tw-prose-invert-lead': 'hsl(var(--muted-foreground))',
-            '--tw-prose-invert-links': 'hsl(var(--primary))',
-            '--tw-prose-invert-bold': 'hsl(var(--foreground))',
-            '--tw-prose-invert-counters': 'hsl(var(--muted-foreground))',
-            '--tw-prose-invert-bullets': 'hsl(var(--border))',
-            '--tw-prose-invert-hr': 'hsl(var(--border))',
-            '--tw-prose-invert-quotes': 'hsl(var(--foreground))',
-            '--tw-prose-invert-quote-borders': 'hsl(var(--border))',
-            '--tw-prose-invert-pre-bg': 'hsl(var(--code-block))',
-            '--tw-prose-invert-pre-code': 'hsl(var(--code-block-foreground))',
-            '--tw-prose-invert-captions': 'hsl(var(--muted-foreground))',
-            '--tw-prose-invert-code': 'hsl(var(--foreground))',
-            '--tw-prose-invert-th-borders': 'hsl(var(--border))',
-            '--tw-prose-invert-td-borders': 'hsl(var(--border))',
             // Article sizes come from the same scale as the UI, not the
             // plugin's defaults (which jump to 36px h1 / 1.75 leading).
-            ...proseRole('article'),
+            ...roleStyle('article'),
             // Width comes from the article column (PageLayout).
             maxWidth: 'none',
             p: { marginTop: '1.25em', marginBottom: '1.25em' },
-            '[class~="lead"]': proseRole('lead'),
-            h1: { ...proseRole('h1'), marginTop: '0', marginBottom: '0.75em' },
+            '[class~="lead"]': roleStyle('lead'),
+            h1: { ...roleStyle('h1'), marginTop: '0', marginBottom: '0.75em' },
             // Same rhythm as page Sections (layout/Section.tsx): an h2 opens
             // a section after the section gap, its content follows after
             // the heading gap. One owner: the spacing tokens.
             h2: {
-              ...proseRole('h2'),
+              ...roleStyle('h2'),
               marginTop: 'var(--space-section-sm)',
               marginBottom: 'var(--space-heading)',
             },
             h3: {
-              ...proseRole('h3'),
+              ...roleStyle('h3'),
               marginTop: 'var(--space-stack)',
               marginBottom: 'var(--space-heading)',
             },
             h4: {
-              ...proseRole('h4'),
+              ...roleStyle('h4'),
               marginTop: '1.5em',
               marginBottom: '0.5em',
             },
             'h2 + *, h3 + *, h4 + *': { marginTop: '0' },
-            small: proseRole('small'),
-            figcaption: proseRole('caption'),
+            small: roleStyle('small'),
+            figcaption: roleStyle('caption'),
             code: { fontSize: '0.875em', fontWeight: '500' },
             pre: {
-              ...proseRole('code'),
+              ...roleStyle('code'),
               border: '1px solid hsl(var(--border))',
               borderRadius: 'var(--radius-md)',
             },
@@ -369,20 +351,6 @@ module.exports = {
             'code::after': { content: 'none' },
           },
         },
-      },
-      keyframes: {
-        'accordion-down': {
-          from: { height: 0 },
-          to: { height: 'var(--radix-accordion-content-height)' },
-        },
-        'accordion-up': {
-          from: { height: 'var(--radix-accordion-content-height)' },
-          to: { height: 0 },
-        },
-      },
-      animation: {
-        'accordion-down': 'accordion-down 0.2s ease-out',
-        'accordion-up': 'accordion-up 0.2s ease-out',
       },
     },
   },

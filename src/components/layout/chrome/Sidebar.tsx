@@ -1,29 +1,40 @@
 'use client';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { RootState } from '@/features/store';
+import { LINKS } from '@/components/global/SocialLinks';
 import { cn } from '@/lib/utils';
 import {
-  GithubIcon,
-  LinkedinIcon,
+  BookOpenIcon,
+  BriefcaseIcon,
+  FolderIcon,
+  HashIcon,
+  HomeIcon,
+  InfoIcon,
   MailIcon,
   PenSquareIcon,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useSelector } from 'react-redux';
-import SidebarLink, { SIDEBAR_ICON_STROKE } from './SidebarLink';
+import { usePathname } from 'next/navigation';
 import { ThemeToggler } from './ThemeToggler';
 
-const Sidebar = () => {
-  const clicked = useSelector((state: RootState) => state.navbar.clicked);
+/** One icon set (lucide) at one stroke weight for the whole sidebar. */
+const ICON_STROKE = 1.75;
+
+const NAV = [
+  { href: '/', label: 'Home', icon: HomeIcon },
+  { href: '/about', label: 'About', icon: InfoIcon },
+  { href: '/portfolio', label: 'Portfolio', icon: BriefcaseIcon },
+  { href: '/blog', label: 'Blog', icon: BookOpenIcon },
+  { href: '/contact', label: 'Contact', icon: MailIcon },
+  { href: '/categories', label: 'Categories', icon: FolderIcon },
+  { href: '/tags', label: 'Tags', icon: HashIcon },
+];
+
+const Sidebar = ({ open }: { open: boolean }) => {
+  const pathname = usePathname();
+  const section = pathname.split('/')[1];
   const iconProps = {
     'aria-hidden': true,
-    strokeWidth: SIDEBAR_ICON_STROKE,
+    strokeWidth: ICON_STROKE,
     className: 'h-5 w-5',
   } as const;
   const iconLink =
@@ -34,7 +45,7 @@ const Sidebar = () => {
       className={cn(
         'hidden md:flex flex-col justify-between h-screen min-w-[260px] w-[260px] sm:min-w-[300px] sm:w-[300px] bg-muted p-10 sticky top-0',
         {
-          flex: clicked,
+          flex: open,
         }
       )}
     >
@@ -64,61 +75,66 @@ const Sidebar = () => {
           </p>
         </div>
         <nav aria-label='Primary' className='flex flex-col space-y-1'>
-          <SidebarLink href='/' />
-          <SidebarLink href='/about' />
-          <SidebarLink href='/portfolio' />
-          <SidebarLink href='/blog' />
-          <SidebarLink href='/contact' />
-          <SidebarLink href='/categories' />
-          <SidebarLink href='/tags' />
+          {NAV.map(({ href, label, icon: Icon }) => {
+            const active = href.slice(1) === section;
+            return (
+              <Link
+                key={href}
+                href={href}
+                // Exact match is the current page; a parent section (e.g.
+                // /blog on a post) is still highlighted but announced as the
+                // current location.
+                aria-current={
+                  active ? (pathname === href ? 'page' : 'location') : undefined
+                }
+                className={cn(
+                  // Muted pill behind icon + label; no detached indicator bar.
+                  '-mx-3 flex items-center gap-3 rounded-md px-3 py-2 text-body text-muted-foreground transition-colors duration-150 hover:bg-foreground/5 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-muted motion-reduce:transition-none',
+                  {
+                    'bg-foreground/[0.07] font-medium text-foreground hover:bg-foreground/[0.07]':
+                      active,
+                  }
+                )}
+              >
+                <Icon
+                  aria-hidden='true'
+                  strokeWidth={ICON_STROKE}
+                  className={cn('h-5 w-5 shrink-0', {
+                    'text-primary': active,
+                  })}
+                />
+                <span>{label}</span>
+              </Link>
+            );
+          })}
         </nav>
       </div>
 
       <div className='flex items-center justify-between'>
         <ThemeToggler />
+        {LINKS.map(({ key, href, label, Icon, external }) => (
+          <Link
+            key={key}
+            href={href}
+            aria-label={label}
+            {...(external
+              ? { target: '_blank', rel: 'noopener noreferrer' }
+              : {})}
+            className={iconLink}
+          >
+            <Icon {...iconProps} />
+          </Link>
+        ))}
         <Link
-          href='https://github.com/dev-preetamraj'
+          href='/studio'
           target='_blank'
           rel='noopener noreferrer'
-          aria-label='GitHub (opens in a new tab)'
+          aria-label='Sanity Studio (opens in a new tab)'
+          title='Sanity Studio'
           className={iconLink}
         >
-          <GithubIcon {...iconProps} />
+          <PenSquareIcon {...iconProps} />
         </Link>
-        <Link
-          href='https://www.linkedin.com/in/raj-preetam/'
-          target='_blank'
-          rel='noopener noreferrer'
-          aria-label='LinkedIn (opens in a new tab)'
-          className={iconLink}
-        >
-          <LinkedinIcon {...iconProps} />
-        </Link>
-        <Link
-          href='mailto:dev.preetamraj@gmail.com'
-          aria-label='Email Preetam'
-          className={iconLink}
-        >
-          <MailIcon {...iconProps} />
-        </Link>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                href='/studio'
-                target='_blank'
-                rel='noopener noreferrer'
-                aria-label='Sanity Studio (opens in a new tab)'
-                className={iconLink}
-              >
-                <PenSquareIcon {...iconProps} />
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Sanity Studio</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import { RocketIcon } from '@sanity/icons/Rocket';
 import { defineArrayMember, defineField, defineType } from 'sanity';
 
-import { strictSlugify } from './slugify';
+import { slugify } from './slugify';
 
 export const projectType = defineType({
   name: 'project',
@@ -19,7 +19,7 @@ export const projectType = defineType({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
-      options: { source: 'title', maxLength: 96, slugify: strictSlugify },
+      options: { source: 'title', maxLength: 96, slugify },
       validation: (Rule) => Rule.required(),
     }),
     defineField({

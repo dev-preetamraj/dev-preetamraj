@@ -7,27 +7,14 @@ import CommentForm from '@/components/forms/comment-form';
 import { Stack } from '@/components/layout/Stack';
 import Text from '@/components/layout/Text';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { MAX_COMMENT_DEPTH } from '@/lib/constants';
-import { CommentDescendant } from '@/sanity/lib/queries';
-
-type CommentNodeData = {
-  _id: string;
-  authorName: string;
-  content: string;
-  _createdAt: string;
-  depth: number;
-};
+import { CommentDescendant, PostComment } from '@/sanity/lib/queries';
 
 type Props = {
-  comment: CommentNodeData;
+  comment: PostComment & { depth: number };
   postId: string;
   childrenByParent: Map<string, CommentDescendant[]>;
 };
-
-function formatDateToNow(dateString: string): string {
-  return formatDistanceToNow(new Date(dateString), { addSuffix: true });
-}
 
 function initials(name: string): string {
   return name.trim().charAt(0).toUpperCase() || '?';
@@ -54,9 +41,9 @@ const CommentNode = ({ comment, postId, childrenByParent }: Props) => {
       }
     >
       <div className='flex flex-col items-center gap-1.5'>
-        <Avatar className='relative z-[1] h-[34px] w-[34px]'>
-          <AvatarFallback>{initials(comment.authorName)}</AvatarFallback>
-        </Avatar>
+        <span className='relative z-[1] flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full bg-muted text-micro'>
+          {initials(comment.authorName)}
+        </span>
         {hasReplies && <div className='thread-trunk' />}
       </div>
 
@@ -67,7 +54,9 @@ const CommentNode = ({ comment, postId, childrenByParent }: Props) => {
               {comment.authorName}
             </Text>
             <Text as='span' variant='meta'>
-              {formatDateToNow(comment._createdAt)}
+              {formatDistanceToNow(new Date(comment._createdAt), {
+                addSuffix: true,
+              })}
             </Text>
           </div>
           <Text tone='default'>{comment.content}</Text>
@@ -90,7 +79,6 @@ const CommentNode = ({ comment, postId, childrenByParent }: Props) => {
           <CommentForm
             postId={postId}
             parentId={comment._id}
-            compact
             onSuccess={() => setReplying(false)}
           />
         )}

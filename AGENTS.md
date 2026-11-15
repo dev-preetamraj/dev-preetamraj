@@ -4,7 +4,7 @@ This file provides guidance to AI coding agents working in this repository.
 
 ## Project Overview
 
-Personal portfolio and blog website for Preetam Raj (preetamraj.dev). Built with Next.js 14 (App Router), Sanity (content + embedded Studio), Redux Toolkit, shadcn/ui (new-york style), and Tailwind CSS. Uses dark mode via next-themes with class strategy.
+Personal portfolio and blog website for Preetam Raj (preetamraj.dev). Built with Next.js 16 (App Router), Sanity (content + embedded Studio), shadcn/ui (new-york style), and Tailwind CSS. Uses dark mode via next-themes with class strategy.
 
 ## Commands
 
@@ -28,13 +28,12 @@ need live Sanity data are verified end-to-end via the running app.
 
 ## Architecture
 
-### Routing (App Router with Route Groups)
+### Routing (App Router with a Route Group)
 
-- `src/app/(portfolio)/` - Public portfolio pages (home, about, contact, portfolio/[slug])
-- `src/app/(blog)/` - Public blog pages (blog/[slug], categories/[slug], tags/[slug])
+- `src/app/(site)/` - Every public page (home, about, contact, portfolio, portfolio/[slug], blog, blog/[slug], categories, categories/[slug], tags, tags/[slug]); its layout wraps them in `SiteShell`
 - `src/app/studio/` - Embedded Sanity Studio (content authoring/admin, uses Sanity's own auth)
 
-Each route group has its own layout. The root layout wraps everything in ThemeProvider > ReduxProvider.
+The root layout wraps everything in next-themes' ThemeProvider and mounts the sonner Toaster.
 
 ### Data Flow
 
@@ -55,16 +54,23 @@ Blog posts are drafted as local markdown files in the git-ignored `content/` wor
 (home-page post recommendations, trending categories). GROQ queries only gather raw signals
 (views, dates, counts); all scoring formulas and tunable weights live in the module's
 `RANKING` object. The module is pure - time is passed in as a `nowMs` argument - so it is
-directly unit-testable. Consumers: `src/app/(portfolio)/page.tsx` (`rankPosts`) and
-`src/components/global/Rightbar.tsx` (`rankCategories`, fed by `TRENDING_CATEGORY_STATS_QUERY`).
+directly unit-testable. Consumers: `src/app/(site)/page.tsx` (`rankPosts`, plus
+`rankCategories` fed by `TRENDING_CATEGORY_STATS_QUERY` for the home Topics),
+`src/app/(site)/blog/page.tsx` (`rankPosts`, "Top ranking" sort),
+`src/app/(site)/blog/[slug]/page.tsx` (`rankRelated`) and `src/components/layout/Rail.tsx`
+(`rankPosts`, to keep the featured post out of Most Read).
 
 ### State Management
 
-Redux Toolkit (`src/features/store.ts`) with a single `navbar` slice. The store is provided via `src/providers/Provider.tsx` (client component).
+No global store. `src/components/layout/SiteShell.tsx` (client) owns the only shared UI state
+with `useState`: the mobile menu toggle (passed to Navbar and Sidebar) and the current
+page's breadcrumb title, which detail pages report by rendering `<BreadcrumbTitle title=... />`.
+The page scrolls the window (no scroll container), so scroll listeners use `window`.
 
 ### UI Layer
 
 - `src/components/ui/` - shadcn/ui primitives (new-york style, zinc base color, CSS variables for theming)
+- `src/components/layout/` - Layout primitives (SiteShell, PageLayout, Section, Stack, Text, Card, ListRow, Meta, Rail...) and the site chrome (`layout/chrome/`: Navbar, Sidebar, Breadcrumb, search)
 - `src/components/` - Domain components (blog, portfolio, comments, forms, global)
 - `src/components/forms/` - React Hook Form + Zod validation (e.g. the public comment form)
 - Path alias: `@/*` maps to `./src/*`

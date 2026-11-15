@@ -27,22 +27,12 @@ type Props = {
   action?: ReactNode;
   variant?: Variant;
   id?: string;
-  /** Accessible name when there is no visible title. */
-  label?: string;
   children: ReactNode;
 };
 
-const Section = ({
-  title,
-  action,
-  variant = 'page',
-  id,
-  label,
-  children,
-}: Props) => (
+const Section = ({ title, action, variant = 'page', id, children }: Props) => (
   <section
     id={id}
-    aria-label={title ? undefined : label}
     className={cn(
       'flex min-w-0 flex-col',
       variant === 'rail' ? 'gap-3' : 'gap-heading'

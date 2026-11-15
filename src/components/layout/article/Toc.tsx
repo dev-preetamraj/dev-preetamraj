@@ -19,8 +19,7 @@ const READ_LINE = 140;
 
 /**
  * Tracks which section is being read: the last heading whose top has
- * scrolled above READ_LINE (the first heading until then). Listens to the
- * Radix ScrollArea viewport the layout scrolls in, falling back to window.
+ * scrolled above READ_LINE (the first heading until then).
  */
 const useActiveHeading = (ids: string[]) => {
   const [active, setActive] = useState<string | null>(ids[0] ?? null);
@@ -30,10 +29,6 @@ const useActiveHeading = (ids: string[]) => {
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => el !== null);
     if (!elements.length) return;
-
-    const scroller: HTMLElement | Window =
-      elements[0].closest<HTMLElement>('[data-radix-scroll-area-viewport]') ??
-      window;
 
     let frame = 0;
     const measure = () => {
@@ -50,11 +45,11 @@ const useActiveHeading = (ids: string[]) => {
     };
 
     schedule();
-    scroller.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule);
     return () => {
       if (frame) cancelAnimationFrame(frame);
-      scroller.removeEventListener('scroll', schedule);
+      window.removeEventListener('scroll', schedule);
       window.removeEventListener('resize', schedule);
     };
   }, [ids]);

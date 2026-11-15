@@ -44,16 +44,13 @@ body {
     --gray-25: 0 0% 98.8%; /* #FCFCFC */
     --gray-100: 0 0% 95.7%; /* #F4F4F4 */
     --gray-150: 0 0% 92.9%; /* #EDEDED - dark-mode ink */
-    --gray-200: 0 0% 89.8%; /* #E5E5E5 */
     --gray-225: 0 0% 93.3%; /* #EEEEEE - light chip/muted fill */
     --gray-250: 0 0% 85.1%; /* #D9D9D9 - light structural border */
     --gray-400: 0 0% 63.1%; /* #A1A1A1 */
     --gray-450: 0 0% 56.1%; /* #8F8F8F */
     --gray-550: 0 0% 38%; /* #616161 */
-    --gray-600: 0 0% 36.1%; /* #5C5C5C */
     --gray-650: 0 0% 32.2%; /* #525252 - light secondary text */
     --gray-775: 0 0% 18%; /* #2E2E2E - dark structural border */
-    --gray-800: 0 0% 14.9%; /* #262626 */
     --gray-850: 0 0% 11%; /* #1C1C1C */
     --gray-900: 0 0% 9%; /* #171717 */
     --gray-920: 0 0% 7.8%; /* #141414 */
@@ -119,7 +116,6 @@ body {
     --radius-md: 0.5rem;
     --radius-lg: 0.75rem;
     --radius-xl: 1rem;
-    --radius: var(--radius-lg);
 
     /* -- Motion ---------------------------------------------------------- */
     --duration-fast: 120ms; /* hover, color, focus */
@@ -394,10 +390,6 @@ body {
   filter: brightness(0.75);
 }
 
-.copy-button {
-  @apply absolute top-2 right-1 rounded-sm p-1 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
-}
-
 /* Skip link: off-screen until focused, then pinned top-left above chrome. */
 .skip-link {
   @apply sr-only;
@@ -418,15 +410,5 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
-  }
-}
-
-.spinner_ajPY {
-  transform-origin: center;
-  animation: spinner_AtaB 0.75s infinite linear;
-}
-@keyframes spinner_AtaB {
-  100% {
-    transform: rotate(360deg);
   }
 }

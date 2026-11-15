@@ -16,37 +16,23 @@ const GAP = {
   section: 'gap-section-sm',
 } as const;
 
-export type Gap = keyof typeof GAP;
-
 type StackProps = {
-  as?: ElementType;
-  gap?: Gap;
-  className?: string;
+  gap?: keyof typeof GAP;
   children: ReactNode;
 };
 
 /** Vertical flow with one gap between children. */
-export const Stack = ({
-  as: Tag = 'div',
-  gap = 'md',
-  className,
-  children,
-}: StackProps) => (
-  <Tag className={cn('flex min-w-0 flex-col', GAP[gap], className)}>
-    {children}
-  </Tag>
+export const Stack = ({ gap = 'md', children }: StackProps) => (
+  <div className={cn('flex min-w-0 flex-col', GAP[gap])}>{children}</div>
 );
 
 /** Wrapping horizontal group (chips, buttons, icon links). */
 export const Cluster = ({
   as: Tag = 'div',
   gap = 'sm',
-  className,
   children,
-}: StackProps) => (
-  <Tag className={cn('flex flex-wrap items-center', GAP[gap], className)}>
-    {children}
-  </Tag>
+}: StackProps & { as?: ElementType }) => (
+  <Tag className={cn('flex flex-wrap items-center', GAP[gap])}>{children}</Tag>
 );
 
 /*
@@ -64,18 +50,13 @@ const COLUMNS = {
 } as const;
 
 type GridProps = {
-  as?: ElementType;
   cols?: keyof typeof COLUMNS;
   children: ReactNode;
 };
 
 /** Card grid: one column when narrow, the same gap everywhere. */
-export const Grid = ({
-  as: Tag = 'div',
-  cols = 'two',
-  children,
-}: GridProps) => (
+export const Grid = ({ cols = 'two', children }: GridProps) => (
   <div className='cq-container min-w-0'>
-    <Tag className={cn('grid gap-4', COLUMNS[cols])}>{children}</Tag>
+    <div className={cn('grid gap-4', COLUMNS[cols])}>{children}</div>
   </div>
 );

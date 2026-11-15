@@ -27,12 +27,16 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const createSlug = (title: string) => {
-  return title
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9-]/g, '');
-};
+/**
+ * Wall clock for server components that rank content (ranking takes it as
+ * `nowMs`). Read through a function so render stays lint-pure
+ * (react-hooks/purity rejects a bare Date.now() in render).
+ */
+export const currentTimeMs = () => Date.now();
+
+/** "1 post", "3 posts"; pass the plural for irregular words. */
+export const plural = (n: number, word: string, words = `${word}s`) =>
+  `${n} ${n === 1 ? word : words}`;
 
 export const slugToTitle = (slug: string) => {
   const words = slug.split('-');
@@ -78,47 +82,3 @@ export const createURL = (array: string[], index: number) => {
 
   return url;
 };
-
-export function serializeMongo<T>(value: T): T {
-  if (value === null || value === undefined) return value;
-  if (value instanceof Date) return value;
-  if (Array.isArray(value)) return value.map(serializeMongo) as unknown as T;
-  if (typeof value === 'object') {
-    const v = value as any;
-    if (v._bsontype === 'ObjectId' || v?.constructor?.name === 'ObjectId') {
-      return v.toString() as unknown as T;
-    }
-    const out: Record<string, unknown> = {};
-    for (const [k, val] of Object.entries(v)) out[k] = serializeMongo(val);
-    return out as T;
-  }
-  return value;
-}
-
-export class ServerResponse {
-  constructor() {}
-
-  response(data: any, message: string) {
-    return {
-      success: true,
-      data: serializeMongo(data),
-      message: message,
-    };
-  }
-
-  errorResponse(message: string) {
-    return {
-      success: false,
-      data: null,
-      message: message,
-    };
-  }
-
-  serverErrorResponse() {
-    return {
-      success: false,
-      data: null,
-      message: 'Something went wrong',
-    };
-  }
-}

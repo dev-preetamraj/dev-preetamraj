@@ -1,3 +1,4 @@
+import { canonical } from '@/lib/seo';
 import type { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
@@ -7,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: '/studio',
     },
-    sitemap: 'https://preetamraj.dev/sitemap.xml',
+    sitemap: canonical('/sitemap.xml'),
   };
 }

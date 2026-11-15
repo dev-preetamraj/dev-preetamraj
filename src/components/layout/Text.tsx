@@ -8,12 +8,9 @@ import { ElementType, ReactNode } from 'react';
  */
 
 const VARIANT = {
-  lead: 'text-lead',
   body: 'text-body',
   small: 'text-small',
   caption: 'text-caption',
-  micro: 'text-micro',
-  eyebrow: 'text-eyebrow',
   /** Mono metadata (dates, counts, handles). */
   meta: 'font-mono text-caption',
   /** Mono value at reading size (e.g. an email address). */
@@ -23,9 +20,7 @@ const VARIANT = {
 const TONE = {
   default: 'text-foreground',
   muted: 'text-muted-foreground',
-  primary: 'text-primary',
   destructive: 'text-destructive',
-  inherit: '',
 } as const;
 
 const WEIGHT = {
@@ -34,25 +29,15 @@ const WEIGHT = {
   semibold: 'font-semibold',
 } as const;
 
-export type TextVariant = keyof typeof VARIANT;
-export type TextTone = keyof typeof TONE;
-
 type Props = {
   as?: ElementType;
-  variant?: TextVariant;
-  tone?: TextTone;
+  variant?: keyof typeof VARIANT;
+  tone?: keyof typeof TONE;
   weight?: keyof typeof WEIGHT;
   /** Break long unspaced values (emails, URLs) instead of overflowing. */
   breakAll?: boolean;
-  id?: string;
   children: ReactNode;
 };
-
-export const textClass = (
-  variant: TextVariant = 'body',
-  tone: TextTone = 'muted',
-  weight: keyof typeof WEIGHT = 'normal'
-) => cn(VARIANT[variant], TONE[tone], WEIGHT[weight]);
 
 const Text = ({
   as: Tag = 'p',
@@ -60,12 +45,15 @@ const Text = ({
   tone = 'muted',
   weight = 'normal',
   breakAll = false,
-  id,
   children,
 }: Props) => (
   <Tag
-    id={id}
-    className={cn(textClass(variant, tone, weight), breakAll && 'break-all')}
+    className={cn(
+      VARIANT[variant],
+      TONE[tone],
+      WEIGHT[weight],
+      breakAll && 'break-all'
+    )}
   >
     {children}
   </Tag>

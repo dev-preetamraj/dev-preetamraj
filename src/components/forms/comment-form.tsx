@@ -45,15 +45,17 @@ const formSchema = z.object({
 
 type Props = {
   postId: string;
-  /** Set when this form posts a reply to an existing comment. */
+  /**
+   * Set when this form posts a reply to an existing comment; replies use
+   * the tighter inline-reply layout.
+   */
   parentId?: string;
   /** Called after a successful submit (and on Cancel) — used to close inline reply forms. */
   onSuccess?: () => void;
-  /** Tighter layout for use as an inline reply box. */
-  compact?: boolean;
 };
 
-const CommentForm = ({ postId, parentId, onSuccess, compact }: Props) => {
+const CommentForm = ({ postId, parentId, onSuccess }: Props) => {
+  const compact = Boolean(parentId);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

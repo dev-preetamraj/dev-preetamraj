@@ -20,7 +20,7 @@ const BlogListInfinite = ({ blogs }: Props) => {
     [blogs]
   );
 
-  const { items, containerRef } = useInfiniteScroll<PostListItem>({
+  const { items } = useInfiniteScroll<PostListItem>({
     initialItems: blogs.slice(0, POSTS_INITIAL_BATCH_SIZE),
     totalCount: blogs.length,
     batchSize: POSTS_BATCH_SIZE,
@@ -28,11 +28,7 @@ const BlogListInfinite = ({ blogs }: Props) => {
     fetchPage,
   });
 
-  return (
-    <div ref={containerRef}>
-      <BlogList blogs={items} />
-    </div>
-  );
+  return <BlogList blogs={items} />;
 };
 
 export default BlogListInfinite;

@@ -1,11 +1,11 @@
 import Prose from '@/components/layout/article/Prose';
-import { MetaItem, ViewCount } from '@/components/layout/Meta';
+import { MetaItem, PublishedDate, ViewCount } from '@/components/layout/Meta';
 import PageLayout from '@/components/layout/PageLayout';
-import { formatDate, toISODate } from '@/lib/format-date';
+import { BreadcrumbTitle } from '@/components/layout/SiteShell';
 import { readingTimeMinutes } from '@/lib/reading-time';
 import { buildToc } from '@/lib/toc';
 import { Post } from '@/sanity/lib/queries';
-import { CalendarIcon, ClockIcon } from 'lucide-react';
+import { ClockIcon } from 'lucide-react';
 import { ReactNode } from 'react';
 
 type Props = {
@@ -19,17 +19,11 @@ type Props = {
 /** A blog post on the `article` PageLayout. */
 const RenderBlog = ({ blog, url, footer }: Props) => {
   const readingTime = readingTimeMinutes(blog.content);
-  const published = blog.publishedAt ?? blog._createdAt;
-  const date = formatDate(published);
   const content = blog.content ?? [];
 
   const meta = (
     <>
-      {date && (
-        <MetaItem icon={CalendarIcon}>
-          <time dateTime={toISODate(published)}>{date}</time>
-        </MetaItem>
-      )}
+      <PublishedDate item={blog} />
       {readingTime > 0 && (
         <MetaItem icon={ClockIcon} title='Estimated reading time'>
           {readingTime} min read
@@ -58,6 +52,7 @@ const RenderBlog = ({ blog, url, footer }: Props) => {
       aside={{ meta, topics, url }}
       footer={footer}
     >
+      <BreadcrumbTitle title={blog.title} />
       <Prose value={content} />
     </PageLayout>
   );

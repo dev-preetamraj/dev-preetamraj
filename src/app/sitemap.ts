@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 
+import { canonical } from '@/lib/seo';
 import {
   CATEGORIES_SITEMAP_QUERY,
   POSTS_SITEMAP_QUERY,
@@ -9,20 +10,18 @@ import {
   TAGS_SITEMAP_QUERY,
 } from '@/sanity/lib/queries';
 
-const BASE_URL = 'https://preetamraj.dev';
-
 // Keep in sync with sanityFetch's revalidate window so newly published
 // content lands in the sitemap without a redeploy.
 export const revalidate = 60;
 
 const staticRoutes: MetadataRoute.Sitemap = [
-  { url: BASE_URL, changeFrequency: 'weekly', priority: 1 },
-  { url: `${BASE_URL}/about`, changeFrequency: 'monthly', priority: 0.8 },
-  { url: `${BASE_URL}/portfolio`, changeFrequency: 'weekly', priority: 0.8 },
-  { url: `${BASE_URL}/blog`, changeFrequency: 'weekly', priority: 0.8 },
-  { url: `${BASE_URL}/categories`, changeFrequency: 'weekly', priority: 0.5 },
-  { url: `${BASE_URL}/tags`, changeFrequency: 'weekly', priority: 0.5 },
-  { url: `${BASE_URL}/contact`, changeFrequency: 'yearly', priority: 0.4 },
+  { url: canonical(), changeFrequency: 'weekly', priority: 1 },
+  { url: canonical('/about'), changeFrequency: 'monthly', priority: 0.8 },
+  { url: canonical('/portfolio'), changeFrequency: 'weekly', priority: 0.8 },
+  { url: canonical('/blog'), changeFrequency: 'weekly', priority: 0.8 },
+  { url: canonical('/categories'), changeFrequency: 'weekly', priority: 0.5 },
+  { url: canonical('/tags'), changeFrequency: 'weekly', priority: 0.5 },
+  { url: canonical('/contact'), changeFrequency: 'yearly', priority: 0.4 },
 ];
 
 function toEntries(
@@ -32,7 +31,7 @@ function toEntries(
   changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency'],
 ): MetadataRoute.Sitemap {
   return entries.map(({ slug, _updatedAt }) => ({
-    url: `${BASE_URL}${prefix}/${slug}`,
+    url: canonical(`${prefix}/${slug}`),
     lastModified: new Date(_updatedAt),
     changeFrequency,
     priority,

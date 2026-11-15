@@ -1,6 +1,6 @@
-import { formatViews } from '@/lib/utils';
-import { cn } from '@/lib/utils';
-import { EyeIcon } from 'lucide-react';
+import { formatDate, toISODate } from '@/lib/format-date';
+import { cn, formatViews } from '@/lib/utils';
+import { CalendarIcon, EyeIcon } from 'lucide-react';
 import Link from 'next/link';
 import { ComponentType, ReactNode } from 'react';
 import { ICON, LINK } from './roles';
@@ -58,6 +58,22 @@ export const MetaItem = ({ icon: Icon, title, children }: ItemProps) => (
     {children}
   </span>
 );
+
+/** The one date: published (posts) or created, in the site format. */
+export const PublishedDate = ({
+  item,
+}: {
+  item: { publishedAt?: string | null; _createdAt: string };
+}) => {
+  const date = item.publishedAt ?? item._createdAt;
+  const label = formatDate(date);
+  if (!label) return null;
+  return (
+    <MetaItem icon={CalendarIcon}>
+      <time dateTime={toISODate(date)}>{label}</time>
+    </MetaItem>
+  );
+};
 
 /**
  * The one view count: eye icon + number, with "views" spelled out for

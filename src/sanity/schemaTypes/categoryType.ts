@@ -1,7 +1,7 @@
 import { TagIcon } from '@sanity/icons/Tag';
 import { defineField, defineType } from 'sanity';
 
-import { strictSlugify } from './slugify';
+import { slugify } from './slugify';
 
 export const categoryType = defineType({
   name: 'category',
@@ -19,7 +19,7 @@ export const categoryType = defineType({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
-      options: { source: 'name', maxLength: 96, slugify: strictSlugify },
+      options: { source: 'name', maxLength: 96, slugify },
       validation: (Rule) => Rule.required(),
     }),
     defineField({

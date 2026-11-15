@@ -123,12 +123,6 @@ export const COMMENTS_PAGE_QUERY = `*[_type == "comment" && post._ref == $postId
   ${COMMENT_THREAD_PROJECTION}
 }`;
 
-export const TRENDING_POSTS_QUERY = `*[_type == "post" && isPublished == true] | order(publishedAt desc)[0...5] {
-  _id,
-  title,
-  "slug": slug.current
-}`;
-
 /** Post link plus view count, for the sidebar's "most read" list. */
 export type PopularPostLink = PostLink & {
   views: number;

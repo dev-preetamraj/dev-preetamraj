@@ -17,7 +17,7 @@ const ViewTracker = ({ postId }: Props) => {
   const recorded = useRef(false);
 
   useEffect(() => {
-    if (recorded.current || !postId) return;
+    if (recorded.current) return;
     recorded.current = true;
     void recordView(postId);
   }, [postId]);

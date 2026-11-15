@@ -1,7 +1,7 @@
 import { DocumentTextIcon } from '@sanity/icons/DocumentText';
 import { defineArrayMember, defineField, defineType } from 'sanity';
 
-import { strictSlugify } from './slugify';
+import { slugify } from './slugify';
 
 export const postType = defineType({
   name: 'post',
@@ -19,7 +19,7 @@ export const postType = defineType({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
-      options: { source: 'title', maxLength: 96, slugify: strictSlugify },
+      options: { source: 'title', maxLength: 96, slugify },
       validation: (Rule) => Rule.required(),
     }),
     defineField({

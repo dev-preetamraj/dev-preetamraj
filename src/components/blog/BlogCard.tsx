@@ -1,9 +1,7 @@
 import Chip from '@/components/layout/Chip';
 import ListRow from '@/components/layout/ListRow';
-import { MetaItem, ViewCount } from '@/components/layout/Meta';
-import { formatDate, toISODate } from '@/lib/format-date';
+import { PublishedDate, ViewCount } from '@/components/layout/Meta';
 import { PostListItem } from '@/sanity/lib/queries';
-import { CalendarIcon } from 'lucide-react';
 import { FC } from 'react';
 
 type Props = {
@@ -18,7 +16,6 @@ type Props = {
  * same everywhere it is listed.
  */
 const BlogCard: FC<Props> = ({ blog, titleAs = 'h2' }) => {
-  const published = blog.publishedAt ?? blog._createdAt;
   return (
     <ListRow
       href={`/blog/${blog.slug}`}
@@ -27,9 +24,7 @@ const BlogCard: FC<Props> = ({ blog, titleAs = 'h2' }) => {
       description={blog.description}
       meta={
         <>
-          <MetaItem icon={CalendarIcon}>
-            <time dateTime={toISODate(published)}>{formatDate(published)}</time>
-          </MetaItem>
+          <PublishedDate item={blog} />
           {blog.category && (
             <Chip href={`/categories/${blog.category.slug}`}>
               {blog.category.name}

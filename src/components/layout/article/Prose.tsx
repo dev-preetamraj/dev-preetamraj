@@ -8,16 +8,14 @@ import { urlFor } from '@/sanity/lib/image';
 import { PortableText, type PortableTextComponents } from '@portabletext/react';
 import type { PortableTextBlock } from '@portabletext/types';
 import hljs from 'highlight.js';
+import { Check, Copy } from 'lucide-react';
 import Image from 'next/image';
-import { ReactNode, useEffect, useMemo, useRef } from 'react';
+import { ReactNode, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 
 type Props = {
   value: PortableTextBlock[];
 };
-
-const copySvg = `<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>`;
-
-const checkSvg = `<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"/></svg>`;
 
 /** Pull the intrinsic dimensions out of a Sanity image asset ref. */
 function imageDimensions(image: SanityImage): {
@@ -40,8 +38,37 @@ type CodeValue = {
 };
 
 // Languages that carry no grammar — highlighting them as-is yields plain text,
-// so we auto-detect instead (mirrors the old markdown-it-highlightjs fallback).
+// so we auto-detect instead.
 const PLAIN_LANGUAGES = new Set(['text', 'plaintext', 'plain', 'none', 'txt']);
+
+/** Copies a code block's source; same feedback as CopyLinkButton. */
+const CopyButton = ({ code }: { code: string }) => {
+  const [copied, setCopied] = useState(false);
+
+  const copy = async () => {
+    try {
+      if (!navigator.clipboard) throw new Error('Clipboard unavailable');
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      toast.success('Code copied');
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error('Could not copy the code. Select it and copy it manually.');
+    }
+  };
+
+  const Icon = copied ? Check : Copy;
+  return (
+    <button
+      type='button'
+      onClick={copy}
+      aria-label={copied ? 'Code copied' : 'Copy code to clipboard'}
+      className='absolute right-1 top-2 rounded-sm p-1 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+    >
+      <Icon aria-hidden className='h-5 w-5' />
+    </button>
+  );
+};
 
 const CodeBlock = ({ value }: { value: CodeValue }) => {
   const code = value?.code ?? '';
@@ -55,7 +82,7 @@ const CodeBlock = ({ value }: { value: CodeValue }) => {
     : hljs.highlightAuto(code).value;
 
   return (
-    <pre>
+    <pre className='relative'>
       {value?.filename && (
         <span className='block font-mono text-caption mb-2'>
           {value.filename}
@@ -65,6 +92,7 @@ const CodeBlock = ({ value }: { value: CodeValue }) => {
         className={`hljs${useSpecificLanguage ? ` language-${language}` : ''}`}
         dangerouslySetInnerHTML={{ __html: highlighted }}
       />
+      <CopyButton code={code} />
     </pre>
   );
 };
@@ -120,78 +148,20 @@ const components: PortableTextComponents = {
   },
 };
 
-const COPY_LABEL = 'Copy code to clipboard';
-
 const Prose = ({ value }: Props) => {
   const proseComponents = useMemo(
     () => makeComponents(tocIdsByKey(buildToc(value))),
     [value]
   );
-  // Polite live region that announces copy success/failure to screen readers.
-  const statusRef = useRef<HTMLParagraphElement>(null);
-
-  useEffect(() => {
-    const announce = (message: string) => {
-      const status = statusRef.current;
-      if (!status) return;
-      // Clear first so repeating the same message is announced again.
-      status.textContent = '';
-      window.setTimeout(() => {
-        status.textContent = message;
-      }, 50);
-    };
-
-    // Add copy buttons to all code blocks (mirrors RenderMarkdown behaviour).
-    document.querySelectorAll('pre code').forEach((block) => {
-      const codeBlock = block as HTMLElement;
-      const pre = codeBlock.parentElement;
-      if (!pre) return;
-
-      pre.style.position = 'relative';
-      if (pre.querySelector('button.copy-button')) return;
-
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'copy-button';
-      button.setAttribute('aria-label', COPY_LABEL);
-      button.innerHTML = copySvg;
-      pre.appendChild(button);
-
-      const reset = () => {
-        button.innerHTML = copySvg;
-        button.setAttribute('aria-label', COPY_LABEL);
-      };
-
-      button.addEventListener('click', async () => {
-        try {
-          if (!navigator.clipboard) throw new Error('Clipboard unavailable');
-          await navigator.clipboard.writeText(codeBlock.innerText);
-          button.innerHTML = checkSvg;
-          button.setAttribute('aria-label', 'Code copied');
-          announce('Code copied to clipboard');
-        } catch {
-          button.setAttribute('aria-label', 'Copy failed');
-          announce(
-            'Could not copy code. Select the code and copy it manually.'
-          );
-        }
-        setTimeout(reset, 2000);
-      });
-    });
-  }, [value]);
 
   return (
     // Width comes from the article column (PageLayout) and the prose
     // plugin's maxWidth token; headings, lists, images and code blocks all
     // share it. Headings keep clear of the sticky navbar when jumped to.
-    // Code blocks use w-0 + min-w-full so long lines scroll inside the block
-    // instead of widening the page: the Radix ScrollArea wraps the layout in
-    // display:table, which otherwise grows to fit the widest code line.
     <article
-      className={`prose dark:prose-invert ${LINK.prose} prose-headings:scroll-mt-24 prose-headings:text-foreground prose-img:w-full prose-pre:w-0 prose-pre:min-w-full`}
+      className={`prose ${LINK.prose} prose-headings:scroll-mt-24 prose-headings:text-foreground prose-img:w-full`}
     >
       <PortableText value={value} components={proseComponents} />
-      <p ref={statusRef} role='status' aria-live='polite' className='sr-only' />
     </article>
   );
 };

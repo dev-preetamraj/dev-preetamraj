@@ -11,7 +11,7 @@ type Props = {
   commentsCount: number;
 };
 
-const RenderComments = ({ postId, comments = [], commentsCount }: Props) => (
+const RenderComments = ({ postId, comments, commentsCount }: Props) => (
   <Section title='Leave a comment' id='comments'>
     <Stack gap='section'>
       <Stack gap='stack'>

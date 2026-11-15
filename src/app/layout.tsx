@@ -6,10 +6,9 @@ import {
   SITE_URL,
   TWITTER_HANDLE,
 } from '@/lib/seo';
-import Provider from '@/providers/Provider';
-import { ThemeProvider } from '@/providers/ThemeProvider';
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
+import { ThemeProvider } from 'next-themes';
 import { Geist, Geist_Mono } from 'next/font/google';
 
 // One sans family for headings, body and UI, plus its matching mono for
@@ -34,11 +33,7 @@ export const metadata: Metadata = {
     template: `%s - ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
-  robots: {
-    index: true,
-    follow: true,
-  },
-  alternates: { ...FEED_ALTERNATES },
+  alternates: FEED_ALTERNATES,
   openGraph: {
     type: 'website',
     url: SITE_URL,
@@ -72,10 +67,8 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Provider>
-            {children}
-            <Toaster />
-          </Provider>
+          {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
