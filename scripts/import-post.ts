@@ -1,6 +1,6 @@
 /**
  * Imports a local markdown file (frontmatter + body) into Sanity as a Studio
- * draft post. Converts the markdown body to Portable Text and resolves the
+ * draft post, or a draft project with `type: project` frontmatter. Converts the markdown body to Portable Text and resolves the
  * post's category + tags against existing documents, creating any that are
  * missing. Re-running on the same file overwrites the same draft.
  *
@@ -335,6 +335,17 @@ async function main() {
     typeof data.thumbnail === 'string' ? data.thumbnail.trim() : '';
   const imageAlt =
     typeof data.alt === 'string' && data.alt.trim() ? data.alt.trim() : title;
+  const docType = data.type === 'project' ? 'project' : 'post';
+  const url = (v: unknown) =>
+    typeof v === 'string' && v.trim() ? v.trim() : undefined;
+  const projectFields =
+    docType === 'project'
+      ? {
+          featured: data.featured === true,
+          ...(url(data.liveUrl) ? { liveUrl: url(data.liveUrl) } : {}),
+          ...(url(data.githubUrl) ? { githubUrl: url(data.githubUrl) } : {}),
+        }
+      : {};
 
   const missing = [
     !title && 'title',
@@ -350,7 +361,7 @@ async function main() {
 
   const slug = toSlug(title);
 
-  console.log(`Importing "${title}" -> draft slug "${slug}"`);
+  console.log(`Importing ${docType} "${title}" -> draft slug "${slug}"`);
 
   const portableText = markdownToPortableText(content);
   if (!portableText.length) {
@@ -373,7 +384,7 @@ async function main() {
   const _id = `drafts.${slug}`;
   await client.createOrReplace({
     _id,
-    _type: 'post',
+    _type: docType,
     title,
     slug: { _type: 'slug', current: slug },
     description,
@@ -381,11 +392,12 @@ async function main() {
     content: portableText,
     category: { _type: 'reference', _ref: categoryId },
     ...(tagRefs.length ? { tags: tagRefs } : {}),
+    ...projectFields,
     isPublished: false,
   });
 
   console.log(`\nDraft saved: ${_id}`);
-  console.log(`Open in Studio: /studio/structure/post;${slug}`);
+  console.log(`Open in Studio: /studio/structure/${docType};${slug}`);
 }
 
 main().catch((err) => {

@@ -46,7 +46,7 @@ The root layout wraps everything in next-themes' ThemeProvider and mounts the so
 
 ### Content authoring (markdown import)
 
-Blog posts are drafted as local markdown files in the git-ignored `content/` workspace and pushed into Sanity as Studio drafts via `scripts/import-post.ts` (`bun run import:post <file>`). The script parses frontmatter, converts the body to Portable Text, and resolves the post's `category` + `tags` against existing documents (reusing by slug, creating any that are missing). The markdown file contract (required frontmatter, how slugs and category/tag names are derived) is documented in `content/README.md` - read it before changing the importer or the frontmatter format.
+Blog posts are drafted as local markdown files in the git-ignored `content/` workspace and pushed into Sanity as Studio drafts via `scripts/import-post.ts` (`bun run import:post <file>`). The script parses frontmatter, converts the body to Portable Text, and resolves the post's `category` + `tags` against existing documents (reusing by slug, creating any that are missing). Frontmatter `type: project` (plus `featured`, `liveUrl`, `githubUrl`) imports a portfolio project instead of a post. The markdown file contract (required frontmatter, how slugs and category/tag names are derived) is documented in `content/README.md` - read it before changing the importer or the frontmatter format.
 
 ### Ranking / recommendation algorithm
 
