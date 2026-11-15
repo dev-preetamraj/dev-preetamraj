@@ -1,5 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { formatPostDate, formatViews } from '@/lib/utils';
+import { formatDate } from '@/lib/format-date';
+import { formatViews } from '@/lib/utils';
 import { urlFor } from '@/sanity/lib/image';
 import { PostListItem } from '@/sanity/lib/queries';
 import { EyeIcon, PhotoIcon } from '@heroicons/react/24/outline';
@@ -59,7 +60,7 @@ const PostGridCard: FC<Props> = ({ blog }) => {
         <div className='mt-auto flex items-center gap-4 pt-1 font-mono text-caption text-muted-foreground'>
           <span className='flex items-center gap-1.5'>
             <CalendarIcon className='h-3.5 w-3.5' />
-            {formatPostDate(blog.publishedAt ?? blog._createdAt)}
+            {formatDate(blog.publishedAt ?? blog._createdAt)}
           </span>
           <span className='flex items-center gap-1.5'>
             <EyeIcon className='h-3.5 w-3.5' />

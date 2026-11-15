@@ -1,17 +1,20 @@
-import SectionHeading from '@/components/global/SectionHeading';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import SocialLinks from '@/components/global/SocialLinks';
+import Card from '@/components/layout/Card';
+import Chip from '@/components/layout/Chip';
+import PageLayout from '@/components/layout/PageLayout';
+import Section from '@/components/layout/Section';
+import { Cluster, Grid, Stack } from '@/components/layout/Stack';
+import Text, { Strong } from '@/components/layout/Text';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import {
   DownloadIcon,
   EnvelopeClosedIcon,
-  GitHubLogoIcon,
   LinkedInLogoIcon,
 } from '@radix-ui/react-icons';
 import {
   Activity,
   AlertTriangle,
-  ArrowUpRight,
   Bot,
   Boxes,
   Cloud,
@@ -214,248 +217,143 @@ const identityChips = [
 
 const AboutPage = () => {
   return (
-    <div className='flex flex-col space-y-section-sm'>
-      <section className='flex flex-col space-y-5'>
-        <p className='text-eyebrow text-muted-foreground'>
-          Fullstack Software Engineer
-        </p>
-        <h1 className='text-h1 text-foreground'>
-          I build and run platforms end to end.
-        </h1>
-        <p className='text-lead text-muted-foreground max-w-measure'>
-          From databases and cloud infrastructure up to the interface people
-          actually touch - I like turning messy real-world problems into systems
-          that just work.
-        </p>
-
-        <ul className='flex flex-wrap gap-2'>
-          {identityChips.map((chip) => (
-            <li
-              key={chip}
-              className='rounded-full border border-border bg-muted px-3 py-1 text-caption text-muted-foreground'
-            >
-              {chip}
-            </li>
-          ))}
-        </ul>
-
-        <div className='flex flex-wrap items-center gap-4 pt-1'>
-          <Link
-            href='/resume.pdf'
-            download
-            className={cn(buttonVariants(), 'space-x-2')}
-          >
-            <span>Resume</span>
-            <DownloadIcon className='h-4 w-4' />
-          </Link>
-          <div className='flex items-center gap-4 text-foreground'>
-            <Link
-              href='https://github.com/dev-preetamraj'
-              target='_blank'
-              aria-label='GitHub'
-              className='hover:text-primary transition-colors'
-            >
-              <GitHubLogoIcon className='h-6 w-6' />
-            </Link>
-            <Link
-              href='https://www.linkedin.com/in/raj-preetam/'
-              target='_blank'
-              aria-label='LinkedIn'
-              className='hover:text-primary transition-colors'
-            >
-              <LinkedInLogoIcon className='h-6 w-6' />
-            </Link>
-            <Link
-              href='mailto:dev.preetamraj@gmail.com'
-              aria-label='Email'
-              className='hover:text-primary transition-colors'
-            >
-              <EnvelopeClosedIcon className='h-6 w-6' />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className='flex flex-col space-y-5'>
-        <SectionHeading index='01' title='About' />
-        <div className='max-w-measure space-y-4 text-body text-muted-foreground'>
-          <p>
-            Hi, I&apos;m{' '}
-            <span className='font-medium text-foreground'>Preetam Raj</span>, a
-            fullstack software engineer who loves turning messy real-world
-            problems into systems that just work. I studied Mechanical
-            Engineering with a minor in{' '}
-            <span className='font-medium text-foreground'>
-              Computer Science and Engineering
-            </span>{' '}
-            at <span className='font-medium text-foreground'>IIT Mandi</span>,
-            and somewhere along the way fell for the craft of building software
-            end to end - from database and infrastructure up to the interface
-            people actually touch.
-          </p>
-          <p>
+    <PageLayout
+      variant='index'
+      // The page ends with its own contact card, so the rail skips the CTA.
+      rail={{ cta: false }}
+      header={{
+        eyebrow: 'Fullstack Software Engineer',
+        title: 'I build and run platforms end to end.',
+        lead: 'From databases and cloud infrastructure up to the interface people actually touch - I like turning messy real-world problems into systems that just work.',
+        children: (
+          <>
+            <Cluster as='ul'>
+              {identityChips.map((chip) => (
+                <li key={chip}>
+                  <Chip>{chip}</Chip>
+                </li>
+              ))}
+            </Cluster>
+            <Cluster>
+              <Link
+                href='/resume.pdf'
+                download
+                className={cn(buttonVariants(), 'gap-2')}
+              >
+                Resume
+                <DownloadIcon aria-hidden className='h-4 w-4' />
+              </Link>
+              <SocialLinks />
+            </Cluster>
+          </>
+        ),
+      }}
+    >
+      <Section title='About'>
+        <Stack>
+          <Text>
+            Hi, I&apos;m <Strong>Preetam Raj</Strong>, a fullstack software
+            engineer who loves turning messy real-world problems into systems
+            that just work. I studied Mechanical Engineering with a minor in{' '}
+            <Strong>Computer Science and Engineering</Strong> at{' '}
+            <Strong>IIT Mandi</Strong>, and somewhere along the way fell for the
+            craft of building software end to end - from database and
+            infrastructure up to the interface people actually touch.
+          </Text>
+          <Text>
             These days I&apos;m a Software Engineer II in{' '}
-            <span className='font-medium text-foreground'>
-              energy-tech / cleantech
-            </span>
-            , where I own a platform that powers smart metering, automated
-            billing, and bill audit for commercial and industrial customers -
-            designing the backend and data pipelines, shipping the frontend
-            dashboards, and running the whole thing on GCP. I like being the
-            person who takes an idea from architecture to production and keeps
-            it alive.
-          </p>
-          <p>
-            I work AI-native day to day -{' '}
-            <span className='font-medium text-foreground'>Claude Code</span> and{' '}
-            <span className='font-medium text-foreground'>Codex</span> are a
-            regular part of how I ship - and on the side I build{' '}
-            <span className='font-medium text-foreground'>llm-kit</span>, an
-            open-source Python toolkit (on PyPI) that gives one typed interface
-            across Anthropic, Gemini, and OpenAI.
-          </p>
-          <p>
+            <Strong>energy-tech / cleantech</Strong>, where I own a platform
+            that powers smart metering, automated billing, and bill audit for
+            commercial and industrial customers - designing the backend and data
+            pipelines, shipping the frontend dashboards, and running the whole
+            thing on GCP. I like being the person who takes an idea from
+            architecture to production and keeps it alive.
+          </Text>
+          <Text>
+            I work AI-native day to day - <Strong>Claude Code</Strong> and{' '}
+            <Strong>Codex</Strong> are a regular part of how I ship - and on the
+            side I build <Strong>llm-kit</Strong>, an open-source Python toolkit
+            (on PyPI) that gives one typed interface across Anthropic, Gemini,
+            and OpenAI.
+          </Text>
+          <Text>
             Outside of code, you&apos;ll usually find me singing or strumming a
             guitar - music is where I find my balance. Originally from Patna,
             now based in Bangalore, I&apos;m always chasing that mix of solid
             engineering and a little creative spark.
-          </p>
-        </div>
-      </section>
+          </Text>
+        </Stack>
+      </Section>
 
-      <section className='flex flex-col space-y-5'>
-        <SectionHeading index='02' title="What I've built" />
-        <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-          {highlights.map((item) => {
-            const Icon = item.icon;
-            return (
-              <Card
-                key={item.id}
-                className={cn(
-                  'group relative overflow-hidden rounded-xl transition-all duration-base hover:-translate-y-1 hover:border-input hover:shadow-md',
-                  item.featured && 'md:col-span-2'
-                )}
-              >
-                <CardHeader className='flex-row items-center gap-3 space-y-0'>
-                  <span className='flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-border bg-muted text-foreground'>
-                    <Icon className='h-5 w-5' />
-                  </span>
-                  <CardTitle className='text-h4 transition-colors group-hover:text-primary'>
-                    {item.href ? (
-                      <Link
-                        href={item.href}
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        className='after:absolute after:inset-0'
-                      >
-                        {item.title}
-                      </Link>
-                    ) : (
-                      item.title
-                    )}
-                  </CardTitle>
-                  {(item.badge || item.href) && (
-                    <div className='ml-auto flex items-center gap-2'>
-                      {item.badge && (
-                        <span className='hidden rounded-full border border-border px-2.5 py-0.5 text-micro text-foreground sm:inline'>
-                          {item.badge}
-                        </span>
-                      )}
-                      {item.href && (
-                        <ArrowUpRight className='h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary' />
-                      )}
-                    </div>
-                  )}
-                </CardHeader>
-                <CardContent className='space-y-4'>
-                  <p className='text-small text-muted-foreground'>
-                    {item.text}
-                  </p>
-                  <ul className='flex flex-wrap gap-1.5'>
-                    {item.tags.map((tag) => (
-                      <li
-                        key={tag}
-                        className='rounded-xs border border-border bg-muted px-2 py-0.5 font-mono text-micro text-muted-foreground'
-                      >
-                        {tag}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      </section>
+      <Section title='What I’ve built'>
+        <Grid cols='two'>
+          {highlights.map((item) => (
+            <Card
+              key={item.id}
+              icon={item.icon}
+              title={item.title}
+              href={item.href}
+              external={Boolean(item.href)}
+              span={item.featured ? 'full' : undefined}
+              aside={item.badge && <Chip tone='strong'>{item.badge}</Chip>}
+              description={item.text}
+              lines='none'
+            >
+              <Cluster as='ul' gap='xs'>
+                {item.tags.map((tag) => (
+                  <li key={tag}>
+                    <Chip>{tag}</Chip>
+                  </li>
+                ))}
+              </Cluster>
+            </Card>
+          ))}
+        </Grid>
+      </Section>
 
-      <section className='flex flex-col space-y-5'>
-        <SectionHeading index='03' title='Skills' />
-        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-          {skills.map((group) => {
-            const Icon = group.icon;
-            return (
-              <div
-                key={group.id}
-                className='flex flex-col gap-4 rounded-xl border border-border bg-card p-5'
-              >
-                <h3 className='flex items-center gap-3 text-h4 text-foreground'>
-                  <span className='flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-border bg-muted'>
-                    <Icon className='h-[18px] w-[18px]' />
-                  </span>
-                  <span>{group.title}</span>
-                </h3>
-                <ul className='flex flex-wrap gap-1.5'>
-                  {group.items.map((skill) => (
-                    <li
-                      key={skill}
-                      className='rounded-xs border border-border bg-muted px-2.5 py-1 font-mono text-caption text-muted-foreground transition-colors hover:border-input hover:text-foreground'
-                    >
-                      {skill}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            );
-          })}
-        </div>
-      </section>
+      <Section title='Skills'>
+        <Grid cols='two'>
+          {skills.map((group) => (
+            <Card key={group.id} icon={group.icon} title={group.title}>
+              <Cluster as='ul' gap='xs'>
+                {group.items.map((skill) => (
+                  <li key={skill}>
+                    <Chip>{skill}</Chip>
+                  </li>
+                ))}
+              </Cluster>
+            </Card>
+          ))}
+        </Grid>
+      </Section>
 
-      <section className='flex flex-col items-start justify-between gap-5 rounded-xl border border-border bg-card p-8 sm:flex-row sm:items-center'>
-        <div className='space-y-1.5'>
-          <h2 className='text-h3 text-foreground'>
-            Let&apos;s build something.
-          </h2>
-          <p className='text-small text-muted-foreground'>
-            Have a role or a project in mind? I&apos;m happy to talk.
-          </p>
-        </div>
-        <div className='flex flex-wrap items-center gap-3'>
-          <Link
-            href='mailto:dev.preetamraj@gmail.com'
-            className={cn(buttonVariants(), 'space-x-2')}
-          >
-            <EnvelopeClosedIcon className='h-4 w-4' />
-            <span>Email me</span>
-          </Link>
-          <Link
-            href='https://www.linkedin.com/in/raj-preetam/'
-            target='_blank'
-            className={cn(buttonVariants({ variant: 'outline' }), 'space-x-2')}
-          >
-            <LinkedInLogoIcon className='h-4 w-4' />
-            <span>LinkedIn</span>
-          </Link>
-          <Link
-            href='https://github.com/dev-preetamraj'
-            target='_blank'
-            className={cn(buttonVariants({ variant: 'outline' }), 'space-x-2')}
-          >
-            <GitHubLogoIcon className='h-4 w-4' />
-            <span>GitHub</span>
-          </Link>
-        </div>
-      </section>
-    </div>
+      <Card
+        titleAs='h2'
+        title='Let’s build something.'
+        description='Have a role or a project in mind? I’m happy to talk.'
+        lines='none'
+        footer={
+          <>
+            <Link
+              href='mailto:dev.preetamraj@gmail.com'
+              className={cn(buttonVariants(), 'gap-2')}
+            >
+              <EnvelopeClosedIcon aria-hidden className='h-4 w-4' />
+              Email me
+            </Link>
+            <Link
+              href='https://www.linkedin.com/in/raj-preetam/'
+              target='_blank'
+              rel='noopener noreferrer'
+              className={cn(buttonVariants({ variant: 'outline' }), 'gap-2')}
+            >
+              <LinkedInLogoIcon aria-hidden className='h-4 w-4' />
+              LinkedIn
+            </Link>
+          </>
+        }
+      />
+    </PageLayout>
   );
 };
 

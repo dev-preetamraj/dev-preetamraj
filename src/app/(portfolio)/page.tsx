@@ -1,5 +1,9 @@
 import JsonLd from '@/components/global/json-ld';
-import SectionHeading from '@/components/global/SectionHeading';
+import Chip from '@/components/layout/Chip';
+import PageLayout from '@/components/layout/PageLayout';
+import Section, { SectionLink } from '@/components/layout/Section';
+import { Cluster } from '@/components/layout/Stack';
+import Text from '@/components/layout/Text';
 import { FEED_ALTERNATES } from '@/lib/feed';
 import { personLd, websiteLd } from '@/lib/seo';
 import FeaturedPostCard from '@/components/home/FeaturedPostCard';
@@ -12,8 +16,6 @@ import {
   sanityFetch,
   TRENDING_CATEGORY_STATS_QUERY,
 } from '@/sanity/lib/queries';
-import { ArrowRight } from 'lucide-react';
-import Link from 'next/link';
 
 import type { Metadata } from 'next';
 
@@ -47,69 +49,53 @@ const HomePage = async () => {
   const latest = posts.filter((post) => post._id !== featured?._id).slice(0, 6);
   const categories = rankCategories(categoryStats, 6);
 
-  const allPostsLink = (
-    <Link
-      href='/blog'
-      className='group inline-flex shrink-0 items-center gap-1 text-small text-primary hover:underline underline-offset-4'
-    >
-      All posts
-      <ArrowRight className='h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5' />
-    </Link>
-  );
-
   return (
     <>
       <JsonLd data={[personLd, websiteLd]} />
-      {/* Hero is the single focal point; everything below is quieter and
-          separated by whitespace rather than rules or boxes. */}
-      <div className='flex flex-col space-y-section'>
-        <section className='flex max-w-2xl flex-col space-y-4'>
-          <h1 className='text-h1 text-foreground'>
-            Notes on backend systems, APIs, and building things that hold up.
-          </h1>
-          <p className='text-lead text-muted-foreground'>
-            Backend, data pipelines, cloud and a bit of AI - from real projects.
-          </p>
-        </section>
-
+      <PageLayout
+        variant='index'
+        header={{
+          eyebrow: 'Preetam Raj - Fullstack engineer',
+          title:
+            'Notes on backend systems, APIs, and building things that hold up.',
+          lead: 'Backend, data pipelines, cloud and a bit of AI - from real projects.',
+        }}
+      >
         {ranked.length === 0 ? (
-          <p className='text-body text-muted-foreground'>
-            No posts yet - check back soon.
-          </p>
+          <Text>No posts yet - check back soon.</Text>
         ) : (
           <>
             {featured && <FeaturedPostCard blog={featured} />}
 
             {latest.length > 0 && (
-              <section className='flex flex-col space-y-6'>
-                <SectionHeading title='Latest' action={allPostsLink} />
+              <Section
+                title='Latest'
+                action={<SectionLink href='/blog'>All posts</SectionLink>}
+              >
                 <LatestPostsList blogs={latest} />
-              </section>
+              </Section>
             )}
 
             {categories.length > 0 && (
-              <section className='flex flex-col space-y-5'>
-                <SectionHeading title='Topics' />
-                <ul className='flex flex-wrap gap-2'>
+              <Section title='Topics'>
+                <Cluster as='ul'>
                   {categories.map((category) => (
                     <li key={category._id}>
-                      <Link
+                      <Chip
+                        variant='nav'
                         href={`/categories/${category.slug}`}
-                        className='inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-small text-muted-foreground transition-colors hover:border-input hover:text-foreground'
+                        count={category.postCount}
                       >
                         {category.name}
-                        <span className='font-mono text-micro'>
-                          {category.postCount}
-                        </span>
-                      </Link>
+                      </Chip>
                     </li>
                   ))}
-                </ul>
-              </section>
+                </Cluster>
+              </Section>
             )}
           </>
         )}
-      </div>
+      </PageLayout>
     </>
   );
 };

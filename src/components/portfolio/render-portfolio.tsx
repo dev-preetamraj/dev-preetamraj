@@ -1,117 +1,73 @@
+import Prose from '@/components/layout/article/Prose';
+import { MetaItem, MetaLink } from '@/components/layout/Meta';
+import PageLayout from '@/components/layout/PageLayout';
+import { formatDate, toISODate } from '@/lib/format-date';
+import { buildToc } from '@/lib/toc';
 import { urlFor } from '@/sanity/lib/image';
 import { Project } from '@/sanity/lib/queries';
-import { GitHubLogoIcon } from '@radix-ui/react-icons';
-import { GithubIcon, LinkIcon } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import RenderPortableText from '../global/render-portable-text';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../ui/tooltip';
+import { CalendarIcon, GithubIcon, LinkIcon } from 'lucide-react';
 
 type Props = {
-  project: Project | null;
+  project: Project;
+  /** Canonical URL (copy-link button). */
+  url: string;
 };
 
-const RenderPortfolio = ({ project }: Props) => {
+/** A project on the `article` PageLayout. */
+const RenderPortfolio = ({ project, url }: Props) => {
+  const date = formatDate(project._createdAt);
+  const cover = project.featuredImage?.asset
+    ? urlFor(project.featuredImage).width(1280).url()
+    : undefined;
+  const content = project.content ?? [];
+
+  const meta = (
+    <>
+      {date && (
+        <MetaItem icon={CalendarIcon}>
+          <time dateTime={toISODate(project._createdAt)}>{date}</time>
+        </MetaItem>
+      )}
+      {project.githubUrl && (
+        <MetaLink href={project.githubUrl} icon={GithubIcon}>
+          GitHub
+        </MetaLink>
+      )}
+      {project.frontendGithubUrl && (
+        <MetaLink href={project.frontendGithubUrl} icon={GithubIcon}>
+          Frontend
+        </MetaLink>
+      )}
+      {project.liveUrl && (
+        <MetaLink href={project.liveUrl} icon={LinkIcon}>
+          Live
+        </MetaLink>
+      )}
+    </>
+  );
+
+  // Project tags have no listing page, so topics stay passive labels.
+  const topics = {
+    category: project.category,
+    tags: project.tags,
+    linked: false,
+  };
+
   return (
-    <div className='w-full'>
-      <section className='space-y-2 border border-border mb-10'>
-        <div className='relative flex flex-col xl:flex-row justify-between'>
-          <div className='absolute top-0 w-full h-full opacity-10 blur-sm'>
-            <Image
-              className='object-cover object-center mx-auto'
-              src={
-                project?.featuredImage
-                  ? urlFor(project.featuredImage).url()
-                  : ''
-              }
-              alt={project?.title ?? 'Featured Image'}
-              fill
-              sizes='100vw'
-              priority
-            />
-          </div>
-
-          <section className='p-5 bg-muted w-full z-10'>
-            <div className='flex flex-col 2xl:flex-row justify-between gap-y-5'>
-              <div className='space-y-2 w-full'>
-                <h1 className='text-h1 text-foreground'>{project?.title}</h1>
-                <p className='text-small text-muted-foreground'>
-                  {new Date(project?._createdAt ?? '').toLocaleDateString(
-                    'en-US',
-                    {
-                      timeZone: 'Asia/Kolkata',
-                      day: 'numeric',
-                      month: 'long',
-                      year: 'numeric',
-                    }
-                  )}
-                </p>
-              </div>
-            </div>
-
-            <div>
-              <p className='text-lead text-muted-foreground line-clamp-2 pt-10 max-w-measure'>
-                {project?.description}
-              </p>
-              <div className='flex items-center justify-end mt-auto space-x-4'>
-                {project?.githubUrl && (
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Link href={project?.githubUrl ?? '#'} target='_blank'>
-                          <GitHubLogoIcon className='h-4 w-4' />
-                        </Link>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Github</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                )}
-
-                {project?.frontendGithubUrl && (
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Link
-                          href={project?.frontendGithubUrl ?? '#'}
-                          target='_blank'
-                        >
-                          <GithubIcon className='h-4 w-4' />
-                        </Link>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Github Frontend</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                )}
-                {project?.liveUrl && (
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Link href={project?.liveUrl ?? '#'} target='_blank'>
-                          <LinkIcon className='h-4 w-4' />
-                        </Link>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Live</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                )}
-              </div>
-            </div>
-          </section>
-        </div>
-      </section>
-      <RenderPortableText value={project?.content ?? []} />
-    </div>
+    <PageLayout
+      variant='article'
+      header={{
+        eyebrow: project.category?.name ?? 'Portfolio',
+        title: project.title,
+        meta,
+        lead: project.description,
+      }}
+      cover={cover}
+      toc={buildToc(content)}
+      aside={{ meta, topics, url }}
+    >
+      <Prose value={content} />
+    </PageLayout>
   );
 };
 

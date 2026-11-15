@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { createComment } from '@/actions/sanity-comment';
+import Text from '@/components/layout/Text';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -18,6 +19,13 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
+
+const Required = () => (
+  <Text as='span' tone='destructive' variant='small'>
+    *
+  </Text>
+);
 
 const formSchema = z.object({
   authorName: z.string().trim().min(1, { message: 'Name is required' }).max(80),
@@ -57,13 +65,18 @@ const CommentForm = ({ postId, parentId, onSuccess, compact }: Props) => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const res = await createComment({ postId, parentId, ...values });
-    if (res.success) {
-      toast.success(res.message);
-      form.reset();
-      onSuccess?.();
-    } else {
-      toast.error(res.message);
+    try {
+      const res = await createComment({ postId, parentId, ...values });
+      if (res.success) {
+        toast.success(res.message);
+        form.reset();
+        onSuccess?.();
+      } else {
+        toast.error(res.message);
+      }
+    } catch {
+      // Preserve the draft so transient network failures are safe to retry.
+      toast.error('Unable to submit your comment. Please try again.');
     }
   };
 
@@ -71,7 +84,7 @@ const CommentForm = ({ postId, parentId, onSuccess, compact }: Props) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className={compact ? 'space-y-3' : 'space-y-6'}
+        className={cn('flex flex-col', compact ? 'gap-3' : 'gap-6')}
       >
         <div
           className={
@@ -84,7 +97,7 @@ const CommentForm = ({ postId, parentId, onSuccess, compact }: Props) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Name <span className='text-destructive'>*</span>
+                  Name <Required />
                 </FormLabel>
                 <FormControl>
                   <Input placeholder='Your name' {...field} />
@@ -99,7 +112,7 @@ const CommentForm = ({ postId, parentId, onSuccess, compact }: Props) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Email <span className='text-destructive'>*</span>
+                  Email <Required />
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -120,7 +133,7 @@ const CommentForm = ({ postId, parentId, onSuccess, compact }: Props) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                Comment <span className='text-destructive'>*</span>
+                Comment <Required />
               </FormLabel>
               <FormControl>
                 <Textarea
@@ -133,8 +146,9 @@ const CommentForm = ({ postId, parentId, onSuccess, compact }: Props) => {
                 />
               </FormControl>
               <FormDescription>
-                Your {parentId ? 'reply' : 'comment'} will be visible once
-                it&apos;s approved.
+                {`Your ${
+                  parentId ? 'reply' : 'comment'
+                } will be visible once it’s approved.`}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -166,8 +180,8 @@ const CommentForm = ({ postId, parentId, onSuccess, compact }: Props) => {
             {form.formState.isSubmitting
               ? 'Posting...'
               : parentId
-                ? 'Post reply'
-                : 'Post comment'}
+              ? 'Post reply'
+              : 'Post comment'}
           </Button>
           {onSuccess && (
             <Button

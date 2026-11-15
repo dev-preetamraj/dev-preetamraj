@@ -45,10 +45,14 @@ body {
     --gray-100: 0 0% 95.7%; /* #F4F4F4 */
     --gray-150: 0 0% 92.9%; /* #EDEDED - dark-mode ink */
     --gray-200: 0 0% 89.8%; /* #E5E5E5 */
+    --gray-225: 0 0% 93.3%; /* #EEEEEE - light chip/muted fill */
+    --gray-250: 0 0% 85.1%; /* #D9D9D9 - light structural border */
     --gray-400: 0 0% 63.1%; /* #A1A1A1 */
     --gray-450: 0 0% 56.1%; /* #8F8F8F */
     --gray-550: 0 0% 38%; /* #616161 */
     --gray-600: 0 0% 36.1%; /* #5C5C5C */
+    --gray-650: 0 0% 32.2%; /* #525252 - light secondary text */
+    --gray-775: 0 0% 18%; /* #2E2E2E - dark structural border */
     --gray-800: 0 0% 14.9%; /* #262626 */
     --gray-850: 0 0% 11%; /* #1C1C1C */
     --gray-900: 0 0% 9%; /* #171717 */
@@ -82,8 +86,10 @@ body {
     /* Quiet fills + secondary text (muted-fg 6.5:1 on bg, 6.1:1 on muted) */
     --secondary: var(--gray-100);
     --secondary-foreground: var(--gray-900);
-    --muted: var(--gray-100);
-    --muted-foreground: var(--gray-600);
+    /* muted fill one step stronger than the page so chips/badges read on
+       white cards; muted-fg 7.6:1 on bg so micro metadata stays legible */
+    --muted: var(--gray-225);
+    --muted-foreground: var(--gray-650);
     /* accent = the one hover/selected fill for menus, ghost buttons, rows
        (neutral on purpose: the blue is never a fill behind content) */
     --accent: var(--gray-100);
@@ -97,14 +103,14 @@ body {
 
     /* Lines + focus. border = decorative dividers (1.2:1, intentionally
        quiet); input = control boundaries, 3.2:1 (WCAG 1.4.11) */
-    --border: var(--gray-200);
+    --border: var(--gray-250); /* 1.4:1 - card outlines + row rules */
     --input: var(--gray-450);
     --ring: var(--blue-600);
 
-    /* Code blocks stay dark in both themes (syntax theme is dark-tuned);
-       neutral, not slate. fg 16.9:1 on it */
-    --code-block: var(--gray-900);
-    --code-block-foreground: var(--gray-150);
+    /* Code blocks follow the theme: a quiet light surface here (syntax
+       colours in dracula.css switch to a light palette). fg 16.0:1 on it */
+    --code-block: var(--gray-100);
+    --code-block-foreground: var(--gray-900);
 
     /* -- Radius ---------------------------------------------------------- */
     /* xs: chips/kbd, sm: menu items, md: controls, lg: cards, xl: panels */
@@ -140,6 +146,8 @@ body {
     --space-section: clamp(3rem, 2rem + 4vw, 6rem);
     --space-section-sm: clamp(2rem, 1.5rem + 2vw, 3.5rem);
     --space-stack: 1.5rem;
+    /* heading -> its content (Section titles and article h2/h3 alike) */
+    --space-heading: 1rem;
 
     /* highlight.js theme background (dracula.css); was var(--tw-prose-pre-bg),
        which is undefined at :root */
@@ -174,7 +182,7 @@ body {
     --warning: var(--amber-400);
     --warning-foreground: var(--gray-950);
 
-    --border: var(--gray-800); /* 1.3:1, quiet */
+    --border: var(--gray-775); /* 1.5:1 - card outlines + row rules */
     --input: var(--gray-550); /* 3.2:1 on bg */
     --ring: var(--blue-300);
 
@@ -253,8 +261,164 @@ body {
   }
 }
 
+/*
+ * Card grid columns from the width of the containing column (Grid in
+ * src/components/layout/Stack.tsx), not the viewport. Breakpoints keep
+ * cards at >= ~280px: 2 cols from 36rem, 3 cols from 52rem.
+ */
+.cq-container {
+  container-type: inline-size;
+}
+.cq-grid-two,
+.cq-grid-two-lg,
+.cq-grid-three {
+  grid-template-columns: minmax(0, 1fr);
+}
+/*
+ * Orphan policy (items that already span the full row are not counted):
+ *  - 2 columns: an odd last item spans the full row.
+ *  - 3 columns (a 6-track grid, items span 2): one leftover spans the
+ *    row, two leftovers split it in halves.
+ */
+@container (min-width: 36rem) {
+  .cq-grid-two,
+  .cq-grid-three {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .cq-grid-two
+    > :nth-last-child(1 of :not(.col-span-full)):nth-child(
+      odd of :not(.col-span-full)
+    ),
+  .cq-grid-three
+    > :nth-last-child(1 of :not(.col-span-full)):nth-child(
+      odd of :not(.col-span-full)
+    ) {
+    grid-column: 1 / -1;
+  }
+}
+@container (min-width: 44rem) {
+  .cq-grid-two-lg {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .cq-grid-two-lg
+    > :nth-last-child(1 of :not(.col-span-full)):nth-child(
+      odd of :not(.col-span-full)
+    ) {
+    grid-column: 1 / -1;
+  }
+}
+@container (min-width: 52rem) {
+  .cq-grid-three {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .cq-grid-three > :not(.col-span-full),
+  .cq-grid-three
+    > :nth-last-child(1 of :not(.col-span-full)):nth-child(
+      odd of :not(.col-span-full)
+    ) {
+    grid-column: span 2;
+  }
+  .cq-grid-three
+    > :nth-last-child(1 of :not(.col-span-full)):nth-child(
+      3n + 1 of :not(.col-span-full)
+    ) {
+    grid-column: 1 / -1;
+  }
+  .cq-grid-three
+    > :nth-last-child(1 of :not(.col-span-full)):nth-child(
+      3n + 2 of :not(.col-span-full)
+    ),
+  .cq-grid-three
+    > :nth-last-child(2 of :not(.col-span-full)):nth-child(
+      3n + 1 of :not(.col-span-full)
+    ) {
+    grid-column: span 3;
+  }
+}
+
+/*
+ * Featured Card orientation from the card's own width (Card wraps it in a
+ * .cq-container): stacked when narrow, two equal columns from 40rem with
+ * the 16:9 media box kept at its ratio (never stretched to text height).
+ */
+.card-featured {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1rem;
+}
+@container (min-width: 40rem) {
+  .card-featured {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 1.5rem;
+    padding: 1.25rem;
+  }
+}
+
+/*
+ * Comment thread connectors (decorative, token colours only). Geometry
+ * matches the 34px avatar + 12px gap in comment-node.tsx: a trunk drops
+ * from each avatar with replies, and each reply hooks into it with an elbow.
+ */
+.thread-trunk {
+  width: 2px;
+  flex: 1 1 0%;
+  border-radius: 9999px;
+  background-color: hsl(var(--border));
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+.thread-elbow::before {
+  content: '';
+  position: absolute;
+  left: -29px;
+  top: 17px;
+  height: 2px;
+  width: 29px;
+  border-radius: 9999px;
+  background-color: hsl(var(--border));
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+.group\/thread:hover .thread-trunk,
+.group\/thread:hover .thread-elbow::before {
+  background-color: hsl(var(--primary) / 0.4);
+}
+
+/* Reading progress fill (blog posts). */
+.reading-progress-bar {
+  height: 100%;
+  transform-origin: left;
+  border-radius: 9999px;
+  background-color: hsl(var(--primary));
+  filter: brightness(0.75);
+}
+
 .copy-button {
-  @apply absolute top-2 right-1 p-1;
+  @apply absolute top-2 right-1 rounded-sm p-1 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
+}
+
+/* Skip link: off-screen until focused, then pinned top-left above chrome. */
+.skip-link {
+  @apply sr-only;
+}
+.skip-link:focus {
+  @apply not-sr-only fixed left-4 top-4 z-[100] rounded-md bg-background px-4 py-2 text-small font-medium text-foreground shadow-lg outline-none ring-2 ring-ring;
+}
+
+/* Respect the OS-level reduced-motion preference everywhere. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 .spinner_ajPY {

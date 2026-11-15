@@ -79,7 +79,7 @@ const ReadingProgress = () => {
       className='pointer-events-none absolute inset-x-0 top-0 z-[60] h-0.5'
     >
       <div
-        className='h-full origin-left rounded-full bg-primary brightness-75'
+        className='reading-progress-bar'
         style={{ transform: `scaleX(${progress})` }}
       />
     </div>,

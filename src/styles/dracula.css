@@ -8,6 +8,10 @@
  *
  * @author Denis Ciccale <dciccale@gmail.com>
  * @author Zeno Rocha <hi@zenorocha.com>
+ *
+ * Dracula colours apply in dark mode only (scoped to .dark). Light mode uses
+ * a GitHub-light style palette on the light --code-block surface, each
+ * colour >= 4.5:1 on #F4F4F4.
  */
 
 .hljs {
@@ -17,27 +21,30 @@
   background: var(--code-bg);
 }
 
-.hljs-built_in,
-.hljs-selector-tag,
-.hljs-section,
-.hljs-link {
-  color: #8be9fd;
-}
-
-.hljs-keyword {
-  color: #ff79c6;
-}
-
+/* -- Light (default) --------------------------------------------------- */
 .hljs,
 .hljs-subst {
-  color: #f8f8f2;
+  color: hsl(var(--code-block-foreground));
+}
+
+.hljs-keyword,
+.hljs-selector-tag {
+  color: #b3202b;
+}
+
+.hljs-built_in,
+.hljs-section,
+.hljs-link,
+.hljs-literal,
+.hljs-number {
+  color: #0550ae;
 }
 
 .hljs-title,
 .hljs-attr,
 .hljs-meta-keyword {
   font-style: italic;
-  color: #50fa7b;
+  color: #6639ba;
 }
 
 .hljs-string,
@@ -50,12 +57,55 @@
 .hljs-variable,
 .hljs-template-tag,
 .hljs-template-variable {
-  color: #f1fa8c;
+  color: #0a3069;
 }
 
 .hljs-comment,
 .hljs-quote,
 .hljs-deletion {
+  color: #57606a;
+}
+
+/* -- Dark (Dracula) ---------------------------------------------------- */
+.dark .hljs-built_in,
+.dark .hljs-selector-tag,
+.dark .hljs-section,
+.dark .hljs-link {
+  color: #8be9fd;
+}
+
+.dark .hljs-keyword {
+  color: #ff79c6;
+}
+
+.dark .hljs,
+.dark .hljs-subst {
+  color: #f8f8f2;
+}
+
+.dark .hljs-title,
+.dark .hljs-attr,
+.dark .hljs-meta-keyword {
+  font-style: italic;
+  color: #50fa7b;
+}
+
+.dark .hljs-string,
+.dark .hljs-meta,
+.dark .hljs-name,
+.dark .hljs-type,
+.dark .hljs-symbol,
+.dark .hljs-bullet,
+.dark .hljs-addition,
+.dark .hljs-variable,
+.dark .hljs-template-tag,
+.dark .hljs-template-variable {
+  color: #f1fa8c;
+}
+
+.dark .hljs-comment,
+.dark .hljs-quote,
+.dark .hljs-deletion {
   color: #6272a4;
 }
 
@@ -71,8 +121,8 @@
   font-weight: bold;
 }
 
-.hljs-literal,
-.hljs-number {
+.dark .hljs-literal,
+.dark .hljs-number {
   color: #bd93f9;
 }
 

@@ -1,9 +1,12 @@
 'use server';
 
+import { createHash } from 'node:crypto';
+
 import { headers } from 'next/headers';
 import { z } from 'zod';
 
 import { computeReplyThreading } from '@/lib/comment-thread';
+import { commentPageRange, slotAvailable, trustedClientIp } from '@/lib/rate-limit';
 import { IResponse } from '@/lib/types';
 import { client } from '@/sanity/lib/client';
 import { COMMENTS_PAGE_QUERY, PostCommentThread } from '@/sanity/lib/queries';
@@ -30,14 +33,38 @@ const SUCCESS_MESSAGE = 'Comment submitted for approval';
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
 const RATE_LIMIT_MAX = 5; // max comments per IP per window
 
-/** Resolve the client IP from proxy headers (Vercel/any reverse proxy). */
+/** Unknown deployments share a conservative bucket rather than trusting spoofable headers. */
 async function getClientIp(): Promise<string> {
   const headerList = await headers();
-  const forwardedFor = headerList.get('x-forwarded-for');
-  if (forwardedFor) {
-    return forwardedFor.split(',')[0].trim();
+  return trustedClientIp(process.env.VERCEL === '1', headerList.get('x-vercel-forwarded-for'));
+}
+
+/** Five reusable slots per identity: no new documents per time window.
+ * This internal type has no Studio schema/list. Keep slots (do not TTL-delete):
+ * revision guards require their continued existence. Failed writes consume a slot.
+ */
+async function reserveCommentSlot(ip: string): Promise<boolean> {
+  const identity = createHash('sha256').update(ip).digest('hex');
+  for (let slot = 0; slot < RATE_LIMIT_MAX; slot++) {
+    const id = `commentRateLimit-${identity}-${slot}`;
+    const current = await writeClient.fetch<{ _rev: string; usedAt: number } | null>(
+      '*[_id == $id][0]{_rev, usedAt}', { id }, { cache: 'no-store' },
+    );
+    const now = Date.now();
+    if (current && !slotAvailable(current.usedAt, now, RATE_LIMIT_WINDOW_MS)) continue;
+    try {
+      if (current) {
+        await writeClient.patch(id).ifRevisionId(current._rev).set({ usedAt: now }).commit();
+      } else {
+        await writeClient.create({ _id: id, _type: 'commentRateLimit', usedAt: now });
+      }
+      return true;
+    } catch (error) {
+      // Concurrent reservations compete on create/revision, never count-then-write.
+      if ((error as { statusCode?: number }).statusCode !== 409) throw error;
+    }
   }
-  return headerList.get('x-real-ip')?.trim() || 'unknown';
+  return false;
 }
 
 /**
@@ -49,17 +76,23 @@ export async function getApprovedComments(
   postId: string,
   start: number,
   end: number,
-): Promise<PostCommentThread[]> {
-  if (!postId || end <= start) return [];
+): Promise<
+  | { ok: true; comments: PostCommentThread[] }
+  | { ok: false; error: string }
+> {
+  const range = commentPageRange(start, end);
+  if (typeof postId !== 'string' || !postId.trim() || !range) {
+    return { ok: false, error: 'Invalid comments page requested.' };
+  }
   try {
-    return await client.fetch<PostCommentThread[]>(COMMENTS_PAGE_QUERY, {
+    const comments = await client.fetch<PostCommentThread[]>(COMMENTS_PAGE_QUERY, {
       postId,
-      start,
-      end,
+      ...range,
     });
+    return { ok: true, comments };
   } catch (error) {
     console.error('Failed to fetch comments page:', error);
-    return [];
+    return { ok: false, error: 'Unable to load comments. Please try again.' };
   }
 }
 
@@ -116,22 +149,12 @@ export async function createComment(
   try {
     const ip = await getClientIp();
 
-    // Rate limit per IP over a sliding window (skip when IP is unknown — the
-    // approval gate is the backstop in that case).
-    if (ip !== 'unknown') {
-      const since = new Date(Date.now() - RATE_LIMIT_WINDOW_MS).toISOString();
-      const recentCount = await writeClient.fetch<number>(
-        `count(*[_type == "comment" && authorIp == $ip && _createdAt > $since])`,
-        { ip, since },
-      );
-      if (recentCount >= RATE_LIMIT_MAX) {
-        return {
-          success: false,
-          data: null,
-          message:
-            'You are commenting too fast. Please try again in a few minutes.',
-        };
-      }
+    if (!(await reserveCommentSlot(ip))) {
+      return {
+        success: false,
+        data: null,
+        message: 'You are commenting too fast. Please try again in a few minutes.',
+      };
     }
 
     // Resolve reply threading. Depth is capped at MAX_COMMENT_DEPTH: replying to

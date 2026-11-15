@@ -4,9 +4,6 @@ const { securityHeaders } = require('./config/security-headers');
 const nextConfig = {
   reactStrictMode: false,
   poweredByHeader: false,
-  env: {
-    SANITY_API_WRITE_TOKEN: process.env.SANITY_API_WRITE_TOKEN,
-  },
   images: {
     remotePatterns: [
       {

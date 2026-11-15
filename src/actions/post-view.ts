@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 
 import { headers } from 'next/headers';
 
+import { trustedClientIp } from '@/lib/rate-limit';
 import { writeClient } from '@/sanity/lib/write-client';
 
 // Salt keeps the stored hash from being a plain sha256(ip) that could be
@@ -12,14 +13,10 @@ import { writeClient } from '@/sanity/lib/write-client';
 const VIEW_HASH_SALT = process.env.VIEW_HASH_SALT ?? 'preetamraj.dev/view';
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-/** Resolve the client IP from proxy headers (Vercel/any reverse proxy). */
+/** Trust only Vercel's overwritten header; otherwise use a shared fallback. */
 async function getClientIp(): Promise<string> {
   const headerList = await headers();
-  const forwardedFor = headerList.get('x-forwarded-for');
-  if (forwardedFor) {
-    return forwardedFor.split(',')[0].trim();
-  }
-  return headerList.get('x-real-ip')?.trim() || 'unknown';
+  return trustedClientIp(process.env.VERCEL === '1', headerList.get('x-vercel-forwarded-for'));
 }
 
 function sha256(input: string): string {
@@ -36,13 +33,17 @@ function sha256(input: string): string {
  * again. The raw IP is never stored, only its hash.
  */
 export async function recordView(postId: string): Promise<void> {
-  if (!postId) return;
+  if (typeof postId !== 'string' || !/^[a-zA-Z0-9_-][a-zA-Z0-9_.-]{0,127}$/.test(postId) || postId.startsWith('drafts.') || postId.startsWith('versions.')) return;
 
   try {
-    const [ip, headerList] = await Promise.all([getClientIp(), headers()]);
-    const userAgent = headerList.get('user-agent') ?? 'unknown';
-
-    const viewerHash = sha256(`${ip}|${userAgent}|${VIEW_HASH_SALT}`);
+    const post = await writeClient.fetch<{ _rev: string } | null>(
+      '*[_id == $postId && _type == "post" && defined(publishedAt) && dateTime(publishedAt) <= dateTime(now())][0]{_rev}',
+      { postId }, { cache: 'no-store' },
+    );
+    if (!post) return;
+    const ip = await getClientIp();
+    // User-Agent is controlled by callers and must not influence identity.
+    const viewerHash = sha256(`${ip}|${VIEW_HASH_SALT}`);
     const dayBucket = Math.floor(Date.now() / DAY_MS);
     const dedupId = `postView-${sha256(`${postId}|${viewerHash}|${dayBucket}`).slice(0, 40)}`;
 
@@ -53,21 +54,21 @@ export async function recordView(postId: string): Promise<void> {
     );
     if (seen > 0) return;
 
-    // Create the dedup record and bump the denormalized counter together. The
-    // tiny race window (two concurrent first-views double-incrementing) is
-    // acceptable for a personal blog.
+    // Create-only makes duplicate requests abort the entire transaction.
+    // Revision guard also prevents mutating a post changed since validation.
     await writeClient
       .transaction()
-      .createIfNotExists({
+      .create({
         _id: dedupId,
         _type: 'postView',
         post: { _type: 'reference', _ref: postId },
         viewerHash,
         viewedAt: new Date().toISOString(),
       })
-      .patch(postId, (p) => p.setIfMissing({ views: 0 }).inc({ views: 1 }))
+      .patch(postId, (p) => p.ifRevisionId(post._rev).setIfMissing({ views: 0 }).inc({ views: 1 }))
       .commit({ visibility: 'async' });
   } catch (error) {
+    if ((error as { statusCode?: number }).statusCode === 409) return;
     console.error('Failed to record post view:', error);
   }
 }

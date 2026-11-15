@@ -1,19 +1,17 @@
-import SectionHeading from '@/components/global/SectionHeading';
+import SocialLinks from '@/components/global/SocialLinks';
+import Card from '@/components/layout/Card';
+import PageLayout from '@/components/layout/PageLayout';
+import Section from '@/components/layout/Section';
+import { Cluster, Grid } from '@/components/layout/Stack';
+import Text from '@/components/layout/Text';
 import { buttonVariants } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import {
   EnvelopeClosedIcon,
   GitHubLogoIcon,
   LinkedInLogoIcon,
 } from '@radix-ui/react-icons';
-import {
-  ArrowUpRight,
-  Clock,
-  MapPin,
-  MessageSquare,
-  type LucideIcon,
-} from 'lucide-react';
+import { Clock, MapPin, MessageSquare, type LucideIcon } from 'lucide-react';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import type { ComponentType } from 'react';
@@ -91,133 +89,63 @@ const facts: Fact[] = [
 
 const ContactPage = () => {
   return (
-    <div className='flex flex-col space-y-section-sm'>
-      <section className='flex flex-col space-y-5'>
-        <p className='text-eyebrow text-muted-foreground'>Get in touch</p>
-        <h1 className='text-h1 text-foreground'>
-          Let&apos;s build something together.
-        </h1>
-        <p className='text-lead text-muted-foreground max-w-measure'>
-          Have a role, a project, or an idea in mind? I&apos;m always happy to
-          talk - whether it&apos;s backend, frontend, cloud, or a bit of AI on
-          top. Pick whichever channel works best for you.
-        </p>
-
-        <div className='flex flex-wrap items-center gap-4 pt-1'>
-          <Link
-            href='mailto:dev.preetamraj@gmail.com'
-            className={cn(buttonVariants(), 'space-x-2')}
-          >
-            <EnvelopeClosedIcon className='h-4 w-4' />
-            <span>Email me</span>
-          </Link>
-          <div className='flex items-center gap-4 text-foreground'>
+    <PageLayout
+      variant='index'
+      // This page is the pitch itself, so the rail skips the CTA.
+      rail={{ cta: false }}
+      header={{
+        eyebrow: 'Get in touch',
+        title: 'Let’s build something together.',
+        lead: 'Have a role, a project, or an idea in mind? I’m always happy to talk - whether it’s backend, frontend, cloud, or a bit of AI on top. Pick whichever channel works best for you.',
+        children: (
+          <Cluster>
             <Link
-              href='https://github.com/dev-preetamraj'
-              target='_blank'
-              aria-label='GitHub'
-              className='hover:text-primary transition-colors'
+              href='mailto:dev.preetamraj@gmail.com'
+              className={cn(buttonVariants(), 'gap-2')}
             >
-              <GitHubLogoIcon className='h-6 w-6' />
+              <EnvelopeClosedIcon aria-hidden className='h-4 w-4' />
+              Email me
             </Link>
-            <Link
-              href='https://www.linkedin.com/in/raj-preetam/'
-              target='_blank'
-              aria-label='LinkedIn'
-              className='hover:text-primary transition-colors'
+            <SocialLinks only={['github', 'linkedin']} />
+          </Cluster>
+        ),
+      }}
+    >
+      <Section title='Reach me'>
+        {/* Two columns with the first (email) card spanning both, so the
+            full address always fits on one line. */}
+        <Grid cols='two'>
+          {channels.map((channel, index) => (
+            <Card
+              key={channel.id}
+              icon={channel.icon}
+              title={channel.title}
+              href={channel.href}
+              external={channel.external}
+              span={index === 0 ? 'full' : undefined}
             >
-              <LinkedInLogoIcon className='h-6 w-6' />
-            </Link>
-          </div>
-        </div>
-      </section>
+              <Text variant='code' breakAll>
+                {channel.value}
+              </Text>
+            </Card>
+          ))}
+        </Grid>
+      </Section>
 
-      <section className='flex flex-col space-y-5'>
-        <SectionHeading index='01' title='Reach me' />
-        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3'>
-          {channels.map((channel) => {
-            const Icon = channel.icon;
-            return (
-              <Card
-                key={channel.id}
-                className='group relative overflow-hidden rounded-xl transition-all duration-base hover:-translate-y-1 hover:border-input hover:shadow-md'
-              >
-                <CardHeader className='flex-row items-center gap-3 space-y-0'>
-                  <span className='flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-border bg-muted text-foreground'>
-                    <Icon className='h-5 w-5' />
-                  </span>
-                  <CardTitle className='text-h4 transition-colors group-hover:text-primary'>
-                    <Link
-                      href={channel.href}
-                      target={channel.external ? '_blank' : undefined}
-                      rel={
-                        channel.external ? 'noopener noreferrer' : undefined
-                      }
-                      className='after:absolute after:inset-0'
-                    >
-                      {channel.title}
-                    </Link>
-                  </CardTitle>
-                  <ArrowUpRight className='ml-auto h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary' />
-                </CardHeader>
-                <CardContent>
-                  <p className='truncate font-mono text-small text-muted-foreground'>
-                    {channel.value}
-                  </p>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className='flex flex-col space-y-5'>
-        <SectionHeading index='02' title='Good to know' />
-        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3'>
-          {facts.map((fact) => {
-            const Icon = fact.icon;
-            return (
-              <div
-                key={fact.id}
-                className='flex flex-col gap-3 rounded-xl border border-border bg-card p-5'
-              >
-                <span className='flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-border bg-muted text-foreground'>
-                  <Icon className='h-[18px] w-[18px]' />
-                </span>
-                <h3 className='text-h4 text-foreground'>{fact.title}</h3>
-                <p className='text-small text-muted-foreground'>{fact.text}</p>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className='flex flex-col items-start justify-between gap-5 rounded-xl border border-border bg-card p-8 sm:flex-row sm:items-center'>
-        <div className='space-y-1.5'>
-          <h2 className='text-h3 text-foreground'>Prefer the short version?</h2>
-          <p className='text-small text-muted-foreground'>
-            Drop me a line and I&apos;ll get back to you.
-          </p>
-        </div>
-        <div className='flex flex-wrap items-center gap-3'>
-          <Link
-            href='mailto:dev.preetamraj@gmail.com'
-            className={cn(buttonVariants(), 'space-x-2')}
-          >
-            <EnvelopeClosedIcon className='h-4 w-4' />
-            <span>Email me</span>
-          </Link>
-          <Link
-            href='https://www.linkedin.com/in/raj-preetam/'
-            target='_blank'
-            className={cn(buttonVariants({ variant: 'outline' }), 'space-x-2')}
-          >
-            <LinkedInLogoIcon className='h-4 w-4' />
-            <span>LinkedIn</span>
-          </Link>
-        </div>
-      </section>
-    </div>
+      <Section title='Good to know'>
+        <Grid cols='three'>
+          {facts.map((fact) => (
+            <Card
+              key={fact.id}
+              icon={fact.icon}
+              title={fact.title}
+              description={fact.text}
+              lines='none'
+            />
+          ))}
+        </Grid>
+      </Section>
+    </PageLayout>
   );
 };
 

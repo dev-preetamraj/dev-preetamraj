@@ -3,6 +3,8 @@
 import { useCallback } from 'react';
 
 import { getApprovedComments } from '@/actions/sanity-comment';
+import Text from '@/components/layout/Text';
+import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useInfiniteScroll } from '@/hooks/use-infinite-scroll';
 import {
@@ -21,10 +23,10 @@ type Props = {
 /** Skeleton placeholder shown while the next batch of comments loads. */
 function CommentSkeleton() {
   return (
-    <div className='flex space-x-4'>
+    <div className='flex gap-4'>
       <Skeleton className='h-10 w-10 shrink-0 rounded-full' />
-      <div className='w-full space-y-2'>
-        <div className='flex items-center space-x-2'>
+      <div className='flex w-full flex-col gap-2'>
+        <div className='flex items-center gap-2'>
           <Skeleton className='h-5 w-32' />
           <Skeleton className='h-4 w-20' />
         </div>
@@ -36,7 +38,7 @@ function CommentSkeleton() {
 
 /** Bucket a thread's flat descendants by their immediate parent for tree rendering. */
 function groupByParent(
-  descendants: CommentDescendant[],
+  descendants: CommentDescendant[]
 ): Map<string, CommentDescendant[]> {
   const map = new Map<string, CommentDescendant[]>();
   for (const descendant of descendants) {
@@ -49,13 +51,19 @@ function groupByParent(
 
 const CommentsList = ({ postId, initialComments, totalCount }: Props) => {
   const fetchPage = useCallback(
-    (start: number, end: number) => getApprovedComments(postId, start, end),
-    [postId],
+    async (start: number, end: number) => {
+      const result = await getApprovedComments(postId, start, end);
+      if (!result.ok) throw new Error(result.error);
+      return result.comments;
+    },
+    [postId]
   );
 
   const {
     items: comments,
     isLoading,
+    error,
+    retry,
     remaining,
     containerRef,
   } = useInfiniteScroll<PostCommentThread>({
@@ -67,16 +75,12 @@ const CommentsList = ({ postId, initialComments, totalCount }: Props) => {
     triggerRatio: COMMENTS_SCROLL_TRIGGER_RATIO,
   });
 
-  if (comments.length === 0) {
-    return (
-      <p className='text-body text-muted-foreground'>
-        No comments yet. Be the first to comment.
-      </p>
-    );
+  if (comments.length === 0 && totalCount === 0) {
+    return <Text>No comments yet. Be the first to comment.</Text>;
   }
 
   return (
-    <div ref={containerRef} className='space-y-8'>
+    <div ref={containerRef} className='flex flex-col gap-8'>
       {comments.map((thread) => (
         <div key={thread._id} className='group/thread'>
           <CommentNode
@@ -93,9 +97,20 @@ const CommentsList = ({ postId, initialComments, totalCount }: Props) => {
         </div>
       ))}
 
+      {error && (
+        <div className='flex items-center gap-3' role='alert'>
+          <Text variant='small'>
+            Unable to load comments. Please try again.
+          </Text>
+          <Button type='button' variant='outline' size='sm' onClick={retry}>
+            Retry
+          </Button>
+        </div>
+      )}
+
       {isLoading &&
         Array.from({ length: Math.min(COMMENTS_BATCH_SIZE, remaining) }).map(
-          (_, i) => <CommentSkeleton key={`skeleton-${i}`} />,
+          (_, i) => <CommentSkeleton key={`skeleton-${i}`} />
         )}
     </div>
   );

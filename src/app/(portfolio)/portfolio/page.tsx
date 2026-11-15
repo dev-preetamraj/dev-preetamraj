@@ -1,4 +1,6 @@
-import FeaturedProjectCard from '@/components/portfolio/FeaturedProjectCard';
+import PageLayout from '@/components/layout/PageLayout';
+import { Grid } from '@/components/layout/Stack';
+import Text from '@/components/layout/Text';
 import ProjectCard from '@/components/portfolio/ProjectCard';
 import {
   PROJECTS_QUERY,
@@ -14,45 +16,37 @@ export const metadata: Metadata = {
 };
 
 const PortfolioPage = async () => {
-  const projects = await sanityFetch<ProjectListItem[]>(PROJECTS_QUERY);
-  const featured = projects?.filter((p) => p.featured) ?? [];
-  const rest = projects?.filter((p) => !p.featured) ?? [];
+  const projects = (await sanityFetch<ProjectListItem[]>(PROJECTS_QUERY)) ?? [];
+  // Featured projects first, each spanning the full grid row.
+  const ordered = [
+    ...projects.filter((p) => p.featured),
+    ...projects.filter((p) => !p.featured),
+  ];
 
   return (
-    <div className='flex flex-col space-y-section-sm'>
-      <section className='flex flex-col space-y-5'>
-        <p className='text-eyebrow text-muted-foreground'>Portfolio</p>
-        <h1 className='text-h1 text-foreground'>
-          Things I&apos;ve designed, built, and shipped.
-        </h1>
-        <p className='text-lead text-muted-foreground max-w-measure'>
-          A selection of work - from backend systems and APIs to full-stack apps
-          I took from first commit to production.
-        </p>
-      </section>
-
-      {featured.length > 0 && (
-        <section className='flex flex-col gap-5'>
-          {featured.map((project) => (
-            <FeaturedProjectCard key={project._id} project={project} />
+    <PageLayout
+      variant='index'
+      rail={{ projects: false }}
+      header={{
+        eyebrow: 'Portfolio',
+        title: 'Things I’ve designed, built, and shipped.',
+        lead: 'A selection of work - from backend systems and APIs to full-stack apps I took from first commit to production.',
+      }}
+    >
+      {ordered.length > 0 ? (
+        <Grid cols='two'>
+          {ordered.map((project) => (
+            <ProjectCard
+              key={project._id}
+              project={project}
+              featured={project.featured}
+            />
           ))}
-        </section>
+        </Grid>
+      ) : (
+        <Text>No projects here yet - check back soon.</Text>
       )}
-
-      {rest.length > 0 && (
-        <div className='grid grid-cols-1 gap-5 sm:grid-cols-2'>
-          {rest.map((project) => (
-            <ProjectCard key={project._id} project={project} />
-          ))}
-        </div>
-      )}
-
-      {projects && projects.length === 0 && (
-        <p className='text-body text-muted-foreground'>
-          No projects here yet - check back soon.
-        </p>
-      )}
-    </div>
+    </PageLayout>
   );
 };
 

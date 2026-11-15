@@ -1,89 +1,65 @@
+import Prose from '@/components/layout/article/Prose';
+import { MetaItem, ViewCount } from '@/components/layout/Meta';
+import PageLayout from '@/components/layout/PageLayout';
+import { formatDate, toISODate } from '@/lib/format-date';
 import { readingTimeMinutes } from '@/lib/reading-time';
-import { formatViews } from '@/lib/utils';
-import { urlFor } from '@/sanity/lib/image';
+import { buildToc } from '@/lib/toc';
 import { Post } from '@/sanity/lib/queries';
-import { ClockIcon, EyeIcon } from '@heroicons/react/24/outline';
-import Image from 'next/image';
-import Link from 'next/link';
-import RenderPortableText from '../global/render-portable-text';
+import { CalendarIcon, ClockIcon } from 'lucide-react';
+import { ReactNode } from 'react';
 
 type Props = {
   blog: Post;
+  /** Canonical URL (copy-link button). */
+  url: string;
+  /** Comments, related posts... after the article body. */
+  footer?: ReactNode;
 };
 
-const RenderBlog = ({ blog }: Props) => {
-  const readingTime = readingTimeMinutes(blog?.content);
+/** A blog post on the `article` PageLayout. */
+const RenderBlog = ({ blog, url, footer }: Props) => {
+  const readingTime = readingTimeMinutes(blog.content);
+  const published = blog.publishedAt ?? blog._createdAt;
+  const date = formatDate(published);
+  const content = blog.content ?? [];
+
+  const meta = (
+    <>
+      {date && (
+        <MetaItem icon={CalendarIcon}>
+          <time dateTime={toISODate(published)}>{date}</time>
+        </MetaItem>
+      )}
+      {readingTime > 0 && (
+        <MetaItem icon={ClockIcon} title='Estimated reading time'>
+          {readingTime} min read
+        </MetaItem>
+      )}
+      <ViewCount views={blog.views} label />
+    </>
+  );
+
+  // Category + tags link to their listings (Topics dedupes and hashes).
+  const topics = { category: blog.category, tags: blog.tags, linked: true };
 
   return (
-    <div id='article-body'>
-      {/* Same column as the prose: max-w-measure is 36em, so the header uses
-          the article font size to resolve the em to the same width. */}
-      <section className='max-w-measure text-[length:var(--text-article-size)] space-y-2 border border-border mb-10'>
-        <div className='relative flex flex-col xl:flex-row justify-between'>
-          {blog?.featuredImage?.asset && (
-            <div className='absolute top-0 w-full h-full opacity-10 blur-sm'>
-              <Image
-                className='object-cover object-center mx-auto'
-                src={urlFor(blog.featuredImage).url()}
-                alt={blog?.title ?? 'Featured Image'}
-                fill
-                sizes='(min-width: 768px) 75vw, 100vw'
-                priority
-              />
-            </div>
-          )}
-
-          <section className='p-6 md:p-8 bg-muted/60 w-full z-10'>
-            <div className='space-y-3'>
-              <h1 className='text-h1 text-foreground'>{blog?.title}</h1>
-              <div className='flex flex-wrap items-center gap-x-4 gap-y-1 text-small text-muted-foreground'>
-                <p>
-                  {new Date(
-                    blog?.publishedAt ?? blog?._createdAt,
-                  ).toLocaleDateString('en-US', {
-                    timeZone: 'Asia/Kolkata',
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                  })}
-                </p>
-                <span className='flex items-center gap-1' title='Views'>
-                  <EyeIcon className='h-4 w-4' />
-                  {formatViews(blog?.views)}
-                </span>
-                {readingTime > 0 && (
-                  <span
-                    className='flex items-center gap-1'
-                    title='Estimated reading time'
-                  >
-                    <ClockIcon className='h-4 w-4' />
-                    {readingTime} min read
-                  </span>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <p className='mt-6 text-lead text-muted-foreground line-clamp-3'>
-                {blog?.description}
-              </p>
-              <div className='mt-6 flex items-center justify-end space-x-2'>
-                {blog?.category && (
-                  <Link
-                    href={`/categories/${blog.category.slug}`}
-                    className='inline-flex rounded-xs border border-border bg-muted px-2 py-0.5 font-mono text-micro text-muted-foreground transition-colors hover:text-foreground'
-                  >
-                    {blog.category.name}
-                  </Link>
-                )}
-              </div>
-            </div>
-          </section>
-        </div>
-      </section>
-
-      <RenderPortableText value={blog?.content ?? []} />
-    </div>
+    <PageLayout
+      variant='article'
+      header={{
+        eyebrow: blog.category?.name ?? 'The Blog',
+        eyebrowHref: blog.category
+          ? `/categories/${blog.category.slug}`
+          : undefined,
+        title: blog.title,
+        meta,
+        lead: blog.description,
+      }}
+      toc={buildToc(content)}
+      aside={{ meta, topics, url }}
+      footer={footer}
+    >
+      <Prose value={content} />
+    </PageLayout>
   );
 };
 

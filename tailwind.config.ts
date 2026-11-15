@@ -249,9 +249,23 @@ module.exports = {
         section: 'var(--space-section)',
         'section-sm': 'var(--space-section-sm)',
         stack: 'var(--space-stack)',
+        // Heading -> its content, shared by Section and article prose h2/h3.
+        heading: 'var(--space-heading)',
       },
       maxWidth: {
-        measure: '36em',
+        // One fixed reading column (rem, not em) so eyebrow, h1, lead, chips,
+        // body and article prose share the same left and right edges at any
+        // font size.
+        measure: '40rem',
+        // Article reading column from xl, where the aside is bounded.
+        'measure-wide': '44rem',
+        // The one content frame for every page (navbar row and page row
+        // share it): 69rem of content + 2rem gutters each side. 69rem is the
+        // widest article (44rem prose + 3rem gap + 22rem aside), so an
+        // article fills the frame exactly with no dead column, and index
+        // pages use the same frame for main + rail. Wider screens centre the
+        // whole frame with even outer margins.
+        shell: '73rem',
       },
       borderRadius: {
         xs: 'var(--radius-xs)',
@@ -317,19 +331,23 @@ module.exports = {
             // Article sizes come from the same scale as the UI, not the
             // plugin's defaults (which jump to 36px h1 / 1.75 leading).
             ...proseRole('article'),
-            maxWidth: '36em',
+            // Width comes from the article column (PageLayout).
+            maxWidth: 'none',
             p: { marginTop: '1.25em', marginBottom: '1.25em' },
             '[class~="lead"]': proseRole('lead'),
             h1: { ...proseRole('h1'), marginTop: '0', marginBottom: '0.75em' },
+            // Same rhythm as page Sections (layout/Section.tsx): an h2 opens
+            // a section after the section gap, its content follows after
+            // the heading gap. One owner: the spacing tokens.
             h2: {
               ...proseRole('h2'),
-              marginTop: '1.75em',
-              marginBottom: '0.6em',
+              marginTop: 'var(--space-section-sm)',
+              marginBottom: 'var(--space-heading)',
             },
             h3: {
               ...proseRole('h3'),
-              marginTop: '1.5em',
-              marginBottom: '0.5em',
+              marginTop: 'var(--space-stack)',
+              marginBottom: 'var(--space-heading)',
             },
             h4: {
               ...proseRole('h4'),

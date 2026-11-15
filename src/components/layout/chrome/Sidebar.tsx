@@ -8,21 +8,29 @@ import {
 import { RootState } from '@/features/store';
 import { cn } from '@/lib/utils';
 import {
-  EnvelopeClosedIcon,
-  GitHubLogoIcon,
-  LinkedInLogoIcon,
-} from '@radix-ui/react-icons';
-import { PenSquareIcon } from 'lucide-react';
+  GithubIcon,
+  LinkedinIcon,
+  MailIcon,
+  PenSquareIcon,
+} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSelector } from 'react-redux';
-import SidebarLink from './SidebarLink';
+import SidebarLink, { SIDEBAR_ICON_STROKE } from './SidebarLink';
 import { ThemeToggler } from './ThemeToggler';
 
 const Sidebar = () => {
   const clicked = useSelector((state: RootState) => state.navbar.clicked);
+  const iconProps = {
+    'aria-hidden': true,
+    strokeWidth: SIDEBAR_ICON_STROKE,
+    className: 'h-5 w-5',
+  } as const;
+  const iconLink =
+    'rounded-md p-1.5 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none';
   return (
     <div
+      id='site-sidebar'
       className={cn(
         'hidden md:flex flex-col justify-between h-screen min-w-[260px] w-[260px] sm:min-w-[300px] sm:w-[300px] bg-muted p-10 sticky top-0',
         {
@@ -32,7 +40,7 @@ const Sidebar = () => {
     >
       <div className='flex flex-col space-y-10'>
         <div className='flex flex-col space-y-4'>
-          <Link href='/'>
+          <Link href='/' aria-label='Preetam Raj, home' className='w-fit'>
             <Image
               height={150}
               width={150}
@@ -55,7 +63,7 @@ const Sidebar = () => {
             </span>
           </p>
         </div>
-        <div className='flex flex-col space-y-5'>
+        <nav aria-label='Primary' className='flex flex-col space-y-1'>
           <SidebarLink href='/' />
           <SidebarLink href='/about' />
           <SidebarLink href='/portfolio' />
@@ -63,25 +71,47 @@ const Sidebar = () => {
           <SidebarLink href='/contact' />
           <SidebarLink href='/categories' />
           <SidebarLink href='/tags' />
-        </div>
+        </nav>
       </div>
 
       <div className='flex items-center justify-between'>
         <ThemeToggler />
-        <Link href='https://github.com/dev-preetamraj' target='_blank'>
-          <GitHubLogoIcon className='h-6 w-6' />
+        <Link
+          href='https://github.com/dev-preetamraj'
+          target='_blank'
+          rel='noopener noreferrer'
+          aria-label='GitHub (opens in a new tab)'
+          className={iconLink}
+        >
+          <GithubIcon {...iconProps} />
         </Link>
-        <Link href='https://www.linkedin.com/in/raj-preetam/' target='_blank'>
-          <LinkedInLogoIcon className='h-6 w-6' />
+        <Link
+          href='https://www.linkedin.com/in/raj-preetam/'
+          target='_blank'
+          rel='noopener noreferrer'
+          aria-label='LinkedIn (opens in a new tab)'
+          className={iconLink}
+        >
+          <LinkedinIcon {...iconProps} />
         </Link>
-        <Link href='mailto:dev.preetamraj@gmail.com'>
-          <EnvelopeClosedIcon className='h-6 w-6' />
+        <Link
+          href='mailto:dev.preetamraj@gmail.com'
+          aria-label='Email Preetam'
+          className={iconLink}
+        >
+          <MailIcon {...iconProps} />
         </Link>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Link href='/studio' target='_blank' rel='noopener noreferrer'>
-                <PenSquareIcon className='h-6 w-6' />
+              <Link
+                href='/studio'
+                target='_blank'
+                rel='noopener noreferrer'
+                aria-label='Sanity Studio (opens in a new tab)'
+                className={iconLink}
+              >
+                <PenSquareIcon {...iconProps} />
               </Link>
             </TooltipTrigger>
             <TooltipContent>

@@ -5,8 +5,8 @@ type Props = {
 const JsonLd = ({ data }: Props) => (
   <script
     type='application/ld+json'
-    // Sanity-authored strings only; no user input reaches this payload.
-    dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    // CMS strings must not be able to terminate the script element.
+    dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, '\\u003c') }}
   />
 );
 

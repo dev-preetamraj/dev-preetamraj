@@ -1,103 +1,103 @@
-import { Card, CardContent } from '@/components/ui/card';
+import Card from '@/components/layout/Card';
+import Chip from '@/components/layout/Chip';
+import { Cluster } from '@/components/layout/Stack';
+import { buttonVariants } from '@/components/ui/button';
+import { dedupeTopics, topicLabel } from '@/lib/topics';
+import { cn } from '@/lib/utils';
 import { urlFor } from '@/sanity/lib/image';
 import { ProjectListItem } from '@/sanity/lib/queries';
-import { PhotoIcon } from '@heroicons/react/24/outline';
-import { GitHubLogoIcon } from '@radix-ui/react-icons';
-import { ArrowUpRight, Globe } from 'lucide-react';
-import Image from 'next/image';
+import { GithubIcon, Globe, Star } from 'lucide-react';
 import Link from 'next/link';
 import { FC } from 'react';
 
 type Props = {
   project: ProjectListItem;
+  /** Featured: larger title, image beside the text, Live/Code buttons. */
+  featured?: boolean;
 };
 
-const ProjectCard: FC<Props> = ({ project }) => {
+/** A project on the shared Card (portfolio grid and featured row). */
+const ProjectCard: FC<Props> = ({ project, featured = false }) => {
   const imageUrl = project.featuredImage?.asset
-    ? urlFor(project.featuredImage).url()
+    ? urlFor(project.featuredImage).width(960).url()
     : null;
+  // Same topic rules as articles: no tag repeating the category, "#tag".
+  const tags = dedupeTopics(project.category, project.tags)
+    .filter((topic) => topic.kind === 'tag')
+    .slice(0, featured ? 5 : 4);
+
+  const eyebrow =
+    featured || project.category ? (
+      <>
+        {featured && (
+          <Chip tone='strong' icon={Star}>
+            Featured
+          </Chip>
+        )}
+        {project.category && <Chip>{project.category.name}</Chip>}
+      </>
+    ) : undefined;
+
+  const actions =
+    featured && (project.liveUrl || project.githubUrl) ? (
+      <>
+        {project.liveUrl && (
+          <Link
+            href={project.liveUrl}
+            target='_blank'
+            rel='noopener noreferrer'
+            className={cn(buttonVariants({ size: 'sm' }), 'gap-1.5')}
+          >
+            <Globe aria-hidden className='h-4 w-4' />
+            Live
+          </Link>
+        )}
+        {project.githubUrl && (
+          <Link
+            href={project.githubUrl}
+            target='_blank'
+            rel='noopener noreferrer'
+            className={cn(
+              buttonVariants({ size: 'sm', variant: 'outline' }),
+              'gap-1.5'
+            )}
+          >
+            <GithubIcon aria-hidden className='h-4 w-4' />
+            Code
+          </Link>
+        )}
+      </>
+    ) : undefined;
 
   return (
-    <Card className='group relative flex flex-col overflow-hidden rounded-xl transition-all duration-base hover:-translate-y-1 hover:border-input hover:shadow-md'>
-      <div className='relative aspect-video w-full overflow-hidden bg-muted'>
-        {imageUrl ? (
-          <Image
-            src={imageUrl}
-            alt={project.featuredImage?.alt || project.title}
-            fill
-            sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px'
-            className='object-cover transition-transform duration-300 group-hover:scale-[1.02]'
-          />
-        ) : (
-          <div
-            className='flex h-full w-full items-center justify-center text-muted-foreground'
-            aria-label={`${project.title} (no featured image)`}
-          >
-            <PhotoIcon className='h-8 w-8' />
-          </div>
-        )}
-
-        {(project.liveUrl || project.githubUrl) && (
-          <div className='absolute right-3 top-3 z-10 flex gap-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100'>
-            {project.liveUrl && (
-              <Link
-                href={project.liveUrl}
-                target='_blank'
-                rel='noopener noreferrer'
-                aria-label={`${project.title} live site`}
-                className='flex h-8 w-8 items-center justify-center rounded-md bg-background/80 text-foreground backdrop-blur ring-1 ring-border transition-colors hover:bg-primary hover:text-primary-foreground'
-              >
-                <Globe className='h-4 w-4' />
-              </Link>
-            )}
-            {project.githubUrl && (
-              <Link
-                href={project.githubUrl}
-                target='_blank'
-                rel='noopener noreferrer'
-                aria-label={`${project.title} source code`}
-                className='flex h-8 w-8 items-center justify-center rounded-md bg-background/80 text-foreground backdrop-blur ring-1 ring-border transition-colors hover:bg-primary hover:text-primary-foreground'
-              >
-                <GitHubLogoIcon className='h-4 w-4' />
-              </Link>
-            )}
-          </div>
-        )}
-      </div>
-
-      <CardContent className='flex flex-1 flex-col gap-2 pt-5'>
-        {project.category && (
-          <span className='inline-flex w-fit rounded-xs border border-border bg-muted px-2 py-0.5 font-mono text-micro text-muted-foreground'>
-            {project.category.name}
-          </span>
-        )}
-        <h3 className='flex items-start gap-2 text-h4 text-foreground transition-colors group-hover:text-primary'>
-          <Link
-            href={`/portfolio/${project.slug}`}
-            className='line-clamp-2 after:absolute after:inset-0'
-          >
-            {project.title}
-          </Link>
-          <ArrowUpRight className='mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary' />
-        </h3>
-        {project.description && (
-          <p className='line-clamp-2 text-small text-muted-foreground'>
-            {project.description}
-          </p>
-        )}
-        {project.tags && project.tags.length > 0 && (
-          <div className='mt-auto flex flex-wrap gap-1.5 pt-2'>
-            {project.tags.slice(0, 4).map((tag) => (
-              <span
-                key={tag.slug}
-                className='rounded-full border border-border px-2 py-0.5 text-micro text-muted-foreground'
-              >
-                {tag.name}
-              </span>
-            ))}
-          </div>
-        )}
-      </CardContent>
+    <Card
+      href={`/portfolio/${project.slug}`}
+      title={project.title}
+      size={featured ? 'featured' : 'default'}
+      span={featured ? 'full' : undefined}
+      media={
+        imageUrl
+          ? {
+              src: imageUrl,
+              sizes: featured
+                ? '(max-width: 640px) 100vw, 480px'
+                : '(max-width: 640px) 100vw, 420px',
+              priority: featured,
+            }
+          : undefined
+      }
+      eyebrow={eyebrow}
+      description={project.description}
+      lines={featured ? 'none' : 2}
+      footer={actions}
+    >
+      {tags.length > 0 && (
+        <Cluster gap='xs'>
+          {tags.map((tag) => (
+            <Chip key={tag.slug}>{topicLabel(tag)}</Chip>
+          ))}
+        </Cluster>
+      )}
     </Card>
   );
 };

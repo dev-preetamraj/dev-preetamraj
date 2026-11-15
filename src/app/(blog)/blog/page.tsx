@@ -1,5 +1,7 @@
 import BlogListInfinite from '@/components/blog/BlogListInfinite';
 import SortToggle, { SortKey } from '@/components/blog/SortToggle';
+import PageLayout from '@/components/layout/PageLayout';
+import Text from '@/components/layout/Text';
 import { rankPosts } from '@/lib/ranking';
 import { POSTS_QUERY, PostListItem, sanityFetch } from '@/sanity/lib/queries';
 import { Metadata } from 'next';
@@ -32,31 +34,22 @@ const BlogPage = async ({ searchParams }: Props) => {
       : [...posts].sort(byLatest);
 
   return (
-    <div className='flex w-full flex-col space-y-8'>
-      <section className='flex flex-col space-y-5'>
-        <p className='text-eyebrow text-muted-foreground'>The Blog</p>
-        <h1 className='text-h1 text-foreground'>Every post, in one place.</h1>
-        <p className='max-w-2xl text-lead text-muted-foreground'>
-          Notes on backend systems, APIs, and building things that hold up. Sort
-          by the newest writing or by what is ranking highest right now.
-        </p>
-      </section>
-
-      <div className='flex flex-wrap items-center justify-between gap-3'>
-        <SortToggle active={active} />
-        <span className='text-small text-muted-foreground'>
-          {blogs.length} {blogs.length === 1 ? 'post' : 'posts'}
-        </span>
-      </div>
-
+    <PageLayout
+      variant='index'
+      header={{
+        eyebrow: 'The Blog',
+        title: 'Every post, in one place.',
+        meta: `${blogs.length} ${blogs.length === 1 ? 'post' : 'posts'}`,
+        lead: 'Notes on backend systems, APIs, and building things that hold up. Sort by the newest writing or by what is ranking highest right now.',
+        children: <SortToggle active={active} />,
+      }}
+    >
       {blogs.length ? (
         <BlogListInfinite key={active} blogs={blogs} />
       ) : (
-        <p className='text-body text-muted-foreground'>
-          No posts yet - check back soon.
-        </p>
+        <Text>No posts yet - check back soon.</Text>
       )}
-    </div>
+    </PageLayout>
   );
 };
 

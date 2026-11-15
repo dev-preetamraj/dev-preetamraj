@@ -12,8 +12,17 @@ export type CategoryWithPosts = Category & {
   posts: PostListItem[];
 };
 
+/** A post title link shown under a category on the /categories index. */
+export type CategoryPostLink = {
+  _id: string;
+  title: string;
+  slug: string;
+};
+
 export type CategoryListItem = Category & {
   postCount: number;
+  /** Newest published posts, capped at 3 by the query. */
+  latestPosts: CategoryPostLink[];
 };
 
 /** Minimal shape for sidebar / "trending categories" links. */
@@ -35,7 +44,12 @@ export const CATEGORIES_QUERY = `*[_type == "category" && count(*[_type == "post
   name,
   "slug": slug.current,
   description,
-  "postCount": count(*[_type == "post" && references(^._id) && isPublished == true])
+  "postCount": count(*[_type == "post" && references(^._id) && isPublished == true]),
+  "latestPosts": *[_type == "post" && references(^._id) && isPublished == true] | order(publishedAt desc) [0...3] {
+    _id,
+    title,
+    "slug": slug.current
+  }
 }`;
 
 export const CATEGORIES_SITEMAP_QUERY = `*[_type == "category" && defined(slug.current) && count(*[_type == "post" && references(^._id) && isPublished == true]) > 0]{${SITEMAP_PROJECTION}}`;

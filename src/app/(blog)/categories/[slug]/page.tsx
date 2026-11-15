@@ -1,10 +1,13 @@
 import BlogList from '@/components/blog/BlogList';
+import PageLayout from '@/components/layout/PageLayout';
+import Text from '@/components/layout/Text';
 import {
   CategoryWithPosts,
   CATEGORY_BY_SLUG_QUERY,
   sanityFetch,
 } from '@/sanity/lib/queries';
 import { Metadata, ResolvingMetadata } from 'next';
+import { notFound } from 'next/navigation';
 import { FC } from 'react';
 
 type Props = {
@@ -24,11 +27,13 @@ export async function generateMetadata(
     { slug }
   );
 
+  if (!category) return { title: 'Category not found' };
+
   // optionally access and extend (rather than replace) parent metadata
   const previousImages = (await parent).openGraph?.images || [];
 
   return {
-    title: `${category?.name} | Category`,
+    title: `${category.name} | Category`,
     openGraph: {
       images: previousImages,
     },
@@ -45,19 +50,28 @@ const CategoryDetailPage: FC<Props> = async (props) => {
     { slug }
   );
 
-  if (!category) return;
+  if (!category) notFound();
+
+  const count = category.posts?.length ?? 0;
 
   return (
-    <div className='w-full flex flex-col space-y-stack'>
-      <h1 className='text-h1 text-foreground'>
-        Posts in {category.name}
-      </h1>
-      {category.posts.length ? (
+    <PageLayout
+      variant='index'
+      header={{
+        eyebrow: 'Category',
+        title: category.name,
+        meta: `${count} ${count === 1 ? 'post' : 'posts'}`,
+        lead:
+          category.description ||
+          `Every post filed under ${category.name}, newest first.`,
+      }}
+    >
+      {count ? (
         <BlogList blogs={category.posts} />
       ) : (
-        <p className='text-body text-muted-foreground'>No posts in this category yet.</p>
+        <Text>No posts in this category yet.</Text>
       )}
-    </div>
+    </PageLayout>
   );
 };
 

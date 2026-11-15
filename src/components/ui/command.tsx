@@ -6,7 +6,12 @@ import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { Command as CommandPrimitive } from 'cmdk';
 
 import { cn } from '@/lib/utils';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
@@ -25,16 +30,30 @@ Command.displayName = CommandPrimitive.displayName;
 
 interface CommandDialogProps extends DialogProps {
   commandProps?: React.ComponentPropsWithoutRef<typeof CommandPrimitive>;
+  /** Visually hidden dialog title (required for an accessible name). */
+  title?: string;
+  /** Visually hidden dialog description. */
+  description?: string;
+  /** id for the dialog content, so a trigger can reference it. */
+  contentId?: string;
 }
 
 const CommandDialog = ({
   children,
   commandProps,
+  title = 'Command menu',
+  description = 'Search for a command to run.',
+  contentId,
   ...props
 }: CommandDialogProps) => {
   return (
     <Dialog {...props}>
-      <DialogContent className='w-[calc(100%-2rem)] overflow-hidden rounded-xl p-0 shadow-overlay sm:w-full'>
+      <DialogContent
+        id={contentId}
+        className='w-[calc(100%-2rem)] overflow-hidden rounded-xl p-0 shadow-overlay sm:w-full'
+      >
+        <DialogTitle className='sr-only'>{title}</DialogTitle>
+        <DialogDescription className='sr-only'>{description}</DialogDescription>
         <Command
           {...commandProps}
           className={cn(

@@ -3,12 +3,9 @@
 import { useCallback } from 'react';
 
 import { useInfiniteScroll } from '@/hooks/use-infinite-scroll';
-import {
-  POSTS_BATCH_SIZE,
-  POSTS_INITIAL_BATCH_SIZE,
-} from '@/lib/constants';
+import { POSTS_BATCH_SIZE, POSTS_INITIAL_BATCH_SIZE } from '@/lib/constants';
 import { PostListItem } from '@/sanity/lib/queries';
-import BlogCard from './BlogCard';
+import BlogList from './BlogList';
 
 type Props = {
   /** Full list, already sorted server-side by the active mode. */
@@ -20,7 +17,7 @@ const BlogListInfinite = ({ blogs }: Props) => {
   // are revealed from that in-memory list rather than re-fetched per scroll.
   const fetchPage = useCallback(
     (start: number, end: number) => Promise.resolve(blogs.slice(start, end)),
-    [blogs],
+    [blogs]
   );
 
   const { items, containerRef } = useInfiniteScroll<PostListItem>({
@@ -32,10 +29,8 @@ const BlogListInfinite = ({ blogs }: Props) => {
   });
 
   return (
-    <div ref={containerRef} className='space-y-4'>
-      {items.map((blog) => (
-        <BlogCard key={blog._id} blog={blog} />
-      ))}
+    <div ref={containerRef}>
+      <BlogList blogs={items} />
     </div>
   );
 };

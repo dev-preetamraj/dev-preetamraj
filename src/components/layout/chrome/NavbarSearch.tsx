@@ -60,6 +60,8 @@ const EMPTY_RESULTS: SearchResults = {
 
 const SEARCH_DEBOUNCE_MS = 250;
 
+const SEARCH_DIALOG_ID = 'site-search-dialog';
+
 const noopSubscribe = () => () => {};
 
 const NavbarSearch = () => {
@@ -204,22 +206,38 @@ const NavbarSearch = () => {
         variant='outline'
         size={isDesktop ? 'default' : 'icon'}
         onClick={() => setOpen(true)}
-        className='flex items-center md:space-x-4 xl:space-x-10 group'
+        aria-haspopup='dialog'
+        aria-expanded={open}
+        aria-controls={open ? SEARCH_DIALOG_ID : undefined}
+        aria-keyshortcuts='Meta+K Control+K'
+        className='group flex shrink-0 items-center gap-2 lg:min-w-[20rem] lg:justify-start xl:min-w-[22rem]'
       >
-        <span className='text-small text-muted-foreground group-hover:text-foreground hidden lg:inline-block'>
+        {/* Accessible name when only the icon is visible (below lg). */}
+        <span className='sr-only lg:hidden'>Search</span>
+        {/* lg+: icon, left-aligned placeholder, Cmd-K hint pushed right.
+            md: icon + hint; mobile: icon only. */}
+        <SearchIcon
+          aria-hidden='true'
+          strokeWidth={1.75}
+          className='icon block shrink-0 lg:h-4 lg:w-4 lg:text-muted-foreground lg:group-hover:text-foreground'
+        />
+        <span className='hidden text-left text-small text-muted-foreground group-hover:text-foreground lg:inline-block'>
           Search project, blog or settings...
         </span>
-        <div className='flex items-center gap-2'>
-          <SearchIcon className='icon block lg:hidden' />
-          <kbd className='pointer-events-none hidden md:inline-flex h-5 select-none items-center gap-1 rounded-xs border bg-muted px-1.5 font-mono text-micro text-muted-foreground group-hover:text-foreground'>
-            <span>⌘</span>K
-          </kbd>
-        </div>
+        <kbd
+          aria-hidden='true'
+          className='pointer-events-none hidden md:inline-flex lg:ml-auto h-5 select-none items-center gap-1 rounded-xs border bg-muted px-1.5 font-mono text-micro text-muted-foreground group-hover:text-foreground'
+        >
+          <span>⌘</span>K
+        </kbd>
       </Button>
 
       <CommandDialog
         open={open}
         onOpenChange={setOpen}
+        contentId={SEARCH_DIALOG_ID}
+        title='Search'
+        description='Search blog posts, projects, categories and tags, or switch the theme.'
         commandProps={{ shouldFilter: false }}
       >
         <CommandInput

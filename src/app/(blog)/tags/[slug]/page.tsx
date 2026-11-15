@@ -1,6 +1,14 @@
 import BlogList from '@/components/blog/BlogList';
-import { TagWithPosts, TAG_BY_SLUG_QUERY, sanityFetch } from '@/sanity/lib/queries';
+import PageLayout from '@/components/layout/PageLayout';
+import Text from '@/components/layout/Text';
+import { topicLabel } from '@/lib/topics';
+import {
+  TagWithPosts,
+  TAG_BY_SLUG_QUERY,
+  sanityFetch,
+} from '@/sanity/lib/queries';
 import { Metadata, ResolvingMetadata } from 'next';
+import { notFound } from 'next/navigation';
 
 type Props = {
   params: Promise<{
@@ -18,11 +26,13 @@ export async function generateMetadata(
     slug,
   });
 
+  if (!tag) return { title: 'Tag not found' };
+
   // optionally access and extend (rather than replace) parent metadata
   const previousImages = (await parent).openGraph?.images || [];
 
   return {
-    title: `${tag?.name} | Tag`,
+    title: `${tag.name} | Tag`,
     openGraph: {
       images: previousImages,
     },
@@ -38,19 +48,26 @@ const TagBlogListPage = async (props: Props) => {
     slug,
   });
 
-  if (!tag) return;
+  if (!tag) notFound();
+
+  const count = tag.posts?.length ?? 0;
 
   return (
-    <div className='w-full flex flex-col space-y-stack'>
-      <h1 className='text-h1 text-foreground'>
-        Posts tagged #{tag.name}
-      </h1>
-      {tag.posts.length ? (
+    <PageLayout
+      variant='index'
+      header={{
+        eyebrow: 'Tag',
+        title: topicLabel({ name: tag.name, kind: 'tag' }),
+        meta: `${count} ${count === 1 ? 'post' : 'posts'}`,
+        lead: `Every post that touches ${tag.name}, newest first.`,
+      }}
+    >
+      {count ? (
         <BlogList blogs={tag.posts} />
       ) : (
-        <p className='text-body text-muted-foreground'>No posts with this tag yet.</p>
+        <Text>No posts with this tag yet.</Text>
       )}
-    </div>
+    </PageLayout>
   );
 };
 

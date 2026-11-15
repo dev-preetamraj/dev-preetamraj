@@ -27,6 +27,7 @@ export function useInfiniteScroll<T>({
 }: Options<T>) {
   const [items, setItems] = useState<T[]>(initialItems);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   // Guards against firing multiple loads for the same scroll gesture.
   const loadingRef = useRef(false);
@@ -50,21 +51,30 @@ export function useInfiniteScroll<T>({
     setIsLoading(true);
 
     const start = itemsRef.current.length;
-    const next = await fetchPageRef.current(start, start + batchSize);
+    try {
+      const next = await fetchPageRef.current(start, start + batchSize);
 
-    setItems((prev) => {
-      const key = getKeyRef.current;
-      const seen = new Set(prev.map(key));
-      const fresh = next.filter((item) => !seen.has(key(item)));
-      return fresh.length ? [...prev, ...fresh] : prev;
-    });
-
-    setIsLoading(false);
-    loadingRef.current = false;
+      setItems((prev) => {
+        const key = getKeyRef.current;
+        const seen = new Set(prev.map(key));
+        const fresh = next.filter((item) => !seen.has(key(item)));
+        return fresh.length ? [...prev, ...fresh] : prev;
+      });
+    } catch (e) {
+      setError(e instanceof Error ? e : new Error(String(e)));
+    } finally {
+      setIsLoading(false);
+      loadingRef.current = false;
+    }
   }, [batchSize]);
 
+  const retry = useCallback(() => {
+    setError(null);
+    void loadMore();
+  }, [loadMore]);
+
   useEffect(() => {
-    if (!hasMore) return;
+    if (!hasMore || error) return;
 
     // The page may scroll inside a Radix ScrollArea viewport rather than the
     // window - find it, falling back to the window if the layout changes.
@@ -92,9 +102,9 @@ export function useInfiniteScroll<T>({
     // In case the list is already short enough to be past the threshold.
     onScroll();
     return () => scroller.removeEventListener('scroll', onScroll);
-  }, [hasMore, loadMore, triggerRatio]);
+  }, [hasMore, error, loadMore, triggerRatio]);
 
   const remaining = Math.max(0, totalCount - items.length);
 
-  return { items, isLoading, hasMore, remaining, containerRef };
+  return { items, isLoading, hasMore, remaining, containerRef, error, retry };
 }
