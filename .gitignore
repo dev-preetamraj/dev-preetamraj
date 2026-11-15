@@ -39,6 +39,3 @@ schema.json
 
 # local content workspace (blog drafts, never committed)
 /content
-
-# obsidian context vault (symlink to ~/obsidian-vaults/dev-preetamraj)
-/notes

@@ -6,22 +6,6 @@ This file provides guidance to AI coding agents working in this repository.
 
 Personal portfolio and blog website for Preetam Raj (preetamraj.dev). Built with Next.js 14 (App Router), Sanity (content + embedded Studio), Redux Toolkit, shadcn/ui (new-york style), and Tailwind CSS. Uses dark mode via next-themes with class strategy.
 
-## Session context (Obsidian vault)
-
-`notes/` is a gitignored symlink to an Obsidian vault at `~/obsidian-vaults/dev-preetamraj`
-holding context that carries across sessions. **Read `notes/00-index.md` first**, then the
-`notes/areas/` note covering whatever you are about to touch.
-
-- `notes/areas/<topic>.md` - living state of a feature or subsystem; rewrite in place.
-- `notes/decisions/<slug>.md` - one durable call each, with the reasoning and what was
-  rejected. Append-only: supersede an old decision with a new note, don't edit it.
-- `notes/sessions/YYYY-MM-DD-<topic>.md` - handoffs. Write one when a session ends with
-  work in flight, and link it from `00-index.md`.
-
-Note shapes live in `notes/_templates/`. Record the why, the constraint, and what
-surprised you; never restate what this file, the Sanity schema, or `git log` already say.
-The vault is never committed - this repo is public.
-
 ## Commands
 
 ```bash
