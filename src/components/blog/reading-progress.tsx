@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 
 /**
@@ -13,18 +13,28 @@ import { createPortal } from 'react-dom';
  * Radix ScrollArea viewport, not the window — resolved via `.closest()` so we
  * never grab the wrong scroller.
  */
+const noopSubscribe = () => () => {};
+const getNavbar = () =>
+  document.getElementById('article-body')
+    ? document.getElementById('site-navbar')
+    : null;
+const getServerNavbar = () => null;
+
 const ReadingProgress = () => {
   const [progress, setProgress] = useState(0);
-  const [navbar, setNavbar] = useState<HTMLElement | null>(null);
+  // null on the server / first hydration pass, then the navbar element.
+  const navbar = useSyncExternalStore(
+    noopSubscribe,
+    getNavbar,
+    getServerNavbar
+  );
 
   useEffect(() => {
     const article = document.getElementById('article-body');
     if (!article) return;
 
-    setNavbar(document.getElementById('site-navbar'));
-
     const viewport = article.closest<HTMLElement>(
-      '[data-radix-scroll-area-viewport]',
+      '[data-radix-scroll-area-viewport]'
     );
     const scrollTarget: EventTarget = viewport ?? window;
 
@@ -73,7 +83,7 @@ const ReadingProgress = () => {
         style={{ transform: `scaleX(${progress})` }}
       />
     </div>,
-    navbar,
+    navbar
   );
 };
 

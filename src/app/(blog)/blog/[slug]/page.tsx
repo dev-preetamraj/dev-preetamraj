@@ -66,10 +66,13 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   };
 }
 
+// Wall-clock read lives outside the component so render stays pure; ranking takes it as `nowMs`.
+const currentTimeMs = () => Date.now();
+
 const BlogPost: FC<Props> = async (props) => {
   const { slug } = await props.params;
 
-  const now = Date.now();
+  const now = currentTimeMs();
   const [blog, candidates] = await Promise.all([
     sanityFetch<Post | null>(POST_BY_SLUG_QUERY, { slug }),
     sanityFetch<RelatedPostCandidate[]>(RELATED_POSTS_QUERY),

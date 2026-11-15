@@ -35,6 +35,7 @@ import {
   useEffect,
   useRef,
   useState,
+  useSyncExternalStore,
 } from 'react';
 
 type SearchLink = { _id: string; label: string; href: string };
@@ -59,18 +60,22 @@ const EMPTY_RESULTS: SearchResults = {
 
 const SEARCH_DEBOUNCE_MS = 250;
 
+const noopSubscribe = () => () => {};
+
 const NavbarSearch = () => {
   const router = useRouter();
   const { setTheme, theme: activeTheme } = useTheme();
   const [open, setOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(
+    noopSubscribe,
+    () => true,
+    () => false
+  );
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResults>(EMPTY_RESULTS);
   const isDesktop = useMediaQuery('(min-width: 768px)');
   // Monotonic id so a slow response can never overwrite a newer one.
   const requestId = useRef(0);
-
-  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -85,10 +90,7 @@ const NavbarSearch = () => {
 
   useEffect(() => {
     const trimmed = query.trim();
-    if (!trimmed) {
-      setResults(EMPTY_RESULTS);
-      return;
-    }
+    if (!trimmed) return;
 
     const currentRequest = ++requestId.current;
     const timeout = setTimeout(async () => {
@@ -100,6 +102,15 @@ const NavbarSearch = () => {
 
     return () => clearTimeout(timeout);
   }, [query]);
+
+  const handleQueryChange = (value: string) => {
+    setQuery(value);
+    if (!value.trim()) {
+      // Clear results and invalidate any in-flight search.
+      requestId.current++;
+      setResults(EMPTY_RESULTS);
+    }
+  };
 
   const { blogs, projects, categories, tags } = results;
 
@@ -214,7 +225,7 @@ const NavbarSearch = () => {
         <CommandInput
           placeholder='Type a command or search...'
           value={query}
-          onValueChange={setQuery}
+          onValueChange={handleQueryChange}
         />
         <CommandList className='border-border'>
           <CommandEmpty>No results found.</CommandEmpty>

@@ -17,6 +17,9 @@ const byLatest = (a: PostListItem, b: PostListItem) =>
   Date.parse(b.publishedAt ?? b._createdAt) -
   Date.parse(a.publishedAt ?? a._createdAt);
 
+// Wall-clock read lives outside the component so render stays pure; ranking takes it as `nowMs`.
+const currentTimeMs = () => Date.now();
+
 const BlogPage = async ({ searchParams }: Props) => {
   const { sort } = await searchParams;
   const active: SortKey = sort === 'top' ? 'top' : 'latest';
@@ -25,7 +28,7 @@ const BlogPage = async ({ searchParams }: Props) => {
 
   const blogs =
     active === 'top'
-      ? rankPosts(posts, Date.now())
+      ? rankPosts(posts, currentTimeMs())
       : [...posts].sort(byLatest);
 
   return (
@@ -49,7 +52,9 @@ const BlogPage = async ({ searchParams }: Props) => {
       {blogs.length ? (
         <BlogListInfinite key={active} blogs={blogs} />
       ) : (
-        <p className='text-body text-muted-foreground'>No posts yet - check back soon.</p>
+        <p className='text-body text-muted-foreground'>
+          No posts yet - check back soon.
+        </p>
       )}
     </div>
   );

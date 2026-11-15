@@ -33,11 +33,14 @@ export function useInfiniteScroll<T>({
 
   // Refs so loadMore stays stable regardless of caller-provided closures.
   const itemsRef = useRef(items);
-  itemsRef.current = items;
   const getKeyRef = useRef(getKey);
-  getKeyRef.current = getKey;
   const fetchPageRef = useRef(fetchPage);
-  fetchPageRef.current = fetchPage;
+  // Synced after each render (declared before the scroll effect so it runs first).
+  useEffect(() => {
+    itemsRef.current = items;
+    getKeyRef.current = getKey;
+    fetchPageRef.current = fetchPage;
+  });
 
   const hasMore = items.length < totalCount;
 
@@ -67,7 +70,7 @@ export function useInfiniteScroll<T>({
     // window - find it, falling back to the window if the layout changes.
     const scroller: HTMLElement | Window =
       containerRef.current?.closest<HTMLElement>(
-        '[data-radix-scroll-area-viewport]',
+        '[data-radix-scroll-area-viewport]'
       ) ?? window;
 
     const isReached = () => {

@@ -30,8 +30,11 @@ export const metadata: Metadata = {
   },
 };
 
+// Wall-clock read lives outside the component so render stays pure; ranking takes it as `nowMs`.
+const currentTimeMs = () => Date.now();
+
 const HomePage = async () => {
-  const now = Date.now();
+  const now = currentTimeMs();
   const [posts, categoryStats] = await Promise.all([
     sanityFetch<PostListItem[]>(POSTS_QUERY),
     sanityFetch<CategoryStat[]>(TRENDING_CATEGORY_STATS_QUERY, {

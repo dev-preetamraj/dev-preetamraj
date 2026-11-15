@@ -48,8 +48,11 @@ const LinkList: FC<{ items: Item[] }> = ({ items }) => (
   </ol>
 );
 
+// Wall-clock read lives outside the component so render stays pure; ranking takes it as `nowMs`.
+const currentTimeMs = () => Date.now();
+
 const Rightbar = async () => {
-  const now = Date.now();
+  const now = currentTimeMs();
   const [popularPosts, projects, posts] = await Promise.all([
     sanityFetch<PopularPostLink[]>(POPULAR_POSTS_QUERY),
     sanityFetch<ProjectLink[]>(FEATURED_PROJECTS_QUERY),
