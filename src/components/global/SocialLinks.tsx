@@ -25,8 +25,8 @@ export const LINKS = [
   {
     key: 'email',
     name: 'Email',
-    handle: 'dev.preetamraj@gmail.com',
-    href: 'mailto:dev.preetamraj@gmail.com',
+    handle: 'hi@preetamraj.dev',
+    href: 'mailto:hi@preetamraj.dev',
     label: 'Email Preetam',
     Icon: MailIcon,
     external: false,

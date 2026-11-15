@@ -5,7 +5,7 @@
   <a href="https://preetamraj.dev">Website</a> ·
   <a href="https://www.linkedin.com/in/raj-preetam/">LinkedIn</a> ·
   <a href="https://twitter.com/preetam__raj">X</a> ·
-  <a href="mailto:dev.preetamraj@gmail.com">Email</a>
+  <a href="mailto:hi@preetamraj.dev">Email</a>
 </p>
 
 <p align="center">

@@ -68,7 +68,7 @@ const ContactPage = () => {
         children: (
           <Cluster>
             <Link
-              href='mailto:dev.preetamraj@gmail.com'
+              href='mailto:hi@preetamraj.dev'
               className={cn(buttonVariants(), 'gap-2')}
             >
               <MailIcon aria-hidden className='h-4 w-4' />
