@@ -18,7 +18,7 @@ const PostGridCard: FC<Props> = ({ blog }) => {
     : null;
 
   return (
-    <Card className='group relative flex flex-col overflow-hidden rounded-2xl border-border/70 bg-gradient-to-b from-card to-muted/20 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/[0.06]'>
+    <Card className='group relative flex flex-col overflow-hidden rounded-xl transition-all duration-base hover:-translate-y-1 hover:border-input hover:shadow-md'>
       <div className='relative aspect-video w-full overflow-hidden bg-muted'>
         {imageUrl ? (
           <Image
@@ -39,11 +39,11 @@ const PostGridCard: FC<Props> = ({ blog }) => {
       </div>
       <CardContent className='flex flex-1 flex-col gap-2 pt-5'>
         {blog.category && (
-          <span className='inline-flex w-fit rounded-md bg-primary/10 px-2 py-0.5 font-mono text-[11px] font-medium text-primary ring-1 ring-primary/20'>
+          <span className='inline-flex w-fit rounded-xs border border-border bg-muted px-2 py-0.5 font-mono text-micro text-muted-foreground'>
             {blog.category.name}
           </span>
         )}
-        <h3 className='text-base font-semibold leading-snug text-foreground transition-colors group-hover:text-primary'>
+        <h3 className='text-h4 text-foreground transition-colors group-hover:text-primary'>
           <Link
             href={`/blog/${blog.slug}`}
             className='line-clamp-2 after:absolute after:inset-0'
@@ -52,11 +52,11 @@ const PostGridCard: FC<Props> = ({ blog }) => {
           </Link>
         </h3>
         {blog.description && (
-          <p className='line-clamp-2 text-sm leading-6 text-muted-foreground'>
+          <p className='line-clamp-2 text-small text-muted-foreground'>
             {blog.description}
           </p>
         )}
-        <div className='mt-auto flex items-center gap-4 pt-1 text-xs text-muted-foreground'>
+        <div className='mt-auto flex items-center gap-4 pt-1 font-mono text-caption text-muted-foreground'>
           <span className='flex items-center gap-1.5'>
             <CalendarIcon className='h-3.5 w-3.5' />
             {formatPostDate(blog.publishedAt ?? blog._createdAt)}

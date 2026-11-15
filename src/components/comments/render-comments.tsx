@@ -10,19 +10,17 @@ type Props = {
 
 const RenderComments = ({ postId, comments = [], commentsCount }: Props) => {
   return (
-    <div className='pb-12 space-y-4'>
+    <div className='pb-section-sm space-y-4'>
       <div className='space-y-4'>
-        <h1 className='text-xl md:text-2xl font-bold text-foreground'>
-          Leave a comment
-        </h1>
-        <p className='text-foreground/75'>
+        <h2 className='text-h3 text-foreground'>Leave a comment</h2>
+        <p className='text-body text-muted-foreground'>
           All fields are required. Your comment appears after approval.
         </p>
       </div>
 
       <CommentForm postId={postId} />
 
-      <div className='py-20'>
+      <div className='py-section'>
         <CommentsList
           postId={postId}
           initialComments={comments}

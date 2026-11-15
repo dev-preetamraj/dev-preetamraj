@@ -29,7 +29,7 @@ const SortToggle = ({ active }: Props) => (
           scroll={false}
           aria-current={isActive ? 'true' : undefined}
           className={cn(
-            'inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
+            'inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-small font-medium transition-colors',
             isActive
               ? 'bg-background text-foreground shadow-sm'
               : 'text-muted-foreground hover:text-foreground'

@@ -41,14 +41,14 @@ const TagBlogListPage = async (props: Props) => {
   if (!tag) return;
 
   return (
-    <div className='w-full flex flex-col space-y-6'>
-      <h1 className='text-2xl md:text-3xl font-bold text-foreground leading-tight'>
-        Posts tagged <span className='text-primary'>#{tag.name}</span>
+    <div className='w-full flex flex-col space-y-stack'>
+      <h1 className='text-h1 text-foreground'>
+        Posts tagged #{tag.name}
       </h1>
       {tag.posts.length ? (
         <BlogList blogs={tag.posts} />
       ) : (
-        <p className='text-foreground/75'>No posts with this tag yet.</p>
+        <p className='text-body text-muted-foreground'>No posts with this tag yet.</p>
       )}
     </div>
   );

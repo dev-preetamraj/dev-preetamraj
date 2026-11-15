@@ -2,13 +2,9 @@ import JsonLd from '@/components/global/json-ld';
 import SectionHeading from '@/components/global/SectionHeading';
 import { FEED_ALTERNATES } from '@/lib/feed';
 import { personLd, websiteLd } from '@/lib/seo';
-import CategoryCard from '@/components/home/CategoryCard';
 import FeaturedPostCard from '@/components/home/FeaturedPostCard';
-import LatestPostsGrid from '@/components/home/LatestPostsGrid';
-import PopularPosts from '@/components/home/PopularPosts';
-import { buttonVariants } from '@/components/ui/button';
+import LatestPostsList from '@/components/home/LatestPostsList';
 import { rankCategories, rankPosts, trendingWindowSince } from '@/lib/ranking';
-import { cn } from '@/lib/utils';
 import {
   CategoryStat,
   POSTS_QUERY,
@@ -47,91 +43,67 @@ const HomePage = async () => {
   const featured = ranked[0];
   const latest = posts.filter((post) => post._id !== featured?._id).slice(0, 6);
   const categories = rankCategories(categoryStats, 6);
-  const popular = [...posts]
-    .sort((a, b) => (b.views ?? 0) - (a.views ?? 0))
-    .filter((post) => post._id !== featured?._id)
-    .slice(0, 5);
+
+  const allPostsLink = (
+    <Link
+      href='/blog'
+      className='group inline-flex shrink-0 items-center gap-1 text-small text-primary hover:underline underline-offset-4'
+    >
+      All posts
+      <ArrowRight className='h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5' />
+    </Link>
+  );
 
   return (
     <>
       <JsonLd data={[personLd, websiteLd]} />
-      <div className='flex flex-col space-y-12'>
-        <section className='flex flex-col space-y-5'>
-          <p className='text-primary text-sm font-medium uppercase tracking-wide'>
-            The Blog
-          </p>
-          <h1 className='text-2xl md:text-3xl font-bold text-foreground leading-tight'>
+      {/* Hero is the single focal point; everything below is quieter and
+          separated by whitespace rather than rules or boxes. */}
+      <div className='flex flex-col space-y-section'>
+        <section className='flex max-w-2xl flex-col space-y-4'>
+          <h1 className='text-h1 text-foreground'>
             Notes on backend systems, APIs, and building things that hold up.
           </h1>
-          <p className='text-muted-foreground max-w-2xl'>
-            I write about the stuff I run into building and running platforms end
-            to end - backend architecture, data pipelines, cloud, and the odd bit
-            of AI on top. No fluff, just what actually worked.
+          <p className='text-lead text-muted-foreground'>
+            Backend, data pipelines, cloud and a bit of AI - from real projects.
           </p>
         </section>
 
         {ranked.length === 0 ? (
-          <p className='text-muted-foreground'>No posts yet - check back soon.</p>
+          <p className='text-body text-muted-foreground'>
+            No posts yet - check back soon.
+          </p>
         ) : (
           <>
-            {featured && (
-              <section className='flex flex-col space-y-5'>
-                <SectionHeading index='01' title='Featured' />
-                <FeaturedPostCard blog={featured} />
-              </section>
-            )}
+            {featured && <FeaturedPostCard blog={featured} />}
 
             {latest.length > 0 && (
-              <section className='flex flex-col space-y-5'>
-                <SectionHeading index='02' title='Latest' />
-                <LatestPostsGrid blogs={latest} />
-                <div className='flex justify-start'>
-                  <Link
-                    href='/blog'
-                    className={cn(
-                      buttonVariants({ variant: 'outline' }),
-                      'space-x-2'
-                    )}
-                  >
-                    <span>Browse all posts</span>
-                    <ArrowRight className='h-4 w-4' />
-                  </Link>
-                </div>
+              <section className='flex flex-col space-y-6'>
+                <SectionHeading title='Latest' action={allPostsLink} />
+                <LatestPostsList blogs={latest} />
               </section>
             )}
 
             {categories.length > 0 && (
               <section className='flex flex-col space-y-5'>
-                <SectionHeading index='03' title='Browse by category' />
-                <div className='grid grid-cols-2 gap-3 sm:grid-cols-3'>
+                <SectionHeading title='Topics' />
+                <ul className='flex flex-wrap gap-2'>
                   {categories.map((category) => (
-                    <CategoryCard key={category._id} category={category} />
+                    <li key={category._id}>
+                      <Link
+                        href={`/categories/${category.slug}`}
+                        className='inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-small text-muted-foreground transition-colors hover:border-input hover:text-foreground'
+                      >
+                        {category.name}
+                        <span className='font-mono text-micro'>
+                          {category.postCount}
+                        </span>
+                      </Link>
+                    </li>
                   ))}
-                </div>
+                </ul>
               </section>
             )}
-
-            {popular.length > 0 && (
-              <section className='flex flex-col space-y-5'>
-                <SectionHeading index='04' title='Popular' />
-                <PopularPosts blogs={popular} />
-              </section>
-            )}
-
-            <section className='flex flex-col items-start justify-between gap-5 rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-8 sm:flex-row sm:items-center'>
-              <div className='space-y-1.5'>
-                <h2 className='text-xl font-bold text-foreground md:text-2xl'>
-                  Want the full archive?
-                </h2>
-                <p className='text-sm text-muted-foreground'>
-                  Every post, in one place.
-                </p>
-              </div>
-              <Link href='/blog' className={cn(buttonVariants(), 'space-x-2')}>
-                <span>Browse all posts</span>
-                <ArrowRight className='h-4 w-4' />
-              </Link>
-            </section>
           </>
         )}
       </div>

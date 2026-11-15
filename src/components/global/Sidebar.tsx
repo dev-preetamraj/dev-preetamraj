@@ -38,20 +38,19 @@ const Sidebar = () => {
               width={150}
               alt='Preetam'
               src='https://res.cloudinary.com/dxgl4eyhq/image/upload/v1687987306/portfolio/me/preetam_ha8a2h.jpg'
-              className='h-28 w-28 md:h-36 md:w-36 rounded-full border border-ring'
+              className='h-24 w-24 rounded-full border border-border object-cover'
               priority
             />
           </Link>
-          <h1 className='text-3xl md:text-4xl font-bold text-foreground'>
-            Preetam Raj
-          </h1>
-          <p className='text-gray-800 dark:text-gray-400 text-sm font-thin text-justify'>
+          {/* Site identity, not a page heading: each page owns its h1. */}
+          <p className='text-h3 text-foreground'>Preetam Raj</p>
+          <p className='text-small text-muted-foreground'>
             B.Tech in{' '}
-            <span className='text-primary font-light'>
+            <span className='font-medium text-foreground'>
               Mechanical Engineering
             </span>{' '}
             with minor in{' '}
-            <span className='text-primary font-light'>
+            <span className='font-medium text-foreground'>
               Computer Science and Engineering
             </span>
           </p>

@@ -69,7 +69,7 @@ const CommentsList = ({ postId, initialComments, totalCount }: Props) => {
 
   if (comments.length === 0) {
     return (
-      <p className='text-foreground/60'>
+      <p className='text-body text-muted-foreground'>
         No comments yet. Be the first to comment.
       </p>
     );

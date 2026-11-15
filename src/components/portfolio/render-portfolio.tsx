@@ -19,13 +19,15 @@ type Props = {
 const RenderPortfolio = ({ project }: Props) => {
   return (
     <div className='w-full'>
-      <section className='space-y-2 border border-primary/10 mb-10'>
+      <section className='space-y-2 border border-border mb-10'>
         <div className='relative flex flex-col xl:flex-row justify-between'>
           <div className='absolute top-0 w-full h-full opacity-10 blur-sm'>
             <Image
               className='object-cover object-center mx-auto'
               src={
-                project?.featuredImage ? urlFor(project.featuredImage).url() : ''
+                project?.featuredImage
+                  ? urlFor(project.featuredImage).url()
+                  : ''
               }
               alt={project?.title ?? 'Featured Image'}
               fill
@@ -34,13 +36,11 @@ const RenderPortfolio = ({ project }: Props) => {
             />
           </div>
 
-          <section className='p-5 bg-primary/10 w-full z-10'>
+          <section className='p-5 bg-muted w-full z-10'>
             <div className='flex flex-col 2xl:flex-row justify-between gap-y-5'>
               <div className='space-y-2 w-full'>
-                <h1 className='text-2xl md:text-3xl font-bold leading-tight'>
-                  {project?.title}
-                </h1>
-                <p>
+                <h1 className='text-h1 text-foreground'>{project?.title}</h1>
+                <p className='text-small text-muted-foreground'>
                   {new Date(project?._createdAt ?? '').toLocaleDateString(
                     'en-US',
                     {
@@ -55,9 +55,9 @@ const RenderPortfolio = ({ project }: Props) => {
             </div>
 
             <div>
-              <h2 className='italic line-clamp-2 pt-10'>
+              <p className='text-lead text-muted-foreground line-clamp-2 pt-10 max-w-measure'>
                 {project?.description}
-              </h2>
+              </p>
               <div className='flex items-center justify-end mt-auto space-x-4'>
                 {project?.githubUrl && (
                   <TooltipProvider>

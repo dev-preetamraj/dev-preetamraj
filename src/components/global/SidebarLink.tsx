@@ -112,7 +112,7 @@ const SidebarLink: React.FC<ISidebarLink> = ({ href }) => {
       {iconMapper()}
       <span
         className={cn(
-          'text-lg group-hover:text-primary group-hover:font-semibold',
+          'text-body font-medium group-hover:text-primary group-hover:font-semibold',
           {
             'text-primary font-semibold': activePath(href),
           }

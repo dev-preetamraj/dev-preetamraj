@@ -19,15 +19,13 @@ const PortfolioPage = async () => {
   const rest = projects?.filter((p) => !p.featured) ?? [];
 
   return (
-    <div className='flex flex-col space-y-12'>
+    <div className='flex flex-col space-y-section-sm'>
       <section className='flex flex-col space-y-5'>
-        <p className='text-primary text-sm font-medium uppercase tracking-wide'>
-          Portfolio
-        </p>
-        <h1 className='text-2xl md:text-3xl font-bold text-foreground leading-tight'>
+        <p className='text-eyebrow text-muted-foreground'>Portfolio</p>
+        <h1 className='text-h1 text-foreground'>
           Things I&apos;ve designed, built, and shipped.
         </h1>
-        <p className='text-muted-foreground max-w-2xl'>
+        <p className='text-lead text-muted-foreground max-w-measure'>
           A selection of work - from backend systems and APIs to full-stack apps
           I took from first commit to production.
         </p>
@@ -50,7 +48,7 @@ const PortfolioPage = async () => {
       )}
 
       {projects && projects.length === 0 && (
-        <p className='text-muted-foreground'>
+        <p className='text-body text-muted-foreground'>
           No projects here yet - check back soon.
         </p>
       )}

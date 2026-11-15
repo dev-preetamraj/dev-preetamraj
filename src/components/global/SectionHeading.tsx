@@ -1,15 +1,17 @@
+import { ReactNode } from 'react';
+
 type Props = {
-  index: string;
+  /** @deprecated Numbered prefixes were dropped from the design; ignored. */
+  index?: string;
   title: string;
+  /** Optional trailing link/action, right-aligned on the same line. */
+  action?: ReactNode;
 };
 
-const SectionHeading = ({ index, title }: Props) => (
-  <div className='flex items-center gap-4'>
-    <h2 className='flex items-baseline gap-2 whitespace-nowrap text-xl font-bold text-foreground md:text-2xl'>
-      <span className='font-mono text-sm text-primary'>{index}.</span>
-      {title}
-    </h2>
-    <span className='h-px flex-1 bg-border' />
+const SectionHeading = ({ title, action }: Props) => (
+  <div className='flex items-baseline justify-between gap-4'>
+    <h2 className='text-h3 text-foreground'>{title}</h2>
+    {action}
   </div>
 );
 

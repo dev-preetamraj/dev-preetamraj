@@ -18,7 +18,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
     : null;
 
   return (
-    <Card className='group relative flex flex-col overflow-hidden rounded-2xl border-border/70 bg-gradient-to-b from-card to-muted/20 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/[0.06]'>
+    <Card className='group relative flex flex-col overflow-hidden rounded-xl transition-all duration-base hover:-translate-y-1 hover:border-input hover:shadow-md'>
       <div className='relative aspect-video w-full overflow-hidden bg-muted'>
         {imageUrl ? (
           <Image
@@ -45,7 +45,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
                 target='_blank'
                 rel='noopener noreferrer'
                 aria-label={`${project.title} live site`}
-                className='flex h-8 w-8 items-center justify-center rounded-lg bg-background/80 text-foreground backdrop-blur ring-1 ring-border/60 transition-colors hover:bg-primary hover:text-primary-foreground'
+                className='flex h-8 w-8 items-center justify-center rounded-md bg-background/80 text-foreground backdrop-blur ring-1 ring-border transition-colors hover:bg-primary hover:text-primary-foreground'
               >
                 <Globe className='h-4 w-4' />
               </Link>
@@ -56,7 +56,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
                 target='_blank'
                 rel='noopener noreferrer'
                 aria-label={`${project.title} source code`}
-                className='flex h-8 w-8 items-center justify-center rounded-lg bg-background/80 text-foreground backdrop-blur ring-1 ring-border/60 transition-colors hover:bg-primary hover:text-primary-foreground'
+                className='flex h-8 w-8 items-center justify-center rounded-md bg-background/80 text-foreground backdrop-blur ring-1 ring-border transition-colors hover:bg-primary hover:text-primary-foreground'
               >
                 <GitHubLogoIcon className='h-4 w-4' />
               </Link>
@@ -67,11 +67,11 @@ const ProjectCard: FC<Props> = ({ project }) => {
 
       <CardContent className='flex flex-1 flex-col gap-2 pt-5'>
         {project.category && (
-          <span className='inline-flex w-fit rounded-md bg-primary/10 px-2 py-0.5 font-mono text-[11px] font-medium text-primary ring-1 ring-primary/20'>
+          <span className='inline-flex w-fit rounded-xs border border-border bg-muted px-2 py-0.5 font-mono text-micro text-muted-foreground'>
             {project.category.name}
           </span>
         )}
-        <h3 className='flex items-start gap-2 text-base font-semibold leading-snug text-foreground transition-colors group-hover:text-primary'>
+        <h3 className='flex items-start gap-2 text-h4 text-foreground transition-colors group-hover:text-primary'>
           <Link
             href={`/portfolio/${project.slug}`}
             className='line-clamp-2 after:absolute after:inset-0'
@@ -81,7 +81,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
           <ArrowUpRight className='mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary' />
         </h3>
         {project.description && (
-          <p className='line-clamp-2 text-sm leading-6 text-muted-foreground'>
+          <p className='line-clamp-2 text-small text-muted-foreground'>
             {project.description}
           </p>
         )}
@@ -90,7 +90,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
             {project.tags.slice(0, 4).map((tag) => (
               <span
                 key={tag.slug}
-                className='rounded-full border border-border/60 px-2 py-0.5 text-[11px] text-muted-foreground'
+                className='rounded-full border border-border px-2 py-0.5 text-micro text-muted-foreground'
               >
                 {tag.name}
               </span>

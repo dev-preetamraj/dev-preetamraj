@@ -48,14 +48,14 @@ const CategoryDetailPage: FC<Props> = async (props) => {
   if (!category) return;
 
   return (
-    <div className='w-full flex flex-col space-y-6'>
-      <h1 className='text-2xl md:text-3xl font-bold text-foreground leading-tight'>
-        Posts in <span className='text-primary'>{category.name}</span>
+    <div className='w-full flex flex-col space-y-stack'>
+      <h1 className='text-h1 text-foreground'>
+        Posts in {category.name}
       </h1>
       {category.posts.length ? (
         <BlogList blogs={category.posts} />
       ) : (
-        <p className='text-foreground/75'>No posts in this category yet.</p>
+        <p className='text-body text-muted-foreground'>No posts in this category yet.</p>
       )}
     </div>
   );

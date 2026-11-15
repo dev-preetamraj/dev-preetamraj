@@ -54,7 +54,7 @@ const CommentNode = ({ comment, postId, childrenByParent }: Props) => {
     >
       <div className='flex flex-col items-center'>
         <Avatar className='relative z-[1] h-[34px] w-[34px]'>
-          <AvatarFallback className='text-[0.8rem] font-semibold'>
+          <AvatarFallback className='text-micro'>
             {initials(comment.authorName)}
           </AvatarFallback>
         </Avatar>
@@ -65,14 +65,14 @@ const CommentNode = ({ comment, postId, childrenByParent }: Props) => {
 
       <div className='min-w-0 pb-1'>
         <div className='flex items-baseline gap-2'>
-          <p className='text-[0.95rem] font-semibold tracking-tight'>
+          <p className='text-body font-semibold text-foreground'>
             {comment.authorName}
           </p>
-          <span className='font-mono text-xs text-muted-foreground'>
+          <span className='font-mono text-caption text-muted-foreground'>
             {formatDateToNow(comment._createdAt)}
           </span>
         </div>
-        <p className='mt-0.5 text-[0.95rem] leading-relaxed text-foreground/90'>
+        <p className='mt-0.5 text-body text-foreground'>
           {comment.content}
         </p>
 
@@ -89,7 +89,7 @@ const CommentNode = ({ comment, postId, childrenByParent }: Props) => {
           <button
             type='button'
             onClick={() => setReplying(true)}
-            className='mt-1 rounded text-sm font-medium text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
+            className='mt-1 rounded text-small font-medium text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
           >
             Reply
           </button>

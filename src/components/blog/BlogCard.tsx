@@ -6,8 +6,6 @@ import { CalendarIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FC } from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { Separator } from '../ui/separator';
 
 type Props = {
   blog: PostListItem;
@@ -22,36 +20,29 @@ const BlogCard: FC<Props> = ({ blog }) => {
     : null;
 
   return (
-    <div className='flex items-center w-full space-x-4 border-b border-border pb-4'>
+    <div className='group relative flex items-center w-full space-x-4 border-b border-border pb-4'>
       <div className='space-y-2 w-full'>
-        <div className='flex items-center justify-between'>
-          <div className='flex items-center space-x-2'>
-            <Avatar className='w-5 h-5'>
-              <AvatarImage
-                src='https://res.cloudinary.com/dxgl4eyhq/image/upload/v1687987306/portfolio/me/preetam_ha8a2h.jpg'
-                alt='Preetam Raj'
-              />
-              <AvatarFallback>PR</AvatarFallback>
-            </Avatar>
-            <p className='text-sm'>Preetam Raj</p>
-          </div>
-        </div>
-        <Link
-          href={{
-            pathname: `/blog/${blog?.slug}`,
-          }}
-          className='text-lg font-bold text-primary line-clamp-2'
-        >
-          {blog.title}
-        </Link>
-        <p className='text-sm font-light line-clamp-2'>
+        {/* Single-author blog: no per-card author row. Title is foreground,
+            primary only on hover, like the home Latest list; the link's
+            ::after stretches over the whole card. */}
+        <h2 className='text-h4 text-foreground transition-colors group-hover:text-primary'>
+          <Link
+            href={{
+              pathname: `/blog/${blog?.slug}`,
+            }}
+            className='line-clamp-2 after:absolute after:inset-0'
+          >
+            {blog.title}
+          </Link>
+        </h2>
+        <p className='text-small text-muted-foreground line-clamp-2'>
           {blog.description ||
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium ab odio optio at deleniti pariatur porro magnam facere culpa ipsam veniam autem accusantium, corrupti voluptates iusto voluptatem assumenda illum? Esse?'}
         </p>
-        <div className='flex items-center space-x-4'>
+        <div className='flex items-center space-x-4 text-small text-muted-foreground'>
           <div className='flex items-center space-x-2'>
             <CalendarIcon className='h-4 w-4' />
-            <span className='text-sm font-thin'>
+            <span>
               {new Date(
                 blog?.publishedAt ?? blog?._createdAt,
               ).toLocaleDateString('en-IN', {
@@ -62,14 +53,13 @@ const BlogCard: FC<Props> = ({ blog }) => {
               })}
             </span>
           </div>
-          <Separator orientation='vertical' className='hidden' />
           <div className='hidden md:flex items-center space-x-2'>
             <TagIcon className='h-4 w-4' />
-            <span className='text-sm font-thin'>{blog?.category?.name}</span>
+            <span>{blog?.category?.name}</span>
           </div>
           <div className='flex items-center space-x-2'>
             <EyeIcon className='h-4 w-4' />
-            <span className='text-sm font-thin'>{formatViews(blog?.views)}</span>
+            <span>{formatViews(blog?.views)}</span>
           </div>
         </div>
       </div>

@@ -51,14 +51,14 @@ const RelatedPosts: FC<Props> = ({ posts }) => {
 
               <div className='flex min-w-0 flex-col gap-1.5 py-0.5'>
                 {post.category && (
-                  <span className='font-mono text-[11px] font-medium text-primary'>
+                  <span className='text-eyebrow text-muted-foreground'>
                     {post.category.name}
                   </span>
                 )}
-                <h3 className='line-clamp-2 text-sm font-semibold leading-snug text-foreground transition-colors group-hover:text-primary'>
+                <h3 className='line-clamp-2 text-h4 text-foreground transition-colors group-hover:text-primary'>
                   {post.title}
                 </h3>
-                <div className='mt-auto flex items-center gap-3 pt-0.5 text-xs text-muted-foreground'>
+                <div className='mt-auto flex items-center gap-3 pt-0.5 text-caption text-muted-foreground'>
                   <span className='flex items-center gap-1'>
                     <CalendarIcon className='h-3 w-3' />
                     {formatPostDate(post.publishedAt ?? post._createdAt)}

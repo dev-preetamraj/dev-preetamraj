@@ -11,9 +11,9 @@ const WorkTogetherCta = () => {
   if (pathname === '/about') return null;
 
   return (
-    <div className='rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-5'>
-      <h3 className='font-semibold text-foreground'>Let&apos;s work together</h3>
-      <p className='mt-1 text-sm text-muted-foreground'>
+    <div className='rounded-xl border border-border bg-card p-5'>
+      <h3 className='text-h4 text-foreground'>Let&apos;s work together</h3>
+      <p className='mt-1 text-small text-muted-foreground'>
         Got something in mind? I&apos;m always up for a good problem.
       </p>
       <Link

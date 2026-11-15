@@ -123,7 +123,7 @@ const BlogPost: FC<Props> = async (props) => {
   return (
     <>
       <JsonLd data={[articleLd, breadcrumbLd]} />
-      <div className='space-y-12'>
+      <div className='space-y-section-sm'>
         <ReadingProgress />
         <ViewTracker postId={blog._id} />
         <RenderBlog blog={blog} />

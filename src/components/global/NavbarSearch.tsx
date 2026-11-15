@@ -195,13 +195,13 @@ const NavbarSearch = () => {
         onClick={() => setOpen(true)}
         className='flex items-center md:space-x-4 xl:space-x-10 group'
       >
-        <span className='text-muted-foreground group-hover:text-foreground hidden md:inline-block'>
+        <span className='text-small text-muted-foreground group-hover:text-foreground hidden lg:inline-block'>
           Search project, blog or settings...
         </span>
-        <div>
-          <SearchIcon className='icon block md:hidden' />
-          <kbd className='pointer-events-none hidden md:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 text-muted-foreground group-hover:text-foreground'>
-            <span className='text-xs'>⌘</span>K
+        <div className='flex items-center gap-2'>
+          <SearchIcon className='icon block lg:hidden' />
+          <kbd className='pointer-events-none hidden md:inline-flex h-5 select-none items-center gap-1 rounded-xs border bg-muted px-1.5 font-mono text-micro text-muted-foreground group-hover:text-foreground'>
+            <span>⌘</span>K
           </kbd>
         </div>
       </Button>
@@ -277,7 +277,7 @@ const NavbarSearch = () => {
                     <theme.icon className='mr-2 h-4 w-4' />
                     <span>{theme.label}</span>
                     {activeTheme === theme.value && (
-                      <CheckIcon className='ml-auto h-4 w-4 text-primary' />
+                      <CheckIcon className='ml-auto h-4 w-4 text-foreground' />
                     )}
                   </CommandItem>
                 ))}
@@ -286,7 +286,7 @@ const NavbarSearch = () => {
           )}
         </CommandList>
 
-        <div className='relative hidden items-center justify-between px-4 py-2.5 text-xs text-muted-foreground before:absolute before:inset-x-3 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-primary/25 before:to-transparent sm:flex'>
+        <div className='hidden items-center justify-between border-t px-4 py-2.5 text-caption text-muted-foreground sm:flex'>
           <div className='flex items-center gap-3'>
             <span className='flex items-center gap-1.5'>
               <Kbd>↑</Kbd>
@@ -311,7 +311,7 @@ const NavbarSearch = () => {
 };
 
 const Kbd = ({ children }: { children: ReactNode }) => (
-  <kbd className='inline-flex h-5 min-w-5 items-center justify-center rounded border border-primary/15 bg-primary/5 px-1 font-mono text-[10px] font-medium text-muted-foreground'>
+  <kbd className='inline-flex h-5 min-w-5 items-center justify-center rounded-xs border border-border bg-muted px-1 font-mono text-micro text-muted-foreground'>
     {children}
   </kbd>
 );

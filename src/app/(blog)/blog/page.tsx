@@ -31,13 +31,9 @@ const BlogPage = async ({ searchParams }: Props) => {
   return (
     <div className='flex w-full flex-col space-y-8'>
       <section className='flex flex-col space-y-5'>
-        <p className='text-sm font-medium uppercase tracking-wide text-primary'>
-          The Blog
-        </p>
-        <h1 className='text-2xl font-bold leading-tight text-foreground md:text-3xl'>
-          Every post, in one place.
-        </h1>
-        <p className='max-w-2xl text-muted-foreground'>
+        <p className='text-eyebrow text-muted-foreground'>The Blog</p>
+        <h1 className='text-h1 text-foreground'>Every post, in one place.</h1>
+        <p className='max-w-2xl text-lead text-muted-foreground'>
           Notes on backend systems, APIs, and building things that hold up. Sort
           by the newest writing or by what is ranking highest right now.
         </p>
@@ -45,7 +41,7 @@ const BlogPage = async ({ searchParams }: Props) => {
 
       <div className='flex flex-wrap items-center justify-between gap-3'>
         <SortToggle active={active} />
-        <span className='text-sm text-muted-foreground'>
+        <span className='text-small text-muted-foreground'>
           {blogs.length} {blogs.length === 1 ? 'post' : 'posts'}
         </span>
       </div>
@@ -53,7 +49,7 @@ const BlogPage = async ({ searchParams }: Props) => {
       {blogs.length ? (
         <BlogListInfinite key={active} blogs={blogs} />
       ) : (
-        <p className='text-muted-foreground'>No posts yet - check back soon.</p>
+        <p className='text-body text-muted-foreground'>No posts yet - check back soon.</p>
       )}
     </div>
   );

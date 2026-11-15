@@ -19,13 +19,9 @@ const CategoriesPage = async () => {
   return (
     <div className='flex w-full flex-col space-y-8'>
       <section className='flex flex-col space-y-5'>
-        <p className='text-sm font-medium uppercase tracking-wide text-primary'>
-          The Blog
-        </p>
-        <h1 className='text-2xl font-bold leading-tight text-foreground md:text-3xl'>
-          Browse by category
-        </h1>
-        <p className='max-w-2xl text-muted-foreground'>
+        <p className='text-eyebrow text-muted-foreground'>The Blog</p>
+        <h1 className='text-h1 text-foreground'>Browse by category</h1>
+        <p className='max-w-2xl text-lead text-muted-foreground'>
           Every topic I write about, grouped in one place. Pick a category to
           see the posts inside it.
         </p>
@@ -34,27 +30,27 @@ const CategoriesPage = async () => {
       {categories?.length ? (
         <>
           <div className='flex items-center justify-between'>
-            <span className='text-sm text-muted-foreground'>
+            <span className='text-small text-muted-foreground'>
               {categories.length}{' '}
               {categories.length === 1 ? 'category' : 'categories'}
             </span>
           </div>
-          <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+          <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2'>
             {categories.map((category) => (
               <Link
                 key={category._id}
                 href={`/categories/${category.slug}`}
-                className='group relative flex flex-col gap-3 overflow-hidden rounded-2xl border border-border/70 bg-gradient-to-b from-card to-muted/20 p-5 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/[0.06]'
+                className='group relative flex flex-col gap-3 overflow-hidden rounded-xl border border-border bg-card p-5 transition-all duration-base hover:-translate-y-1 hover:border-input hover:shadow-md'
               >
                 <div className='flex items-center gap-3'>
-                  <span className='flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/20 transition-colors group-hover:bg-primary/15'>
+                  <span className='flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-border bg-muted text-foreground'>
                     <FolderIcon className='h-5 w-5' />
                   </span>
                   <div className='min-w-0'>
-                    <p className='truncate text-base font-semibold text-foreground transition-colors group-hover:text-primary'>
+                    <h2 className='truncate text-h4 text-foreground transition-colors group-hover:text-primary'>
                       {category.name}
-                    </p>
-                    <p className='text-xs text-muted-foreground'>
+                    </h2>
+                    <p className='text-caption text-muted-foreground'>
                       {category.postCount}{' '}
                       {category.postCount === 1 ? 'post' : 'posts'}
                     </p>
@@ -62,7 +58,7 @@ const CategoriesPage = async () => {
                   <ArrowUpRight className='ml-auto h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary' />
                 </div>
                 {category.description && (
-                  <p className='line-clamp-2 text-sm leading-6 text-muted-foreground'>
+                  <p className='line-clamp-2 text-small text-muted-foreground'>
                     {category.description}
                   </p>
                 )}
@@ -71,7 +67,7 @@ const CategoriesPage = async () => {
           </div>
         </>
       ) : (
-        <p className='text-muted-foreground'>
+        <p className='text-body text-muted-foreground'>
           No categories yet - check back soon.
         </p>
       )}

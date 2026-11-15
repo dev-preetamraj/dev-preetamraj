@@ -1,10 +1,8 @@
-import { Card } from '@/components/ui/card';
 import { formatPostDate, formatViews } from '@/lib/utils';
 import { urlFor } from '@/sanity/lib/image';
 import { PostListItem } from '@/sanity/lib/queries';
 import { EyeIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import { CalendarIcon } from '@radix-ui/react-icons';
-import { ArrowUpRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FC } from 'react';
@@ -19,57 +17,56 @@ const FeaturedPostCard: FC<Props> = ({ blog }) => {
     : null;
 
   return (
-    <Card className='group relative flex flex-col gap-5 rounded-2xl border-primary/25 bg-gradient-to-br from-primary/[0.08] via-primary/[0.03] to-transparent p-4 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/[0.06] sm:flex-row sm:items-center sm:gap-6 sm:p-5'>
-      <div className='relative aspect-video w-full shrink-0 overflow-hidden rounded-xl bg-muted ring-1 ring-border/60 sm:w-1/2'>
+    // One calm row: small thumbnail + text. Deliberately quieter than the
+    // hero so the page keeps a single focal point.
+    <article className='group relative flex items-center gap-5 rounded-lg border border-border p-4 transition-colors hover:border-input'>
+      <div className='relative hidden aspect-video w-44 shrink-0 overflow-hidden rounded-md bg-muted ring-1 ring-border lg:block'>
         {imageUrl ? (
           <Image
             src={imageUrl}
             alt={blog.featuredImage?.alt || blog.title}
             fill
-            sizes='(max-width: 640px) 100vw, (max-width: 1280px) 45vw, 340px'
-            className='object-cover transition-transform duration-300 group-hover:scale-[1.02]'
+            sizes='176px'
+            className='object-cover'
           />
         ) : (
           <div
             className='flex h-full w-full items-center justify-center text-muted-foreground'
             aria-label={`${blog.title} (no featured image)`}
           >
-            <PhotoIcon className='h-10 w-10' />
+            <PhotoIcon className='h-6 w-6' />
           </div>
         )}
       </div>
-      <div className='flex flex-1 flex-col gap-3'>
-        {blog.category && (
-          <span className='inline-flex w-fit rounded-md bg-primary/10 px-2.5 py-0.5 font-mono text-[11px] font-medium text-primary ring-1 ring-primary/20'>
-            {blog.category.name}
-          </span>
-        )}
-        <h3 className='flex items-start gap-2 text-lg font-bold leading-snug text-foreground transition-colors group-hover:text-primary md:text-xl'>
+      <div className='flex min-w-0 flex-1 flex-col gap-1.5'>
+        <p className='text-eyebrow text-muted-foreground'>
+          Featured{blog.category ? ` · ${blog.category.name}` : ''}
+        </p>
+        <h3 className='text-h4 text-foreground transition-colors group-hover:text-primary'>
           <Link
             href={`/blog/${blog.slug}`}
             className='line-clamp-2 after:absolute after:inset-0'
           >
             {blog.title}
           </Link>
-          <ArrowUpRight className='mt-1 h-5 w-5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary' />
         </h3>
         {blog.description && (
-          <p className='line-clamp-2 text-sm leading-6 text-muted-foreground'>
+          <p className='line-clamp-1 text-small text-muted-foreground'>
             {blog.description}
           </p>
         )}
-        <div className='flex items-center gap-4 text-sm text-muted-foreground'>
+        <div className='flex items-center gap-4 pt-0.5 font-mono text-caption text-muted-foreground'>
           <span className='flex items-center gap-1.5'>
-            <CalendarIcon className='h-4 w-4' />
+            <CalendarIcon className='h-3.5 w-3.5' />
             {formatPostDate(blog.publishedAt ?? blog._createdAt)}
           </span>
           <span className='flex items-center gap-1.5'>
-            <EyeIcon className='h-4 w-4' />
+            <EyeIcon className='h-3.5 w-3.5' />
             {formatViews(blog.views)}
           </span>
         </div>
       </div>
-    </Card>
+    </article>
   );
 };
 

@@ -53,7 +53,7 @@ const CodeBlock = ({ value }: { value: CodeValue }) => {
   return (
     <pre>
       {value?.filename && (
-        <span className='block text-xs font-mono opacity-70 mb-2'>
+        <span className='block font-mono text-caption mb-2'>
           {value.filename}
         </span>
       )}
@@ -117,7 +117,12 @@ const RenderPortableText = ({ value }: Props) => {
   }, [value]);
 
   return (
-    <article className='prose !max-w-none dark:prose-invert prose-a:text-primary prose-headings:text-foreground prose-img:w-full md:prose-pre:max-w-md lg:prose-pre:max-w-[630px] xl:prose-pre:max-w-xl 2xl:prose-pre:max-w-[880px]'>
+    // One column for everything: text is capped at the measure token and
+    // headings, lists, images and code blocks share that same width.
+    // Code blocks use w-0 + min-w-full so long lines scroll inside the block
+    // instead of widening the page: the Radix ScrollArea wraps the layout in
+    // display:table, which otherwise grows to fit the widest code line.
+    <article className='prose max-w-measure dark:prose-invert prose-a:text-primary prose-headings:text-foreground prose-img:w-full prose-pre:w-0 prose-pre:min-w-full'>
       <PortableText value={value} components={components} />
     </article>
   );

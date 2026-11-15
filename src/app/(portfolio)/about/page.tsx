@@ -214,15 +214,15 @@ const identityChips = [
 
 const AboutPage = () => {
   return (
-    <div className='flex flex-col space-y-12'>
+    <div className='flex flex-col space-y-section-sm'>
       <section className='flex flex-col space-y-5'>
-        <p className='text-primary text-sm font-medium uppercase tracking-wide'>
+        <p className='text-eyebrow text-muted-foreground'>
           Fullstack Software Engineer
         </p>
-        <h1 className='text-2xl md:text-3xl font-bold text-foreground leading-tight'>
+        <h1 className='text-h1 text-foreground'>
           I build and run platforms end to end.
         </h1>
-        <p className='text-muted-foreground max-w-2xl'>
+        <p className='text-lead text-muted-foreground max-w-measure'>
           From databases and cloud infrastructure up to the interface people
           actually touch - I like turning messy real-world problems into systems
           that just work.
@@ -232,7 +232,7 @@ const AboutPage = () => {
           {identityChips.map((chip) => (
             <li
               key={chip}
-              className='rounded-full border border-border bg-muted/40 px-3 py-1 text-xs text-muted-foreground'
+              className='rounded-full border border-border bg-muted px-3 py-1 text-caption text-muted-foreground'
             >
               {chip}
             </li>
@@ -278,24 +278,24 @@ const AboutPage = () => {
 
       <section className='flex flex-col space-y-5'>
         <SectionHeading index='01' title='About' />
-        <div className='max-w-3xl space-y-4 text-[15px] font-light leading-7 text-muted-foreground'>
+        <div className='max-w-measure space-y-4 text-body text-muted-foreground'>
           <p>
             Hi, I&apos;m{' '}
-            <span className='text-primary font-semibold'>Preetam Raj</span>, a
+            <span className='font-medium text-foreground'>Preetam Raj</span>, a
             fullstack software engineer who loves turning messy real-world
             problems into systems that just work. I studied Mechanical
             Engineering with a minor in{' '}
-            <span className='text-primary font-semibold'>
+            <span className='font-medium text-foreground'>
               Computer Science and Engineering
             </span>{' '}
-            at <span className='text-primary font-semibold'>IIT Mandi</span>,
+            at <span className='font-medium text-foreground'>IIT Mandi</span>,
             and somewhere along the way fell for the craft of building software
             end to end - from database and infrastructure up to the interface
             people actually touch.
           </p>
           <p>
             These days I&apos;m a Software Engineer II in{' '}
-            <span className='text-primary font-semibold'>
+            <span className='font-medium text-foreground'>
               energy-tech / cleantech
             </span>
             , where I own a platform that powers smart metering, automated
@@ -307,10 +307,10 @@ const AboutPage = () => {
           </p>
           <p>
             I work AI-native day to day -{' '}
-            <span className='text-primary font-semibold'>Claude Code</span> and{' '}
-            <span className='text-primary font-semibold'>Codex</span> are a
+            <span className='font-medium text-foreground'>Claude Code</span> and{' '}
+            <span className='font-medium text-foreground'>Codex</span> are a
             regular part of how I ship - and on the side I build{' '}
-            <span className='text-primary font-semibold'>llm-kit</span>, an
+            <span className='font-medium text-foreground'>llm-kit</span>, an
             open-source Python toolkit (on PyPI) that gives one typed interface
             across Anthropic, Gemini, and OpenAI.
           </p>
@@ -332,16 +332,15 @@ const AboutPage = () => {
               <Card
                 key={item.id}
                 className={cn(
-                  'group relative overflow-hidden rounded-2xl border-border/70 bg-gradient-to-b from-card to-muted/20 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/[0.06]',
-                  item.featured &&
-                    'border-primary/25 bg-gradient-to-br from-primary/[0.08] via-primary/[0.03] to-transparent hover:border-primary/50 md:col-span-2'
+                  'group relative overflow-hidden rounded-xl transition-all duration-base hover:-translate-y-1 hover:border-input hover:shadow-md',
+                  item.featured && 'md:col-span-2'
                 )}
               >
                 <CardHeader className='flex-row items-center gap-3 space-y-0'>
-                  <span className='flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/20 transition-colors group-hover:bg-primary/15'>
+                  <span className='flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-border bg-muted text-foreground'>
                     <Icon className='h-5 w-5' />
                   </span>
-                  <CardTitle className='text-base transition-colors group-hover:text-primary'>
+                  <CardTitle className='text-h4 transition-colors group-hover:text-primary'>
                     {item.href ? (
                       <Link
                         href={item.href}
@@ -358,7 +357,7 @@ const AboutPage = () => {
                   {(item.badge || item.href) && (
                     <div className='ml-auto flex items-center gap-2'>
                       {item.badge && (
-                        <span className='hidden rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-medium text-primary ring-1 ring-primary/20 sm:inline'>
+                        <span className='hidden rounded-full border border-border px-2.5 py-0.5 text-micro text-foreground sm:inline'>
                           {item.badge}
                         </span>
                       )}
@@ -369,14 +368,14 @@ const AboutPage = () => {
                   )}
                 </CardHeader>
                 <CardContent className='space-y-4'>
-                  <p className='text-sm leading-6 text-muted-foreground'>
+                  <p className='text-small text-muted-foreground'>
                     {item.text}
                   </p>
                   <ul className='flex flex-wrap gap-1.5'>
                     {item.tags.map((tag) => (
                       <li
                         key={tag}
-                        className='rounded-md border border-border/60 bg-muted/40 px-2 py-0.5 font-mono text-[11px] text-muted-foreground'
+                        className='rounded-xs border border-border bg-muted px-2 py-0.5 font-mono text-micro text-muted-foreground'
                       >
                         {tag}
                       </li>
@@ -397,21 +396,19 @@ const AboutPage = () => {
             return (
               <div
                 key={group.id}
-                className='flex flex-col gap-4 rounded-2xl border border-border/70 bg-gradient-to-b from-card to-muted/20 p-5 shadow-sm'
+                className='flex flex-col gap-4 rounded-xl border border-border bg-card p-5'
               >
-                <h3 className='flex items-center gap-3'>
-                  <span className='flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/20'>
+                <h3 className='flex items-center gap-3 text-h4 text-foreground'>
+                  <span className='flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-border bg-muted'>
                     <Icon className='h-[18px] w-[18px]' />
                   </span>
-                  <span className='text-sm font-semibold text-foreground'>
-                    {group.title}
-                  </span>
+                  <span>{group.title}</span>
                 </h3>
                 <ul className='flex flex-wrap gap-1.5'>
                   {group.items.map((skill) => (
                     <li
                       key={skill}
-                      className='rounded-md border border-border/60 bg-muted/60 px-2.5 py-1 font-mono text-xs text-muted-foreground transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
+                      className='rounded-xs border border-border bg-muted px-2.5 py-1 font-mono text-caption text-muted-foreground transition-colors hover:border-input hover:text-foreground'
                     >
                       {skill}
                     </li>
@@ -423,12 +420,12 @@ const AboutPage = () => {
         </div>
       </section>
 
-      <section className='flex flex-col items-start justify-between gap-5 rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-8 sm:flex-row sm:items-center'>
+      <section className='flex flex-col items-start justify-between gap-5 rounded-xl border border-border bg-card p-8 sm:flex-row sm:items-center'>
         <div className='space-y-1.5'>
-          <h2 className='text-xl font-bold text-foreground md:text-2xl'>
+          <h2 className='text-h3 text-foreground'>
             Let&apos;s build something.
           </h2>
-          <p className='text-sm text-muted-foreground'>
+          <p className='text-small text-muted-foreground'>
             Have a role or a project in mind? I&apos;m happy to talk.
           </p>
         </div>

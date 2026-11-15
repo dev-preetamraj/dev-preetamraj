@@ -91,15 +91,13 @@ const facts: Fact[] = [
 
 const ContactPage = () => {
   return (
-    <div className='flex flex-col space-y-12'>
+    <div className='flex flex-col space-y-section-sm'>
       <section className='flex flex-col space-y-5'>
-        <p className='text-primary text-sm font-medium uppercase tracking-wide'>
-          Get in touch
-        </p>
-        <h1 className='text-2xl md:text-3xl font-bold text-foreground leading-tight'>
+        <p className='text-eyebrow text-muted-foreground'>Get in touch</p>
+        <h1 className='text-h1 text-foreground'>
           Let&apos;s build something together.
         </h1>
-        <p className='text-muted-foreground max-w-2xl'>
+        <p className='text-lead text-muted-foreground max-w-measure'>
           Have a role, a project, or an idea in mind? I&apos;m always happy to
           talk - whether it&apos;s backend, frontend, cloud, or a bit of AI on
           top. Pick whichever channel works best for you.
@@ -136,19 +134,19 @@ const ContactPage = () => {
 
       <section className='flex flex-col space-y-5'>
         <SectionHeading index='01' title='Reach me' />
-        <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3'>
           {channels.map((channel) => {
             const Icon = channel.icon;
             return (
               <Card
                 key={channel.id}
-                className='group relative overflow-hidden rounded-2xl border-border/70 bg-gradient-to-b from-card to-muted/20 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/[0.06]'
+                className='group relative overflow-hidden rounded-xl transition-all duration-base hover:-translate-y-1 hover:border-input hover:shadow-md'
               >
                 <CardHeader className='flex-row items-center gap-3 space-y-0'>
-                  <span className='flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/20 transition-colors group-hover:bg-primary/15'>
+                  <span className='flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-border bg-muted text-foreground'>
                     <Icon className='h-5 w-5' />
                   </span>
-                  <CardTitle className='text-base transition-colors group-hover:text-primary'>
+                  <CardTitle className='text-h4 transition-colors group-hover:text-primary'>
                     <Link
                       href={channel.href}
                       target={channel.external ? '_blank' : undefined}
@@ -163,7 +161,7 @@ const ContactPage = () => {
                   <ArrowUpRight className='ml-auto h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary' />
                 </CardHeader>
                 <CardContent>
-                  <p className='truncate font-mono text-sm text-muted-foreground'>
+                  <p className='truncate font-mono text-small text-muted-foreground'>
                     {channel.value}
                   </p>
                 </CardContent>
@@ -175,35 +173,29 @@ const ContactPage = () => {
 
       <section className='flex flex-col space-y-5'>
         <SectionHeading index='02' title='Good to know' />
-        <div className='grid grid-cols-1 gap-4 sm:grid-cols-3'>
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3'>
           {facts.map((fact) => {
             const Icon = fact.icon;
             return (
               <div
                 key={fact.id}
-                className='flex flex-col gap-3 rounded-2xl border border-border/70 bg-gradient-to-b from-card to-muted/20 p-5 shadow-sm'
+                className='flex flex-col gap-3 rounded-xl border border-border bg-card p-5'
               >
-                <span className='flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/20'>
+                <span className='flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-border bg-muted text-foreground'>
                   <Icon className='h-[18px] w-[18px]' />
                 </span>
-                <h3 className='text-sm font-semibold text-foreground'>
-                  {fact.title}
-                </h3>
-                <p className='text-sm leading-6 text-muted-foreground'>
-                  {fact.text}
-                </p>
+                <h3 className='text-h4 text-foreground'>{fact.title}</h3>
+                <p className='text-small text-muted-foreground'>{fact.text}</p>
               </div>
             );
           })}
         </div>
       </section>
 
-      <section className='flex flex-col items-start justify-between gap-5 rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-8 sm:flex-row sm:items-center'>
+      <section className='flex flex-col items-start justify-between gap-5 rounded-xl border border-border bg-card p-8 sm:flex-row sm:items-center'>
         <div className='space-y-1.5'>
-          <h2 className='text-xl font-bold text-foreground md:text-2xl'>
-            Prefer the short version?
-          </h2>
-          <p className='text-sm text-muted-foreground'>
+          <h2 className='text-h3 text-foreground'>Prefer the short version?</h2>
+          <p className='text-small text-muted-foreground'>
             Drop me a line and I&apos;ll get back to you.
           </p>
         </div>

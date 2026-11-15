@@ -10,6 +10,22 @@ import Provider from '@/providers/Provider';
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
+
+// One sans family for headings, body and UI, plus its matching mono for
+// code and metadata. Exposed as CSS variables consumed by
+// tailwind.config.ts fontFamily (font-sans / font-mono).
+const fontSans = Geist({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-sans',
+});
+
+const fontMono = Geist_Mono({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-mono',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -44,7 +60,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='en' suppressHydrationWarning>
+    <html
+      lang='en'
+      suppressHydrationWarning
+      className={`${fontSans.variable} ${fontMono.variable}`}
+    >
       <body>
         <ThemeProvider
           attribute='class'

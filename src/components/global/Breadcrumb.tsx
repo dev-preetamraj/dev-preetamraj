@@ -11,15 +11,24 @@ const Breadcrumb = () => {
   if (items.length === 2 && items[1] === '') items.pop();
 
   return (
-    <div className='hidden lg:flex'>
-      <ul className='flex items-center space-x-2 w-full'>
+    // Visible from md up (the md-only "Home" link in Navbar is gone); the
+    // trail shrinks and only the last crumb truncates.
+    <div className='hidden min-w-0 flex-1 md:mr-4 md:flex'>
+      <ul className='flex min-w-0 items-center space-x-2 w-full text-small text-muted-foreground'>
         {items.map((item, index) => (
-          <li key={index} className='flex items-center space-x-2'>
+          <li
+            key={index}
+            className={
+              index === items.length - 1
+                ? 'flex min-w-0 items-center space-x-2'
+                : 'flex shrink-0 items-center space-x-2'
+            }
+          >
             {index != 0 && <span>/</span>}
             {pathname === '/' ? (
               <span>{capitalizeWord(item)}</span>
             ) : index === items.length - 1 ? (
-              <span className='truncate block w-48 xl:w-96'>
+              <span className='block min-w-0 max-w-[14rem] truncate text-foreground xl:max-w-sm'>
                 {slugToTitle(item)}
               </span>
             ) : (
